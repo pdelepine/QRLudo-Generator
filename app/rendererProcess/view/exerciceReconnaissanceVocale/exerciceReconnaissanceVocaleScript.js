@@ -57,6 +57,7 @@ function genererJsonQCM(){
     logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCM) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
+    logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
   }
 }
 
@@ -88,6 +89,7 @@ function genererJsonQuestionOuverte(){
     logger.info(`Génération du QR Code Question Ouverte de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionOuverte) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
+    logger.error(`Génération du QR Code Question Ouverte impossible : certains champs ne sont pas remplis`);
   }
 
 }
