@@ -37,6 +37,7 @@ $().ready(function () {
     //console.log($('#qrView')[0]);
 
     $('#saveQRCode').attr('disabled', false);
+    logger.info("Génération du QR Code Multiple : "+JSON.stringify(qrcodeEns.qrcode));
   });
 
   //$("#empty").on('click',viderZone);
@@ -54,6 +55,7 @@ $().ready(function () {
 
   if (numFich > 0)
     document.getElementById('preview').disabled = false;
+
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -148,6 +150,7 @@ function ajoutQrCcode() {
   activer_button();
 
   document.getElementById("saveQRCode").disabled = true;
+  logger.info("Génération du QR Code Multiple:"+JSON.stringify(newQrUnique.qrcode));
 }
 
 /** permet la continuité entre les onflet spécifiquement pour l'onglet multiple */
@@ -247,6 +250,8 @@ function genererLigne(name, numLigne) {
   baliseDiv.appendChild(baliseButtonDown);
 
   txtZone.appendChild(baliseDiv);
+  
+  
 }
 
 /** Affiche le qrCode unique lie à la ligne cliquable */
@@ -326,6 +331,7 @@ function viderZone() {
     }
   }
   numFich = 0;
+  logger.info("Réinitialisation de la page multiple");
 }
 
 /** Redonne l'apparance par default d'une ligne */
@@ -370,6 +376,8 @@ function saveQRCodeImage() {
   }
 
   xhr.send();
+  
+  logger.info("Exportation du QR Code multiple");
 }
 
 
