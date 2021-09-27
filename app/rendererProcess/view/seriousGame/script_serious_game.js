@@ -1,4 +1,4 @@
-const { Logger } = require('log4js');
+
 
 var projetSeriousGame = new ProjetSeriousGame();
 
