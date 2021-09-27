@@ -37,6 +37,7 @@ $().ready(function () {
     //console.log($('#qrView')[0]);
 
     $('#saveQRCode').attr('disabled', false);
+
     logger.info("Génération du QR Code Multiple : "+JSON.stringify(qrcodeEns.qrcode));
   });
 
@@ -150,7 +151,8 @@ function ajoutQrCcode() {
   activer_button();
 
   document.getElementById("saveQRCode").disabled = true;
-  logger.info("Génération du QR Code Multiple:"+JSON.stringify(newQrUnique.qrcode));
+
+  logger.info("Ajout d'un QR Code : "+JSON.stringify(newQrUnique.qrcode));
 }
 
 /** permet la continuité entre les onflet spécifiquement pour l'onglet multiple */
@@ -305,6 +307,8 @@ function effacerLigne() {
     console.log("coucou");
     $('#txtDragAndDrop').show();
   }
+  
+  logger.info("Suppression d'un QR Code");
 }
 
 /** Vide les tableaux qrCodes, files et les lignes de la zone drop */
@@ -331,6 +335,7 @@ function viderZone() {
     }
   }
   numFich = 0;
+
   logger.info("Réinitialisation de la page multiple");
 }
 
@@ -400,6 +405,7 @@ function upItem(e) {
   store.set(`fichierDrop${tmpVal}`, prevVal);
 
   $(parentElement).insertBefore($(parentElement).prev());
+  logger.info("Déplacement d'un QR Code vers le haut");
 }
 
 /** fonction deplacement de fichier vers bas  &&& */
@@ -421,6 +427,8 @@ function downItem(e) {
   store.set(`fichierDrop${tmpVal}`, nextVal);
 
   $(parentElement).insertAfter($(parentElement).next());
+
+  logger.info("Déplacement d'un QR Code vers le bas");
 }
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
