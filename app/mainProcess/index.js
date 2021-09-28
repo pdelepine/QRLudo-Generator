@@ -25,7 +25,7 @@ const log4js = require('log4js');
  * console : réalise un console.log
  * toFile : enrengistre le log dans le fichier qrludogenerator.log
  */
- log4js.configure({
+log4js.configure({
   appenders: {
     console: { type: 'console' },
     toFile: { type: 'file', filename: 'qrludogenerator.log', flags: 'w' }
