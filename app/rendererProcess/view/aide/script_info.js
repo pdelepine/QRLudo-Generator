@@ -33,6 +33,7 @@ $(document).ready(function () {
 });
 
 $("#unique-info").on('click',function(){
+  logger.info("Demande d'informations sur Unique");
   $("#info-unique").css("display","block");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","none");
@@ -43,6 +44,7 @@ $("#unique-info").on('click',function(){
 });
 
 $("#multiple-info").on('click',function(){
+  logger.info("Demande d'informations sur Multiple");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","block");
   $("#info-exercice-qrcode").css("display","none");
@@ -53,6 +55,7 @@ $("#multiple-info").on('click',function(){
 });
 
 $("#exo-qrcode-info").on('click',function(){
+  logger.info("Demande d'informations sur Exercice - QR Code");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","block");
@@ -63,6 +66,7 @@ $("#exo-qrcode-info").on('click',function(){
 });
 
 $("#exo-reco-vocale-info").on('click',function(){
+  logger.info("Demande d'informationssur Reconnaissance vocale");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","none");
@@ -73,6 +77,7 @@ $("#exo-reco-vocale-info").on('click',function(){
 });
 
 $("#serious-game-info").on('click',function(){
+  logger.info("Demande d'informations sur Serious Game");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","none");
@@ -83,6 +88,7 @@ $("#serious-game-info").on('click',function(){
 });
 
 $("#music-info").on('click',function(){
+  logger.info("Demande d'information sur Musique");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","none");
@@ -93,6 +99,7 @@ $("#music-info").on('click',function(){
 });
 
 $("#import-info").on('click',function(){
+  logger.info("Demande d'informations sur Import");
   $("#info-unique").css("display","none");
   $("#info-multiple").css("display","none");
   $("#info-exercice-qrcode").css("display","none");
