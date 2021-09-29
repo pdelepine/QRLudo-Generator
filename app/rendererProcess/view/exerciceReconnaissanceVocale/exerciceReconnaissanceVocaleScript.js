@@ -54,8 +54,10 @@ function genererJsonQCM(){
     previewQRCodeQCM();
     // On affiche le qrCode
     $('#qrView').show();
+    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCM) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
+    logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
   }
 }
 
@@ -84,8 +86,10 @@ function genererJsonQuestionOuverte(){
     previewQRCodeQuestionOuverte();
     // On affiche le qrCode
     $('#qrView').show();
+    logger.info(`Génération du QR Code Question Ouverte de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionOuverte) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
+    logger.error(`Génération du QR Code Question Ouverte impossible : certains champs ne sont pas remplis`);
   }
 
 }
@@ -128,6 +132,7 @@ $(document).ready(function() {
 var compteurReponse = 1;
 function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
   compteurReponse++;
+  logger.info('Ajout d\'une nouvelle réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
   if (compteurReponse < 30) {
     type = "Reponse";
     let reponse = document.createElement('div');
@@ -172,6 +177,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
 function supprLigne(idLigne, element) {
   if (element == "Reponse") {
     compteurReponse--;
+    logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
     store.set("nbReponse",compteurReponse);
     $("#divQuestion" + idLigne).on('click', function() {
       $(this).remove();
@@ -263,11 +269,15 @@ function viderChamps(){
 
   compteurReponse = 1;
   store.set("nbReponse", compteurReponse);
+
+  logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
 }
 
 // save image qr code
 function saveQRCodeImage(questionQCM, questionOuverte) {
   const fs = require('fs');
+
+  logger.info('Exportation du QR Code de l\'exercice à reconnaissance vocale');
 
   let img = $('#qrView img')[0].src;
 var qrcode
