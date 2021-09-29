@@ -56,7 +56,6 @@ $().ready(function () {
 
   if (numFich > 0)
     document.getElementById('preview').disabled = false;
-
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -251,9 +250,7 @@ function genererLigne(name, numLigne) {
   baliseDiv.appendChild(baliseButtonUp);
   baliseDiv.appendChild(baliseButtonDown);
 
-  txtZone.appendChild(baliseDiv);
-  
-  
+  txtZone.appendChild(baliseDiv); 
 }
 
 /** Affiche le qrCode unique lie à la ligne cliquable */
@@ -308,7 +305,7 @@ function effacerLigne() {
     $('#txtDragAndDrop').show();
   }
   
-  logger.info("Suppression d'un QR Code");
+  logger.info("Suppression d'un QR Code; id : "+JSON.stringify(id));
 }
 
 /** Vide les tableaux qrCodes, files et les lignes de la zone drop */
@@ -405,7 +402,7 @@ function upItem(e) {
   store.set(`fichierDrop${tmpVal}`, prevVal);
 
   $(parentElement).insertBefore($(parentElement).prev());
-  logger.info("Déplacement d'un QR Code vers le haut");
+  logger.info("Déplacement d'un QR Code vers le haut; id : "+JSON.stringify(parentElementVal));
 }
 
 /** fonction deplacement de fichier vers bas  &&& */
@@ -427,8 +424,7 @@ function downItem(e) {
   store.set(`fichierDrop${tmpVal}`, nextVal);
 
   $(parentElement).insertAfter($(parentElement).next());
-
-  logger.info("Déplacement d'un QR Code vers le bas");
+  logger.info("Déplacement d'un QR Code vers le bas; id : "+JSON.stringify(parentElementVal));
 }
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
