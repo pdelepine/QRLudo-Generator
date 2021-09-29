@@ -35,12 +35,6 @@ class QRCodeLoader {
       } else
         qrcode = QRCodeLoader.__traiterImage(ev.target.result);
 
-      if (!Array.isArray(qrcode) && qrcode.getTypeQR() == DictionnaireXml.getValTypeAtomique() && qrcode.appartientFamille()) {
-        logger.info('Les QR Codes appartenant a une famille ne peuvent pas être chargés séparément. Merci de charger l\'image de la famille complète.');
-        alert("Les QR Codes appartenant a une famille ne peuvent pas être chargés séparément. Merci de charger l'image de la famille complète.");
-        return;
-      }
-
       /** renvoyer le qrcode créé avec la méthode en conséquence pour recréer la vue */
       if (callback) {
         if (Array.isArray(qrcode)) {
@@ -112,54 +106,10 @@ class QRCodeLoader {
 
     if (nomPremierNoeud == "qrcode") {
       return QRCodeLoader.__creerQRCode(qrxml.firstChild);
-    } else if (nomPremierNoeud == "qrcodesfamille") {
-      console.log("test:" + qrxml.getElementsByTagName(DictionnaireXml.getTagRacine()));
-      return QRCodeLoader.__creerFamilleQRCodes(qrxml);
-    }
+    } 
 
   }
 
-  /**
-   * Crée et renvoie un tableau de qrcodes d'une même famille issus d'une image conteneur famille
-   */
-  static __creerFamilleQRCodes(xmlNode) {
-    var listeFamille = new Array();
-    var listeFamilleXml = xmlNode.getElementsByTagName(DictionnaireXml.getTagRacine());
-
-    for (var i = 0; i < listeFamilleXml.length; i++) {
-      listeFamille.push(QRCodeLoader.__creerQRCode(listeFamilleXml[i]));
-    }
-
-    return listeFamille;
-  }
-
-  /** On crée un objet QRCode à partir des données reconstituées */
-  static __creerQRCode(xmlNode) {
-    /** On lit le type de QRCode contenu dans l'image */
-    var typeQRCode = xmlNode.getElementsByTagName(DictionnaireXml.getTagDonneesUtilisateur())[0].getAttribute(DictionnaireXml.getAttTypeQRCode());
-
-    /** On vérifie que le xml est bien formé (qu'il possède un noeud donneesUtilisateur et un noeud metadonnees) */
-    if (!xmlNode.getElementsByTagName(DictionnaireXml.getTagDonneesUtilisateur()[0]) || !xmlNode.getElementsByTagName(DictionnaireXml.getTagMetaDonnees()[0])) {
-      throw "L'image est invalide (xml incorrect)";
-    }
-
-
-    /** On instancie un objet QRCode du bon type */
-    var qrcode;
-    switch (typeQRCode) {
-      case DictionnaireXml.getValTypeAtomique():
-        qrcode = new QRCodeAtomique();
-        qrcode.setNoeudRacine(xmlNode);
-        break;
-      case DictionnaireXml.getValTypeMultiple():
-        qrcode = new QRCodeMultiple();
-        qrcode.setNoeudRacine(xmlNode);
-        break;
-      default:
-        throw "L'image est invalide (le type de QRCode n'est pas reconnu)";
-    }
-    return qrcode;
-  }
 
   /** Convertit un tableau d'entiers en chaîne de caractères */
   static bin2String(array) {
