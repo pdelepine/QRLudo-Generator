@@ -20,9 +20,6 @@
 class FacadeController {
 
   constructor() {
-    //this.compresseurXml = new CompresseurTexte();
-    this.imageGenerator = new ImageGenerator(this.compresseurXml);
-    // this.imageGenerator = new ImageGenerator();
   }
 
   /** Renvoie un nouveau QRCodeAtomique */
@@ -71,14 +68,18 @@ class FacadeController {
       }
 
       console.log(`FacadeController.genererQRCode : qrcode.type\n ${ qrcode.qrcode.type }`);
-      let args = [qrcode, divImg];
 
-      if (qrcode.getDataString().length > 117) {
-        JsonCompressor.compress(qrcode.getDataString(), ImageGeneratorJson.genererQRCode, args);
-      } else {
-        args.push(qrcode.getDataString());
-        ImageGeneratorJson.genererQRCode(args);
+      //Génération du QRcode dans la div
+      try{
+        QRCodeGenerator.toDataURL("image/png",function(err,url){
+          let image = new Image();
+          image.src = url;
+          $(divImg).prepend(image);
+        });
+      }catch(e1){
+        console.log(e1);
       }
+
 
       $('#saveQRCode, #listenField').attr('disabled', false);
 
@@ -92,7 +93,6 @@ class FacadeController {
     while (divImg.hasChildNodes()) {
       divImg.removeChild(divImg.firstChild);
     }
-    this.imageGenerator.genererImageFamilleQRCode(tableauQRCodes, divImg);
   }
 
   /** Fonction appelée pour importer un qrcode json */
