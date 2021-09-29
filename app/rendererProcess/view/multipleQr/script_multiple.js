@@ -273,6 +273,7 @@ function afficherQrCode(e) {
   }
 
   console.log(controllerMultiple.getQRCodeSelectionne());
+  logger.info("Prévisualisation d'un Qr code; id : "+JSON.stringify(id));
 }
 
 /** Supprime une ligne dans la zone de drop */
