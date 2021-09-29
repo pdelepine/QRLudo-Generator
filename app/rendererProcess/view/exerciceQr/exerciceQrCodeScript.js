@@ -11,7 +11,7 @@ nombre_reponse = 0;
 $(document).ready(function () {
 
   //méthode gérant la continuité
-  enregistrement()
+  enregistrement();
 
   initMessages();
 
