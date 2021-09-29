@@ -30,6 +30,7 @@ const piexif = require('piexifjs');
 const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
+const QRCodeGenerator = require('qrcode');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
