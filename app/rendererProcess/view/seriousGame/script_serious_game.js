@@ -1,20 +1,26 @@
+
+
 var projetSeriousGame = new ProjetSeriousGame();
 
 var audioSource = "";
 
 $("#addAudioIntro").on('click', function () {
   audioSource = "intro";
+  logger.info("Ajout d'un fichier audio pour le texte d'intro ");
 });
 $("#addAudioFin").on('click', function () {
   audioSource = "fin";
+  logger.info("Ajout d'un fichier audio pour le texte de fin");
 });
 function addAudioQRCode(idEnigme) {
   currentEnigme = idEnigme;
   audioSource = "qrcode";
+  logger.info("Ajout d'un énoncer audio pour l'énigme QR Code "+idEnigme );
 };
 function addAudioReco(idEnigme) {
   currentEnigme = idEnigme;
   audioSource = "vocale";
+  logger.info("Ajout d'un énoncer audio pour l'énigme vocale "+idEnigme);
 };
 
 /** Fonction pour ajouter un fichier audio */
@@ -186,6 +192,8 @@ function deleteGame() {
   deleteStore('projectId');
   deleteStore('textAreaIntro');
   deleteStore('textAreaFin');
+
+  logger.info("Réinitialisation du jeu");
 }
 
 /** Import d'un projet existant à partir d'un répertoire */
@@ -230,6 +238,7 @@ $('#importProjectBtnId').on('click', function () {
     });
   });
   $("#saveQRCode").attr('disabled', false);
+  logger.inf("Importation d'un projet existant")
 });
 
 //Pour ajouter autant d'énigme que souhaité
@@ -394,6 +403,7 @@ $("#ajouterEnigme").on('click', function () {
     container.append(reponse);
 
   }
+  logger.info("Ajout d'une enigme numéro "+compteurEnigme)
 });
 // On ajoute une enigme de base
 $("#ajouterEnigme").trigger("click");
@@ -429,6 +439,7 @@ function ajouterQuestions(idEnigme) {
     let container = $("#repContainer" + idEnigme);
     container.append(reponse);
   }
+  logger.info("Ajout d'une réponse à l'énigme "+idEnigme);
 };
 
 /** Pour supprimer une énigme ou bien une réponse des QRCode */
@@ -535,6 +546,7 @@ function supprLigne(idLigne, element) {
       $("#modification" + idLigne).empty();
       $("#modification" + idLigne).attr("style", "display:none");
     }
+    logger.info("Suppression de l'enigme numéro "+idLigne);
   } else if (element == "qrcode") {
     if (compteurQuestion > 1) {
       compteurQuestion--;
@@ -559,6 +571,7 @@ function supprLigne(idLigne, element) {
 
       div[1].getElementsByTagName("input")[0].value = "";
     }
+    logger.info("Suppression de la réponse numéro "+idLigne+" de l'énigme "+currentEnigme)
   }
 }
 
@@ -575,10 +588,12 @@ function annulerQuestion(idEnigme, type) {
     let question = document.getElementById("questQRCode" + idEnigme);
     question.disabled = false;
     question.value = "";
+    logger.info("Annulation de l'enigme QR Code numéro "+idEnigme);
   }
   else if (type == "vocale") {
     document.getElementById("questRecVocal" + idEnigme).value = "";
     document.getElementById("repRecVocal" + idEnigme).value = "";
+    logger.info("Annulation de l'enigme vocale numéro "+idEnigme);
   }
 }
 
@@ -632,6 +647,7 @@ function validerQuestion(idEnigme, type) {
       }
       console.log(projetSeriousGame.getQuestionsQr());
     }
+    
 
   }
   else if (type == "vocale") {
@@ -686,6 +702,7 @@ function validerQuestion(idEnigme, type) {
       <i class="fa fa-qrcode"></i>&nbsp;&nbsp;Modifier</button>&nbsp;`;
 
       modification.setAttribute("style", "display:block");
+      logger.info("Validation de l'enigme QRCode numéro "+idEnigme);
 
     }
     else if (type == "vocale") {
@@ -699,6 +716,7 @@ function validerQuestion(idEnigme, type) {
       data-toggle="modal" data-target="#popupRecVocale` + idEnigme + `" onclick="chargerQuestion(` + idEnigme + `,'vocale');">
       <i class="fa fa-microphone"></i>&nbsp;&nbsp;Modifier</button>`;
       modification.setAttribute("style", "display:block");
+      logger.info("Validation de l'enigme vocale numéro "+idEnigme);
     }
 
   }
@@ -710,6 +728,7 @@ function chargerQuestion(idEnigme, type) {
 
   // On affecte les valeurs rentrées à la popup pour la modification
   if (type == "qrcode") {
+    logger.info("Chargement de la pop up QR Code de l'énigme numéro "+idEnigme);
     $("#popupQRCode" + idEnigme + " #questQRCode" + idEnigme).val(projetSeriousGame.getQuestionQrFromId(idEnigme).getQuestion()); // le champs de question
     console.log('script_serious_game.chargerQuestion : nombre de reponses ' + projetSeriousGame.getQuestionQrFromId(idEnigme).getReponses().length);
     for (let i = 0; i < projetSeriousGame.getQuestionQrFromId(idEnigme).getReponses().length; i++) {// les champs de réponses
@@ -720,14 +739,16 @@ function chargerQuestion(idEnigme, type) {
     // On cache les messages d'erreurs
     $("#popupQRCode" + idEnigme + "  #alertQuestionEmptyError").attr("style", "display:none");
     $("#popupQRCode" + idEnigme + "  #alertReponsesEmptyError").attr("style", "display:none");
+    
   } if (type == "vocale") {
+    logger.info("Chargement de la pop up vocale de l'énigme numéro "+idEnigme);
     console.log('script_serious_game.chargerQuestion : id enigme ' + projetSeriousGame.getQuestionRecoFromId(idEnigme));
     $("#popupRecVocale" + idEnigme + " #questRecVocal" + idEnigme).val(projetSeriousGame.getQuestionRecoFromId(idEnigme).getQuestion()); // le champs de la question
     $("#popupRecVocale" + idEnigme + " #repRecVocal" + idEnigme).val(projetSeriousGame.getQuestionRecoFromId(idEnigme).getReponse()); // le champs de la reponse
     // On cache les messages d'erreurs
     $("#popupRecVocale" + idEnigme + "  #alertQuestionEmptyError").attr("style", "display:none");
     $("#popupRecVocale" + idEnigme + "  #alertReponseEmptyError").attr("style", "display:none");
-
+    
   }
 
 }
@@ -754,21 +775,25 @@ function verifEnigmeValide(idEnigme) {
 $("#deleteAudioIntro").on('click', function () {
   document.getElementById('textAreaIntro').value = "";
   $("#textAreaIntro").prop('disabled', false);
+  logger.info("Suppression du texte d'intro")
 });
 
 $("#deleteAudioFin").on('click', function () {
   document.getElementById('textAreaFin').value = "";
   $("#textAreaFin").prop('disabled', false);
+  logger.info("Suppression du texte de fin")
 });
 
 function deleteAudioQRCode(idEnigme) {
   document.getElementById('questQRCode' + idEnigme).value = "";
   $("#questQRCode" + idEnigme).prop('disabled', false);
+  logger.info("Suppression de l'énoncer QR Code numéro "+idEnigme);
 }
 
 function deleteAudioReco(idEnigme) {
   document.getElementById('questRecVocal' + idEnigme).value = "";
   $("#questRecVocal" + idEnigme).prop('disabled', false);
+  logger.info("Suppression de la réponse audio numéro "+idEnigme);
 }
 
 /** Appeler lorsqu'on click sur Générer */
@@ -781,9 +806,11 @@ $("#generateSG").on("click", function () {
     console.log("Preview faite")
     // On affiche le qrCode
     $('#qrView').show();
+    logger.info("Génération du SeriousGame");
   } else {
     // Affiche un message d'erreur
     $("#alertChampsEmptyError").attr("style", "display:block");
+    logger.error("Erreur lors de la génération du SeriousGame, certain(s) champs ne sont pas remplis");
   }
 
 });
@@ -847,6 +874,7 @@ function genereJsonSeriousGame() {
     let jsonSeriousGame = new QRCodeSeriousGame(nomSeriousGame, textIntro, textFin, enigmes, projetSeriousGame.getQuestionsQrForJson(), projetSeriousGame.getQuestionsRecoForJson(), qrColor);
     projetSeriousGame.setScenario(jsonSeriousGame);
     console.log(projetSeriousGame.getScenario());
+    logger.info(`Code générer QR COde ${ JSON.stringify(jsonSeriousGame) }`);
     return true;
   } else {
     console.log("Generation failed");
@@ -927,6 +955,7 @@ $("#saveQRCode").on('click', function () {
       $('#alertExportationOk').hide();
     }, 10000);
   }
+  logger.info("Exportation du QRCode");
 });
 
 /** Cette fonction sauvegarde l'image du qrcode dans un div pour le pouvoir generer apres */
