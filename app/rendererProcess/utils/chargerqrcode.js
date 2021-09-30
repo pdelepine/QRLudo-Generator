@@ -133,9 +133,6 @@ function drawQRCodeMultipleUnique(qrcode) {
     if (qrJson.type == "unique"){
       qr = new QRCodeUnique(qrJson.name, qrJson.data, qrJson.color);
     }
-    else if (qrJson.type == "xl"){
-      qr = new QRCodeXL(qrJson.name, qrJson.data, qrJson.color);
-    }
     else if (qrJson.type == "ensemble"){
       qr = new QRCodeMultipleJson(qrJson.name, qrJson.data, qrJson.color);
     }

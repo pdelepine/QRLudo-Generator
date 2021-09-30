@@ -169,8 +169,8 @@ class ImageGenerator {
     c.setAttribute("width", width);
     var ctx = c.getContext("2d");
 
-    var qrCodeImageFamille = new QRCodeAtomique();
-    qrCodeImageFamille.ajouterTexte("Ne pas scanner ce qrcode, il est destiné uniquement aux transcripteurs pour enregistrer et charger des familles de qrcodes");
+    //var qrCodeImageFamille = new QRCodeAtomique();
+    //qrCodeImageFamille.ajouterTexte("Ne pas scanner ce qrcode, il est destiné uniquement aux transcripteurs pour enregistrer et charger des familles de qrcodes");
 
     /** On définit les options des qrcodes de fond d'image */
     var options = {
