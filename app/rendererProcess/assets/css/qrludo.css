@@ -514,3 +514,49 @@ input[type="color"]::-webkit-color-swatch {
   content: counter(section);
 }
 /*end info*/
+/*Reconnaissance vocale QCM*/
+ .question{
+   color: #28a745;
+   border-width: 2px;
+   border-style: solid;
+   border-radius: 10px;
+ }
+ .bi{
+   color:#28a745;
+ }
+ .btn{
+   color: #28a745;
+   background: #fff;
+   border-color: #28a745;
+ }
+ .btn:hover{
+   background:#28a745;
+   border-color: #39ca5a;
+   color:#fff
+ }
+ .btn:active{
+   color:#28a745;
+ }
+ .form-row{
+   margin-left: 5px;
+ }
+ .btn-question{
+  margin: 1%;
+ }
+ .btn-question[aria-expanded=false] .fa-chevron-up {
+  display: none;
+}
+.btn-question[aria-expanded=true] .fa-chevron-down {
+  display: none;
+}
+.btn-sup-question{
+  margin-left: 8%;
+  margin-right: 2%;
+}
+ .question-intro{
+   margin-top: 10px;
+   margin-left: 30px;
+   margin-bottom: 10px;
+ }
+
+ /*end Reconnaissance vocale QCM*/
