@@ -112,7 +112,7 @@ switch (process.platform) {
     break;
 }
 
-/** Check internet connection */
+/** Check internet connection 
 logger.info('Test de la connexion internet');
 if (!navigator.onLine) {
   logger.error(`L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet`);
@@ -120,7 +120,7 @@ if (!navigator.onLine) {
   window.close();
 } else {
   logger.info('L\'application est bien connectée à internet');
-}
+}*/
 
 const { ipcRenderer } = require('electron');
 const dialog = remoteElectron.dialog;

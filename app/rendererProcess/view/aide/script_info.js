@@ -52,6 +52,7 @@ $("#buttonAffichageVideoUnique").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoUnique").src = document.getElementById("videoUnique").src;
   }
 });
 
@@ -75,6 +76,7 @@ $("#buttonAffichageVideoMultiple").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoMultiple").src = document.getElementById("videoMultiple").src;
   }
 });
 
@@ -99,6 +101,7 @@ $("#buttonAffichageVideoExercice").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoExercice").src = document.getElementById("videoExercice").src;
   }
 });
 
@@ -122,6 +125,7 @@ $("#buttonAffichageVideoQuestionOuverte").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoQuestionOuverte").src = document.getElementById("videoQuestionOuverte").src;
   }
 });
 
@@ -134,6 +138,7 @@ $("#buttonAffichageVideoQCM").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoQCM").src = document.getElementById("videoQCM").src;
   }
 });
 
@@ -157,6 +162,7 @@ $("#buttonAffichageVideoSeriousGame").on('click',function(){
     alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
   } else {
     logger.info('L\'application est bien connectée à internet');
+    document.getElementById("videoSeriousGame").src = document.getElementById("videoSeriousGame").src;
   }
 });
 
