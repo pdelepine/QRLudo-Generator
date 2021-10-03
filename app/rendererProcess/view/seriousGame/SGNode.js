@@ -21,19 +21,21 @@ class SGNode {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		return (mouseX - translateX > this.x * zoom && mouseX - translateX < this.x * zoom + this.w * zoom && mouseY > this.y * zoom && mouseY < this.y * zoom + this.h * zoom);
+		const cond1 = mouseX - translateX > this.x * zoom;
+		const cond2 = mouseX - translateX < this.x * zoom + this.w * zoom;
+		const cond3 = mouseY - translateY > this.y * zoom;
+		const cond4 = mouseY - translateY < this.y * zoom + this.h * zoom;
+
+		return (cond1 && cond2 && cond3 && cond4);
 	}
 
 	/** Updating SGNode coordinates */
 	update() {
 		if (this.dragging) {
 			console.log(`x * zoom ${this.x * zoom}`);
-			if (mouseX - translateX + this.offsetX < 0) {
-				this.x = 0;
-			} else {
-				this.x = ((mouseX - translateX)  + this.offsetX ) / zoom;
-			}
-			this.y = (mouseY + this.offsetY) / zoom;
+			console.log(`Deplacement X ${mouseX - translateX + this.offsetX}`);
+			this.x = ((mouseX - translateX)  + this.offsetX ) / zoom;
+			this.y = ((mouseY - translateY) + this.offsetY) / zoom;
 			console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
 			console.log(`-- Node x ${this.x} y ${this.y}`);
 		}
@@ -61,7 +63,7 @@ class SGNode {
 		if (this.isMouseHover()) {
 			this.dragging = true;
 			this.offsetX = this.x * zoom - (mouseX - translateX);
-			this.offsetY = this.y * zoom - mouseY;
+			this.offsetY = this.y * zoom - (mouseY - translateY);
 			return true;
 		}
 	}

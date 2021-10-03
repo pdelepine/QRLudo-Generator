@@ -22,7 +22,7 @@ class SGLink {
 	display() {
 		if(this.type === 'dynamic') {
 			this.node2.x = (mouseX - translateX) / zoom;
-			this.node2.y = mouseY / zoom;
+			this.node2.y = (mouseY - translateY) / zoom;
 		}
 		if(this.isMouseHover()) {
 			this.flags.hover = true;
@@ -79,8 +79,8 @@ class SGLink {
 		const x2 = (this.node2.x + (this.node2.w / 2)) * zoom;
 		const y2 = (this.node2.y + (this.node2.h / 2)) * zoom;
 
-		const d1 = dist(x1, y1, mouseX - translateX, mouseY);
-		const d2 = dist(x2, y2, mouseX - translateX, mouseY);
+		const d1 = dist(x1, y1, mouseX - translateX, mouseY - translateY);
+		const d2 = dist(x2, y2, mouseX - translateX, mouseY - translateY);
 
 		if(this.node1.isMouseHover() || this.node2.isMouseHover()) return false;
 

@@ -6,13 +6,17 @@ let zoom = 1;
 let nodeArray = [];
 let linkArray = [];
 let buttonCreateQuestion;
-let translateX = 150;
+let translateX = 0; let diagramOffsetX = 0;
+let translateY = 0; let diagramOffsetY = 0;
 /* P5Js part */
 /** Setup of the canvas */
 function setup() {
 	var seriousGameCanvas = createCanvas(parentDiv.width, parentDiv.height);
 	seriousGameCanvas.parent("seriousGameDiagram");
 	frameRate(30);
+
+	translateX = initX;
+	translateY = initY;
 
 	/** First & Second Node integration */
 	let node1 = new SGNode(100, 100, 100, 80);
@@ -34,20 +38,22 @@ function setup() {
 /** Event loop */
 function draw() {
 	background("#DAE4E4");
-	palette();
 	console.log(`Mouse x ${mouseX} y ${mouseY}`);
 	console.log(`Zoom ${zoom}`);
 
-	translate(translateX, 0);
+	push();
+	moveDiagram();
+	console.log(`translate x ${translateX} y ${translateY}`);
+	translate(translateX, translateY);
 	scale(zoom);
-
 	nodeArray.forEach(n => n.update());
-
 	linkArray.forEach(l => l.display());
 	nodeArray.forEach(n => n.display());
+	pop();
+	drawPalette();
 }
 
-function palette() {
+function drawPalette() {
 	push();
 	fill(200);
 	rect(0, 0, 150, parentDiv.height);
@@ -57,24 +63,43 @@ function palette() {
 }
 
 function createNode() {
-	let newNode = new SGNode(parentDiv.width / 2, parentDiv.height / 2, 100, 80);
+	const x1 = (parentDiv.width / 2) / zoom  - translateX / zoom;
+	const x2 = (parentDiv.height / 2) / zoom - translateY / zoom;
+	let newNode = new SGNode(x1, x2, 100, 80);
 	nodeArray.push(newNode);
+}
+let initX = 150;
+let initY = 0;
+
+function moveDiagram() {
+	let mouseIsOnNodes = nodeArray.filter(n => n.isMouseHover() || n.dragging);
+	let mouseIsOnLinks = linkArray.filter(l => l.isMouseHover());
+	if(mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
+		if(mouseIsPressed && mouseButton === LEFT) {
+			translateX = initX + (mouseX - diagramOffsetX) ;
+			translateY = initY + (mouseY - diagramOffsetY) ;
+		}
+	}
 }
 
 function mousePressed() {
 
 	if (mouseButton === LEFT) {
-		for (let n of nodeArray) {
-			/** Search first node of the array which hovered by the mouse and push it to last position to become the last drawn and be dragged
+		initX = translateX;
+		initY = translateY;
+		diagramOffsetX = mouseX;
+		diagramOffsetY = mouseY;
+		/** Search first node of the array which hovered by the mouse and push it to last position to become the last drawn and be dragged
 			 * Will also trigger the dragging of the node
 			*/
+		for (let n of nodeArray) {
 			if (n.pressed()) {
 				nodeArray = nodeArray.filter(removeNode => removeNode != n);
 				nodeArray.push(n);
 				return;
 			}
 		}
-
+		/** If pressed a link, delete this link */
 		for (let i = 0; i < linkArray.length; i++) {
 			if (linkArray[i].isMouseHover()) {
 				linkArray.splice(i, 1);
@@ -82,7 +107,6 @@ function mousePressed() {
 			}
 		}
 	}
-
 	if (mouseButton === RIGHT) {
 		/** Create Link from node with Mouse Hovering 
 		 * The link will follow the mouse until the button is released on an
