@@ -21,14 +21,19 @@ class SGNode {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		return (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h);
+		return (mouseX - translateX > this.x && mouseX - translateX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h);
 	}
 
 	/** Updating SGNode coordinates */
 	update() {
-		if(this.dragging) {
-			this.x = mouseX + this.offsetX;
+		if (this.dragging) {
+			if (mouseX + this.offsetX < 0) {
+				this.x = 0;
+			} else {
+				this.x = mouseX + this.offsetX;
+			}
 			this.y = mouseY + this.offsetY;
+			console.log(`Node x ${this.x} y ${this.y}`);
 		}
 	}
 
@@ -36,9 +41,9 @@ class SGNode {
 	display() {
 		push();
 		stroke(0);
-		if(this.dragging)
+		if (this.dragging)
 			fill(80);
-		else if(this.isMouseHover())
+		else if (this.isMouseHover())
 			fill(100);
 		else
 			fill(175);
@@ -51,7 +56,7 @@ class SGNode {
 
 	/** When SGNode pressed, begin dragging */
 	pressed() {
-		if(mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+		if (this.isMouseHover()) {
 			this.dragging = true;
 			this.offsetX = this.x - mouseX;
 			this.offsetY = this.y - mouseY;
@@ -62,5 +67,13 @@ class SGNode {
 	/** When SGNode released, stop dragging */
 	released() {
 		this.dragging = false;
+	}
+
+	createLink(callback) {
+		if (this.isMouseHover()) {
+			let newLink = new SGLink(this, new SGNode(mouseX, mouseY, 0, 0));
+			newLink.type = 'dynamic';
+			callback(newLink);
+		}
 	}
 }

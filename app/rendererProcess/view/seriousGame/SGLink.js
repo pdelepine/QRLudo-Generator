@@ -13,8 +13,17 @@ class SGLink {
 		};
 	}
 
+	/** Type can be 'static' or 'dynamic' */
+	setType(type) {
+		this.type = type;
+	}
+
 	/** Draw the link */
 	display() {
+		if(this.type === 'dynamic') {
+			this.node2.x = mouseX - translateX;
+			this.node2.y = mouseY;
+		}
 		if(this.isMouseHover()) {
 			this.flags.hover = true;
 		} else {
@@ -59,8 +68,8 @@ class SGLink {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		const d1 = dist(this.node1.x + (this.node1.w / 2), this.node1.y + (this.node1.h / 2), mouseX, mouseY);
-		const d2 = dist(this.node2.x + (this.node2.w / 2), this.node2.y + (this.node2.h / 2), mouseX, mouseY);
+		const d1 = dist(this.node1.x + (this.node1.w / 2), this.node1.y + (this.node1.h / 2), mouseX - translateX, mouseY);
+		const d2 = dist(this.node2.x + (this.node2.w / 2), this.node2.y + (this.node2.h / 2), mouseX - translateX, mouseY);
 
 		if(this.node1.isMouseHover() || this.node2.isMouseHover()) return false;
 
