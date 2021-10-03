@@ -43,6 +43,18 @@ $("#unique-info").on('click',function(){
   $("#info-Import").css("display","none");
 });
 
+//test la connexion internet pour la vidéo explicative de Unique
+$("#buttonAffichageVideoUnique").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
+});
+
 $("#multiple-info").on('click',function(){
   logger.info("Demande d'informations sur Multiple");
   $("#info-unique").css("display","none");
@@ -51,8 +63,21 @@ $("#multiple-info").on('click',function(){
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
   $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none");
+  $("#info-Import").css("display","none"); 
 });
+
+//test la connexion internet pour la vidéo explicative de Multiple
+$("#buttonAffichageVideoMultiple").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
+});
+
 
 $("#exo-qrcode-info").on('click',function(){
   logger.info("Demande d'informations sur Exercice - QR Code");
@@ -63,6 +88,18 @@ $("#exo-qrcode-info").on('click',function(){
   $("#info-serious-game").css("display", "none");
   $("#info-MusicInput").css("display","none");
   $("#info-Import").css("display","none");
+});
+
+//test la connexion internet pour la vidéo explicative de Exercice - QR Code
+$("#buttonAffichageVideoExercice").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
 });
 
 $("#exo-reco-vocale-info").on('click',function(){
@@ -76,6 +113,30 @@ $("#exo-reco-vocale-info").on('click',function(){
   $("#info-Import").css("display","none");
 });
 
+//test la connexion internet pour la vidéo explicative de Question Ouverte
+$("#buttonAffichageVideoQuestionOuverte").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
+});
+
+//test la connexion internet pour la vidéo explicative de QCM
+$("#buttonAffichageVideoQCM").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
+});
+
 $("#serious-game-info").on('click',function(){
   logger.info("Demande d'informations sur Serious Game");
   $("#info-unique").css("display","none");
@@ -85,6 +146,18 @@ $("#serious-game-info").on('click',function(){
   $("#info-serious-game").css("display", "block");
   $("#info-MusicInput").css("display","none");
   $("#info-Import").css("display","none");
+});
+
+//test la connexion internet pour la vidéo explicative de Serious Game
+$("#buttonAffichageVideoSeriousGame").on('click',function(){
+  /** Check internet connection */
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas charger la vidéo sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
 });
 
 $("#music-info").on('click',function(){

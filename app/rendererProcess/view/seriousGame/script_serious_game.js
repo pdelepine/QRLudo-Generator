@@ -1,20 +1,54 @@
+const { Logger } = require('log4js');
+
 var projetSeriousGame = new ProjetSeriousGame();
 
 var audioSource = "";
 
 $("#addAudioIntro").on('click', function () {
-  audioSource = "intro";
+  /** Check internet connection du bouton audio intro*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    audioSource = "intro";
+  }
 });
 $("#addAudioFin").on('click', function () {
-  audioSource = "fin";
+  /** Check internet connection du bouton audio fin*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécherger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    audioSource = "fin";
+  }
 });
 function addAudioQRCode(idEnigme) {
-  currentEnigme = idEnigme;
-  audioSource = "qrcode";
+  /** Check internet connection du bouton audio dans scan de QR code*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécherger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    currentEnigme = idEnigme;
+    audioSource = "qrcode";
+  }
 };
 function addAudioReco(idEnigme) {
-  currentEnigme = idEnigme;
-  audioSource = "vocale";
+  /** Check internet connection du bouton audio dans reconnaissance vocale*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécherger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    currentEnigme = idEnigme;
+    audioSource = "vocale";
+  }
 };
 
 /** Fonction pour ajouter un fichier audio */
@@ -132,7 +166,6 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-
   // Gestion de la continuité
   enregistrement();
 

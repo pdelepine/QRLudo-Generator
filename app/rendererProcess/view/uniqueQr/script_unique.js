@@ -23,7 +23,7 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-
+  
 
   // desactiver les boutons s'il y a rien à lire ou generer
   if(document.getElementById('qrName') !== null){
@@ -617,4 +617,15 @@ function disableButtonAddNewData() {
 $("#infos-unique").on('click',function () {
   require('electron').remote.getGlobal('sharedObject').ongletAideActif = 'unique'
   $("#charger-page").load(root + "/rendererProcess/view/aide/info.html");
+});
+
+$("#showAudio").on('click',function(){
+  /** Check internet connection du bouton audio*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+  }
 });
