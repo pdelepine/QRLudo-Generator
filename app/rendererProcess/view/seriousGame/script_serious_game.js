@@ -35,7 +35,9 @@ function setup() {
 function draw() {
 	background("#DAE4E4");
 	palette();
-	
+	console.log(`Mouse x ${mouseX} y ${mouseY}`);
+	console.log(`Zoom ${zoom}`);
+
 	translate(translateX, 0);
 	scale(zoom);
 
@@ -60,6 +62,7 @@ function createNode() {
 }
 
 function mousePressed() {
+
 	if (mouseButton === LEFT) {
 		for (let n of nodeArray) {
 			/** Search first node of the array which hovered by the mouse and push it to last position to become the last drawn and be dragged
@@ -116,7 +119,7 @@ function mouseWheel(event) {
 }
 
 function doubleClicked(mouseEvent) {
-	
+
 	if (mouseEvent.button === 0) {
 
 		/** If a node is double left-clicked, delete him and all the link attach to him  */

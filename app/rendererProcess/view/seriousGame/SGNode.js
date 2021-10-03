@@ -21,19 +21,21 @@ class SGNode {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		return (mouseX - translateX > this.x && mouseX - translateX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h);
+		return (mouseX - translateX > this.x * zoom && mouseX - translateX < this.x * zoom + this.w * zoom && mouseY > this.y * zoom && mouseY < this.y * zoom + this.h * zoom);
 	}
 
 	/** Updating SGNode coordinates */
 	update() {
 		if (this.dragging) {
-			if (mouseX + this.offsetX < 0) {
+			console.log(`x * zoom ${this.x * zoom}`);
+			if (mouseX - translateX + this.offsetX < 0) {
 				this.x = 0;
 			} else {
-				this.x = mouseX + this.offsetX;
+				this.x = ((mouseX - translateX)  + this.offsetX ) / zoom;
 			}
-			this.y = mouseY + this.offsetY;
-			console.log(`Node x ${this.x} y ${this.y}`);
+			this.y = (mouseY + this.offsetY) / zoom;
+			console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
+			console.log(`-- Node x ${this.x} y ${this.y}`);
 		}
 	}
 
@@ -58,8 +60,8 @@ class SGNode {
 	pressed() {
 		if (this.isMouseHover()) {
 			this.dragging = true;
-			this.offsetX = this.x - mouseX;
-			this.offsetY = this.y - mouseY;
+			this.offsetX = this.x * zoom - (mouseX - translateX);
+			this.offsetY = this.y * zoom - mouseY;
 			return true;
 		}
 	}

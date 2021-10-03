@@ -21,8 +21,8 @@ class SGLink {
 	/** Draw the link */
 	display() {
 		if(this.type === 'dynamic') {
-			this.node2.x = mouseX - translateX;
-			this.node2.y = mouseY;
+			this.node2.x = (mouseX - translateX) / zoom;
+			this.node2.y = mouseY / zoom;
 		}
 		if(this.isMouseHover()) {
 			this.flags.hover = true;
@@ -44,7 +44,11 @@ class SGLink {
 		if(this.flags.dragging) {
 			fill(100, 255, 255);
 		}
-		line(this.node1.x + (this.node1.w / 2), this.node1.y + (this.node1.h / 2), this.node2.x + (this.node2.w / 2), this.node2.y + (this.node2.h / 2));
+		const x1 = this.node1.x + (this.node1.w / 2);
+		const y1 = this.node1.y + (this.node1.h / 2);
+		const x2 = this.node2.x + (this.node2.w / 2);
+		const y2 = this.node2.y + (this.node2.h / 2);
+		line(x1, y1, x2, y2);
 		pop();
 	}
 
@@ -52,10 +56,12 @@ class SGLink {
 		const nearestPt = this.#cast();
 		if(nearestPt){
 			push();
+			strokeWeight(5);
 			if(this.flags.hover) {
 				stroke(200, 0, 0);
+				strokeWeight(8);
 			}
-			strokeWeight(5);
+			
 			translate(nearestPt.x, nearestPt.y);
 			const x = (this.node2.x + (this.node2.w / 2)) - (this.node1.x + (this.node1.w / 2));
 			const y = (this.node2.y + (this.node2.h / 2)) - (this.node1.y + (this.node1.h / 2));
@@ -68,13 +74,17 @@ class SGLink {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		const d1 = dist(this.node1.x + (this.node1.w / 2), this.node1.y + (this.node1.h / 2), mouseX - translateX, mouseY);
-		const d2 = dist(this.node2.x + (this.node2.w / 2), this.node2.y + (this.node2.h / 2), mouseX - translateX, mouseY);
+		const x1 = (this.node1.x + (this.node1.w / 2)) * zoom;
+		const y1 = (this.node1.y + (this.node1.h / 2)) * zoom;
+		const x2 = (this.node2.x + (this.node2.w / 2)) * zoom;
+		const y2 = (this.node2.y + (this.node2.h / 2)) * zoom;
+
+		const d1 = dist(x1, y1, mouseX - translateX, mouseY);
+		const d2 = dist(x2, y2, mouseX - translateX, mouseY);
 
 		if(this.node1.isMouseHover() || this.node2.isMouseHover()) return false;
 
-		const length = dist(this.node1.x + (this.node1.w / 2), this.node1.y + (this.node1.h / 2),
-			this.node2.x + (this.node2.w / 2), this.node2.y + (this.node2.h / 2));
+		const length = dist(x1, y1,	x2, y2);
 
 		const cond1 = (d1 + d2) - 0.5 <= length;
 		const cond2 = (d1 + d2) + 0.5 >= length;
