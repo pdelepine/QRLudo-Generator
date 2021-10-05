@@ -88,67 +88,6 @@
                     </div>
                     <!--fin de la question 1-->
                     <br>
-                    <!--début question 2-->
-                    <div class="question">
-                      <!--<div class="question-intro" data-toggle="collapse" href="#collapseReponses1" role="button" aria-expanded="false" aria-controls="collapseReponses1">-->
-                        <div class="question-intro">
-                        <div class="row"> 
-                          <label class="control-label" data-toggle="collapse" data-target="#collapseReponses2" aria-expanded="false" aria-controls="collapseReponses" style="color:#28a745;padding-right:32px;">Question 2 : </label>
-                          <input type="text" class="form-control input-lg" style="width:400px;"  id="QuestionQCM" cols="10" name="nomprojet"
-                                  placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
-                          <button class="btn btn-outline-success align-self-center btn-question" type="button" data-toggle="collapse" data-target="#collapseReponses2" aria-expanded="false" aria-controls="collapseReponses">
-                              <i class="fa fa-chevron-up pull-right"></i>
-                              <i class="fa fa-chevron-down pull-right"></i>
-                          </button>
-                          <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                          
-                          </div>
-                      </div>
-                      <div class="collapse" id="collapseReponses2">
-                        <br>
-                        <div class="form-row">
-                            <div class="form-group col-md-10" style="text-align: right;">
-                                <label>Bonne(s) réponse(s)</label>
-                            </div>
-                        </div>
-                        <div class="form-row" id="divQuestion2">
-                          <div class="form-group col-md-3">
-                              <label class="control-label">Réponse 1 :</label>
-                          </div>
-                          <div class="form-group col-md-6">
-                            <span class="row">
-                              <input type="text" class="form-control col-sm-6" id="reponseinitiale" rows="2" name="nomprojet"
-                                                placeholder="Réponse" onkeyup="activerSave('reponseinitiale');" />
-                              <i class="fas fa-info-circle mt-2 ml-2" 
-                                            title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                            data-toggle="tooltip" data-placement="right"></i>
-                            </span>
-                          </div>
-                          <div class="form-group col-md-2">
-                            <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheck1" style="width:70px;" 
-                                  value="option" onclick="activerSaveCheckbox('gridCheck1');">
-                            <label class="form-check-label" for="gridCheck1">
-                          </div>
-                          <div class="form-group col-md-1">
-                            <button id="deleteQRCode1" type="button" class="btn btn-outline-success align-self-center" onclick="supprLigne(1,'Reponse');">
-                              <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                          </div>
-                        </div>
-                        <div id="repContainer"></div>
-                        <div class="form-group col-md-6">
-                          <label style="color:#a5b2af;">Ajouter une réponse</label>
-                          <button id="ajouterQuestion" type="button"
-                              class="btn btn-outline-success align-self-center" style="color:#a5b2af;" name="ajouterQuestion">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <!--fin de la question 2-->
-                    <br>
                     <!--ajout d'une question-->
                     <div class="form-group col-md-6">
                       <label style="color:#a5b2af;">Ajouter une question</label>
