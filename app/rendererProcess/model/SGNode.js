@@ -21,10 +21,10 @@ class SGNode {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		const cond1 = mouseX - translateX > this.x * zoom;
-		const cond2 = mouseX - translateX < this.x * zoom + this.w * zoom;
-		const cond3 = mouseY - translateY > this.y * zoom;
-		const cond4 = mouseY - translateY < this.y * zoom + this.h * zoom;
+		const cond1 = myP5.mouseX - myP5.translateX > this.x * myP5.zoom;
+		const cond2 = myP5.mouseX - myP5.translateX < this.x * myP5.zoom + this.w * myP5.zoom;
+		const cond3 = myP5.mouseY - myP5.translateY > this.y * myP5.zoom;
+		const cond4 = myP5.mouseY - myP5.translateY < this.y * myP5.zoom + this.h * myP5.zoom;
 
 		return (cond1 && cond2 && cond3 && cond4);
 	}
@@ -32,10 +32,10 @@ class SGNode {
 	/** Updating SGNode coordinates */
 	update() {
 		if (this.dragging) {
-			console.log(`x * zoom ${this.x * zoom}`);
-			console.log(`Deplacement X ${mouseX - translateX + this.offsetX}`);
-			this.x = ((mouseX - translateX)  + this.offsetX ) / zoom;
-			this.y = ((mouseY - translateY) + this.offsetY) / zoom;
+			console.log(`x * zoom ${this.x * myP5.zoom}`);
+			console.log(`Deplacement X ${myP5.mouseX - myP5.translateX + this.offsetX}`);
+			this.x = ((myP5.mouseX - myP5.translateX)  + this.offsetX ) / myP5.zoom;
+			this.y = ((myP5.mouseY - myP5.translateY) + this.offsetY) / myP5.zoom;
 			console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
 			console.log(`-- Node x ${this.x} y ${this.y}`);
 		}
@@ -43,27 +43,27 @@ class SGNode {
 
 	/** Draw the node */
 	display() {
-		push();
-		stroke(0);
+		myP5.push();
+		myP5.stroke(0);
 		if (this.dragging)
-			fill(80);
+			myP5.fill(80);
 		else if (this.isMouseHover())
-			fill(100);
+			myP5.fill(100);
 		else
-			fill(175);
-		rect(this.x, this.y, this.w, this.h, 5, 5);
-		fill(0);
-		noStroke();
-		text("Question :", this.x + 20, this.y + 20);
-		pop();
+			myP5.fill(175);
+		myP5.rect(this.x, this.y, this.w, this.h, 5, 5);
+		myP5.fill(0);
+		myP5.noStroke();
+		myP5.text("Question :", this.x + 20, this.y + 20);
+		myP5.pop();
 	}
 
 	/** When SGNode pressed, begin dragging */
 	pressed() {
 		if (this.isMouseHover()) {
 			this.dragging = true;
-			this.offsetX = this.x * zoom - (mouseX - translateX);
-			this.offsetY = this.y * zoom - (mouseY - translateY);
+			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
+			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
 			return true;
 		}
 	}
@@ -75,7 +75,7 @@ class SGNode {
 
 	createLink(callback) {
 		if (this.isMouseHover()) {
-			let newLink = new SGLink(this, new SGNode(mouseX, mouseY, 0, 0));
+			let newLink = new SGLink(this, new SGNode(myP5.mouseX, myP5.mouseY, 0, 0));
 			newLink.type = 'dynamic';
 			callback(newLink);
 		}

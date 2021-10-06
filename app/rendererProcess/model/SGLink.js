@@ -22,8 +22,8 @@ class SGLink {
 	/** Draw the link */
 	display() {
 		if(this.type === 'dynamic') {
-			this.node2.x = (mouseX - translateX) / zoom;
-			this.node2.y = (mouseY - translateY) / zoom;
+			this.node2.x = (myP5.mouseX - myP5.translateX) / myP5.zoom;
+			this.node2.y = (myP5.mouseY - myP5.translateY) / myP5.zoom;
 		}
 		if(this.isMouseHover()) {
 			this.flags.hover = true;
@@ -35,12 +35,12 @@ class SGLink {
 	}
 
 	displayLine() {
-		push();
-		stroke(0);
-		strokeWeight(2);
+		myP5.push();
+		myP5.stroke(0);
+		myP5.strokeWeight(2);
 		if(this.flags.hover) {
-			stroke(200, 0, 0);
-			strokeWeight(3);
+			myP5.stroke(200, 0, 0);
+			myP5.strokeWeight(3);
 		}
 		if(this.flags.dragging) {
 			fill(100, 255, 255);
@@ -49,43 +49,43 @@ class SGLink {
 		const y1 = this.node1.y + (this.node1.h / 2);
 		const x2 = this.node2.x + (this.node2.w / 2);
 		const y2 = this.node2.y + (this.node2.h / 2);
-		line(x1, y1, x2, y2);
-		pop();
+		myP5.line(x1, y1, x2, y2);
+		myP5.pop();
 	}
 
 	displayArrowHead(){
 		const nearestPt = this.#cast();
 		if(nearestPt){
-			push();
-			strokeWeight(5);
+			myP5.push();
+			myP5.strokeWeight(5);
 			if(this.flags.hover) {
-				stroke(200, 0, 0);
-				strokeWeight(8);
+				myP5.stroke(200, 0, 0);
+				myP5.strokeWeight(8);
 			}
 			
-			translate(nearestPt.x, nearestPt.y);
+			myP5.translate(nearestPt.x, nearestPt.y);
 			const x = (this.node2.x + (this.node2.w / 2)) - (this.node1.x + (this.node1.w / 2));
 			const y = (this.node2.y + (this.node2.h / 2)) - (this.node1.y + (this.node1.h / 2));
-			const dir = createVector(x,y);
-			rotate(dir.heading());
-			triangle(-15, -2, -15, 2, -7, 0);
-			pop();
+			const dir = myP5.createVector(x,y);
+			myP5.rotate(dir.heading());
+			myP5.triangle(-15, -2, -15, 2, -7, 0);
+			myP5.pop();
 		}
 	}
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		const x1 = (this.node1.x + (this.node1.w / 2)) * zoom;
-		const y1 = (this.node1.y + (this.node1.h / 2)) * zoom;
-		const x2 = (this.node2.x + (this.node2.w / 2)) * zoom;
-		const y2 = (this.node2.y + (this.node2.h / 2)) * zoom;
+		const x1 = (this.node1.x + (this.node1.w / 2)) * myP5.zoom;
+		const y1 = (this.node1.y + (this.node1.h / 2)) * myP5.zoom;
+		const x2 = (this.node2.x + (this.node2.w / 2)) * myP5.zoom;
+		const y2 = (this.node2.y + (this.node2.h / 2)) * myP5.zoom;
 
-		const d1 = dist(x1, y1, mouseX - translateX, mouseY - translateY);
-		const d2 = dist(x2, y2, mouseX - translateX, mouseY - translateY);
+		const d1 = myP5.dist(x1, y1, myP5.mouseX - myP5.translateX, myP5.mouseY - myP5.translateY);
+		const d2 = myP5.dist(x2, y2, myP5.mouseX - myP5.translateX, myP5.mouseY - myP5.translateY);
 
 		if(this.node1.isMouseHover() || this.node2.isMouseHover()) return false;
 
-		const length = dist(x1, y1,	x2, y2);
+		const length = myP5.dist(x1, y1,	x2, y2);
 
 		const cond1 = (d1 + d2) - 0.5 <= length;
 		const cond2 = (d1 + d2) + 0.5 >= length;
@@ -124,7 +124,7 @@ class SGLink {
 		let t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
 		let u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 		if(t > 0 && t < 1 && u > 0) {
-			const pt = createVector();
+			const pt = myP5.createVector();
 			pt.x = x1 + t * (x2 - x1);
 			pt.y = y1 + t * (y2 - y1);
 			arrayPt.push(pt);
@@ -143,7 +143,7 @@ class SGLink {
 		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
 		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 		if(t > 0 && t < 1 && u > 0) {
-			const pt = createVector();
+			const pt = myP5.createVector();
 			pt.x = x1 + t * (x2 - x1);
 			pt.y = y1 + t * (y2 - y1);
 			arrayPt.push(pt);
@@ -161,7 +161,7 @@ class SGLink {
 		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
 		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 		if(t > 0 && t < 1 && u > 0) {
-			const pt = createVector();
+			const pt = myP5.createVector();
 			pt.x = x1 + t * (x2 - x1);
 			pt.y = y1 + t * (y2 - y1);
 			arrayPt.push(pt);
@@ -179,7 +179,7 @@ class SGLink {
 		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
 		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 		if(t > 0 && t < 1 && u > 0) {
-			const pt = createVector();
+			const pt = myP5.createVector();
 			pt.x = x1 + t * (x2 - x1);
 			pt.y = y1 + t * (y2 - y1);
 			arrayPt.push(pt);
@@ -188,7 +188,7 @@ class SGLink {
 		let min = 100000;
 		let nearestPt = null;
 		for(let pt of arrayPt){
-			const ptDist = dist(x3, y3, pt.x, pt.y);
+			const ptDist = myP5.dist(x3, y3, pt.x, pt.y);
 			if(ptDist < min){
 				min = ptDist;
 				nearestPt = pt;
