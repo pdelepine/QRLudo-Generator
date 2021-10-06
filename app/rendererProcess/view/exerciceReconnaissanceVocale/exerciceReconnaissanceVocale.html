@@ -23,79 +23,102 @@
           </nav>
           <div class="tab-content">
             <div class="mt-2" id="messages"></div>
-
+              <!--début onglet QCM-->
              <div class="tab-pane" id="onglet-QCM">
-                <div id="newProject" class="tab-pane fade in active show" role="tabpanel">
+                <div id="newProject" class="tab-content scrollbar-success  " role="tabpanel" style="height:500px; overflow-y: scroll; margin-top:15px;">
                   <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-lg-6 form-inline">
-                        <label class="control-label" style="color:#28a745;padding-right:32px;">Question :
-                            </label>
-                            <input type="text" class="form-control input-lg" style="width:450px;"  id="QuestionQCM" cols="10" name="nomprojet"
-                                placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
-                      </div>
-
-                      <div class="col-lg-6 mt-5">
-                          <div class="form-group form-inline">
-                              <input type="checkbox" form="label2" id="reponseParIdentifiant" class="form-control" onclick="activerSaveCheckbox('reponseParIdentifiant');">
-                              <label id="label2" class="ml-3">Utiliser le numéro de la réponse comme réponse vocale</label>
-                          </div>
+                    <!--début question 1-->
+                    <div class="question">
+                      <!--<div class="question-intro" data-toggle="collapse" href="#collapseReponses1" role="button" aria-expanded="false" aria-controls="collapseReponses1">-->
+                        <div class="question-intro">
+                        <div class="row"> 
+                          <label class="control-label" data-toggle="collapse" data-target="#collapseReponses1" aria-expanded="false" aria-controls="collapseReponses" style="color:#28a745;padding-right:32px;">Question 1 : </label>
+                          <input type="text" class="form-control input-lg" style="width:400px;"  id="QuestionQCM" cols="10" name="nomprojet"
+                                  placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
+                          <button class="btn btn-outline-success align-self-center btn-question" type="button" data-toggle="collapse" data-target="#collapseReponses1" aria-expanded="false" aria-controls="#collapseReponses1" id="testcollapse">
+                            <i class="fa fa-chevron-up pull-right"></i>
+                            <i class="fa fa-chevron-down pull-right"></i>
+                          </button>
+                          <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                          </button>
+                          
                         </div>
-                               </div>
-                               <br>
-                              <div class="form-row">
-                                <div class="form-group col-md-10" style="text-align: right;">
-                               <label>Bonne(s) réponse(s)</label>
-                               </div>
-                              </div>
-                              <div class="form-row" id="divQuestion1">
-                                  <div class="form-group col-md-3">
-                                      <label class="control-label">Réponse 1 :</label>
-                                  </div>
-                                  <div class="form-group col-md-6">
-                                    <span class="row">
-                                      <input type="text" class="form-control col-sm-6" id="reponseinitiale" rows="2" name="nomprojet"
-                                            placeholder="Réponse" onkeyup="activerSave('reponseinitiale');" />
-                                      <i class="fas fa-info-circle mt-2 ml-2" 
-                                        title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                        data-toggle="tooltip" data-placement="right"></i>
-                                    </span>
-                                  </div>
-                                  <div class="form-group col-md-2">
-                                    <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheck1" style="width:70px;" 
-                                      value="option" onclick="activerSaveCheckbox('gridCheck1');">
-                                        <label class="form-check-label" for="gridCheck1">
-                                  </div>
-                              </div>
-                              <div id="repContainer"></div>
-                              <div class="form-group col-md-6">
-                                  <label style="color:#a5b2af;">Ajouter une réponse</label>
-                                  <button id="ajouterQuestion" type="button"
-                                    class="btn btn-outline-success align-self-center" style="color:#a5b2af;" name="ajouterQuestion">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
-                                </div>
-
-                               <form>
-                                <br>
-                                <br>
-                              <div class="form-group row">
-                                <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de bonne réponse :</label>
-                                <div class="col-sm-8">
-                                  <input type="text" class="form-control" id="MessageBonnereponseQCM" placeholder="Bravo !" onkeyup="activerSave('MessageBonnereponseQCM');">
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                 <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de mauvaise réponse :</label>
-                                <div class="col-sm-8">
-                                  <input type="text" class="form-control" id="MessageMauvaisereponseQCM" placeholder="Dommage !" onkeyup="activerSave('MessageMauvaisereponseQCM');">
-                                </div>
-                              </div>
-                            </form>
+                      </div>
+                      <div class="collapse" id="collapseReponses1">
+                        <br>
+                        <div class="form-row">
+                            <div class="form-group col-md-10" style="text-align: right;">
+                                <label>Bonne(s) réponse(s)</label>
                             </div>
                         </div>
+                        <div class="form-row" id="divQuestion1">
+                          <div class="form-group col-md-3">
+                              <label class="control-label">Réponse 1 :</label>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <span class="row">
+                              <input type="text" class="form-control col-sm-6" id="reponseinitiale" rows="2" name="nomprojet"
+                                                placeholder="Réponse" onkeyup="activerSave('reponseinitiale');" />
+                              <i class="fas fa-info-circle mt-2 ml-2" 
+                                            title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
+                                            data-toggle="tooltip" data-placement="right"></i>
+                            </span>
+                          </div>
+                          <div class="form-group col-md-2">
+                            <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheck1" style="width:70px;" 
+                                  value="option" onclick="activerSaveCheckbox('gridCheck1');">
+                            <label class="form-check-label" for="gridCheck1">
+                          </div>
+                          <div class="form-group col-md-1">
+                            <button id="deleteQRCode1" type="button" class="btn btn-outline-success align-self-center" onclick="supprLigne(1,'Reponse');">
+                              <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div id="repContainer"></div>
+                        <div class="form-group col-md-6">
+                          <label style="color:#a5b2af;">Ajouter une réponse</label>
+                          <button id="ajouterQuestion" type="button"
+                              class="btn btn-outline-success align-self-center" style="color:#a5b2af;" name="ajouterQuestion">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <!--fin de la question 1-->
+                    <br>
+                    <!--ajout d'une question-->
+                    <div class="form-group col-md-6">
+                      <label style="color:#a5b2af;">Ajouter une question</label>
+                      <button id="ajouterQuestion" type="button"
+                          class="btn btn-outline-success align-self-center" style="color:#a5b2af;" name="ajouterQuestion">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+
+                              
+                                <br>
+                                <br>
+                                <div class="form-group row">
+                                  <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de bonne réponse :</label>
+                                  <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="MessageBonnereponseQCM" placeholder="Bravo !" onkeyup="activerSave('MessageBonnereponseQCM');">
+                                  </div>
+                                </div>
+                                <div class="form-group row">
+                                  <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de mauvaise réponse :</label>
+                                  <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="MessageMauvaisereponseQCM" placeholder="Dommage !" onkeyup="activerSave('MessageMauvaisereponseQCM');">
+                                  </div>
+                                </div>
+                        </div>
+                      </div>
                         
                     </div>
+                    <!--fin onglet QCM-->
+
+                    <!--début onglet Question-->
                     <div class="tab-pane" id="onglet-QuesOuverte">
                      
                       <br>
@@ -131,9 +154,11 @@
                                 </div>
                               </div> 
                     </div>
-                  </div>
-                </div>
-     </form>
+                    <!--fin onglet Question-->
+          </div>
+        </div>
+
+    </form>
      <div class="card-footer form-inline">
           <div class="card col-md-auto">
             <button style="margin-top:10px" type="reset" class="btn btn-outline-success btn-unique-xl" data-toggle="modal" id="emptyZones" data-target="#confirmation">

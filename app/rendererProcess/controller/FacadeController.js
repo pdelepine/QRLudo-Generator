@@ -20,13 +20,7 @@
 class FacadeController {
 
   constructor() {
-    //this.compresseurXml = new CompresseurTexte();
-    this.imageGenerator = new ImageGenerator(this.compresseurXml);
-    // this.imageGenerator = new ImageGenerator();
   }
-
-
-
 
   /** Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre */
   genererQRCode(divImg, qrcode) {
@@ -34,7 +28,7 @@ class FacadeController {
       while (divImg.hasChildNodes()) {
         divImg.removeChild(divImg.firstChild);
       }
-      
+
       switch (qrcode.qrcode.type) {
         case "unique":
           qrcode.qrcode.version = '3';
@@ -50,29 +44,27 @@ class FacadeController {
           break;
         case "ExerciceReconnaissanceVocaleQCM":
           qrcode.qrcode.version = '4';
-         break;
+          break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
-        break;
-        case "SeriousGameScenario" :
+          break;
+        case "SeriousGameScenario":
           qrcode.qrcode.version = '4';
           break;
       }
 
-      console.log(`FacadeController.genererQRCode : qrcode.type\n ${ qrcode.qrcode.type }`);
-      let args = [qrcode, divImg];
-
-      if (qrcode.getDataString().length > 117) {
-        JsonCompressor.compress(qrcode.getDataString(), ImageGeneratorJson.genererQRCode, args);
-      } else {
-        args.push(qrcode.getDataString());
-        ImageGeneratorJson.genererQRCode(args);
-      }
+      /** Génération du QRcode dans la div en paramètre */
+      QRCodeGenerator.toDataURL("image/png", { errorCorrectionLevel: 'L', margin: 0 }, function (err, url) {
+        if (err) logger.error('Erreur lors de la prévisualisation du QRCode');
+        let image = new Image();
+        image.src = url;
+        $(divImg).prepend(image);
+        logger.info(`Prévisualisation du QR code ${ qrcode.qrcode.type } réussi`);
+      });
 
       $('#saveQRCode, #listenField').attr('disabled', false);
-
     } catch (e) {
-      console.log(e);
+      logger.error('Problème fans la fonction genererQRCode du FacadeController');
     }
   }
 
@@ -81,7 +73,6 @@ class FacadeController {
     while (divImg.hasChildNodes()) {
       divImg.removeChild(divImg.firstChild);
     }
-    this.imageGenerator.genererImageFamilleQRCode(tableauQRCodes, divImg);
   }
 
   /** Fonction appelée pour importer un qrcode json */

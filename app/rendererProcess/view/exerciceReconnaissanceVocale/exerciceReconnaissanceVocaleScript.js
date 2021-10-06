@@ -157,7 +157,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
                             <div class="form-group col-md-1">
                                 <button id="deleteQRCode`+ compteurReponse + `" type="button"
                                     class="btn btn-outline-success align-self-center" onclick="supprLigne(` + compteurReponse + ",\'" + type + `\');">
-                                    <i class="fa fa-trash"></i></button>
+                                    <i class="fa fa-times" aria-hidden="true"></i>
                                     </div>
                             </div>`;
 
@@ -176,30 +176,32 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
 //Pour supprimer une énigme ou bien une réponse 
 function supprLigne(idLigne, element) {
   if (element == "Reponse") {
-    compteurReponse--;
-    logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
-    store.set("nbReponse",compteurReponse);
-    $("#divQuestion" + idLigne).on('click', function() {
-      $(this).remove();
-      for(let cpt = idLigne; cpt <= compteurReponse; cpt++) {
-        let id = cpt+1;
-        let div = $("#divQuestion" + id)[0].getElementsByTagName("div");
-        div[0].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt + " :";
-        div[2].getElementsByTagName("input")[0].id = "gridCheck" + cpt;
-        div[2].getElementsByTagName("label")[0].for = "gridCheck" + cpt;
-        div[1].getElementsByTagName("input")[0].id = "reponse" + cpt;
-        div[3].getElementsByTagName("button")[0].id = "deleteQRCode" + cpt;
-        div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne(" + cpt + ",\'" + element +"\')");
-        $("#divQuestion" + id)[0].id = "divQuestion" + cpt;
+    if(compteurReponse>1){
+      compteurReponse--;
+      logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
+      store.set("nbReponse",compteurReponse);
+      $("#divQuestion" + idLigne).on('click', function() {
+        $(this).remove();
+        for(let cpt = idLigne; cpt <= compteurReponse; cpt++) {
+          let id = cpt+1;
+          let div = $("#divQuestion" + id)[0].getElementsByTagName("div");
+          div[0].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt + " :";
+          div[2].getElementsByTagName("input")[0].id = "gridCheck" + cpt;
+          div[2].getElementsByTagName("label")[0].for = "gridCheck" + cpt;
+          div[1].getElementsByTagName("input")[0].id = "reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].id = "deleteQRCode" + cpt;
+          div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne(" + cpt + ",\'" + element +"\')");
+          $("#divQuestion" + id)[0].id = "divQuestion" + cpt;
 
-        if(store.get(`reponse${id}`) && store.get(`gridCheck${id}`)) {
-          store.set(`reponse${cpt}`, store.get(`reponse${id}`));
-          store.set(`gridCheck${cpt}`, store.get(`gridCheck${id}`));
+          if(store.get(`reponse${id}`) && store.get(`gridCheck${id}`)) {
+            store.set(`reponse${cpt}`, store.get(`reponse${id}`));
+            store.set(`gridCheck${cpt}`, store.get(`gridCheck${id}`));
+          }
         }
-      }
-    });
-    deleteStore("reponse"+compteurReponse+1);
-    deleteStore("gridCheck"+compteurReponse+1)
+      });
+      deleteStore("reponse"+compteurReponse+1);
+      deleteStore("gridCheck"+compteurReponse+1)
+    }
   }
 }
 
