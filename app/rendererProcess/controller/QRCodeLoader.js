@@ -99,14 +99,12 @@ class QRCodeLoader {
     if (!qrxml){
       throw "L'image est invalide (xml incorrect)";
     }
-      
-
 
     var nomPremierNoeud = qrxml.firstChild.nodeName;
 
     if (nomPremierNoeud == "qrcode") {
       return QRCodeLoader.__creerQRCode(qrxml.firstChild);
-    } 
+    }
 
   }
 

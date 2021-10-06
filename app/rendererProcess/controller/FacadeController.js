@@ -22,9 +22,6 @@ class FacadeController {
   constructor() {
   }
 
-
-
-
   /** Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre */
   genererQRCode(divImg, qrcode) {
     try {
