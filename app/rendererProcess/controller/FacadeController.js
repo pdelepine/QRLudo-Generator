@@ -39,7 +39,7 @@ class FacadeController {
       while (divImg.hasChildNodes()) {
         divImg.removeChild(divImg.firstChild);
       }
-      
+
       switch (qrcode.qrcode.type) {
         case "unique":
           qrcode.qrcode.version = '3';
@@ -58,33 +58,27 @@ class FacadeController {
           break;
         case "ExerciceReconnaissanceVocaleQCM":
           qrcode.qrcode.version = '4';
-         break;
+          break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
-        break;
-        case "SeriousGameScenario" :
+          break;
+        case "SeriousGameScenario":
           qrcode.qrcode.version = '4';
           break;
       }
 
-      console.log(`FacadeController.genererQRCode : qrcode.type\n ${ qrcode.qrcode.type }`);
-
-      //Génération du QRcode dans la div
-      try{
-        QRCodeGenerator.toDataURL("image/png",function(err,url){
-          let image = new Image();
-          image.src = url;
-          $(divImg).prepend(image);
-        });
-      }catch(e1){
-        console.log(e1);
-      }
-
+      /** Génération du QRcode dans la div en paramètre */
+      QRCodeGenerator.toDataURL("image/png", { errorCorrectionLevel: 'L', margin: 0 }, function (err, url) {
+        if (err) logger.error('Erreur lors de la prévisualisation du QRCode');
+        let image = new Image();
+        image.src = url;
+        $(divImg).prepend(image);
+        logger.info(`Prévisualisation du QR code ${ qrcode.qrcode.type } réussi`);
+      });
 
       $('#saveQRCode, #listenField').attr('disabled', false);
-
     } catch (e) {
-      console.log(e);
+      logger.error('Problème fans la fonction genererQRCode du FacadeController');
     }
   }
 
