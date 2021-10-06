@@ -137,14 +137,9 @@ const { QRCodeLoaderJson } = require(`${root}/rendererProcess/controller/QRCodeL
  * On charge les modèle de données 
  */
 
-const { DictionnaireXml } = require(`${root}/rendererProcess/model/DictionnaireXml`);
 const { Music } = require(`${root}/rendererProcess/model/Music`);
-const { QRCode } = require(`${root}/rendererProcess/model/QRCode`);
-const { QRCodeAtomique } = require(`${root}/rendererProcess/model/QRCodeAtomique`);
-const { QRCodeMultiple } = require(`${root}/rendererProcess/model/QRCodeMultiple`);
 const { QRCodeMultipleJson } = require(`${root}/rendererProcess/model/QRCodeMultipleJson`);
-const { QRCodeUnique,
-  QRCodeXL } = require(`${root}/rendererProcess/model/QRCodeJson`);
+const { QRCodeUnique } = require(`${root}/rendererProcess/model/QRCodeUnique`);
 
 const { QRCodeXMLJson } = require(`${root}/rendererProcess/model/QRCodeXMLJson`);
 

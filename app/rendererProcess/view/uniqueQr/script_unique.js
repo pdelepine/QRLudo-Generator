@@ -265,10 +265,7 @@ function validateForm(inputArray) {
 function previewQRCode(name, data, color, div) {
 
   // instanciate a qrcode unique object
-  if (qrType == 'xl')
-    qrcode = new QRCodeXL(name, data, color);
-  else
-    qrcode = new QRCodeUnique(name, data, color);
+  qrcode = new QRCodeUnique(name, data, color);
 
   let facade = new FacadeController();
   facade.genererQRCode(div, qrcode);

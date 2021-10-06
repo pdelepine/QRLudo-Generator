@@ -43,11 +43,6 @@ class QRCodeLoaderJson {
           qrcode.setId(qr.id);
           break;
 
-        case "xl":
-          qrcode = new QRCodeXL(qr.name, qr.data, qr.color);
-          qrcode.setId(qr.id);
-          break;
-
         case "ensemble":
           qrcode = new QRCodeMultipleJson(qr.name, qr.data, qr.color);
           break;

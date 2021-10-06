@@ -37,6 +37,8 @@ $().ready(function () {
     //console.log($('#qrView')[0]);
 
     $('#saveQRCode').attr('disabled', false);
+
+    logger.info("Génération du QR Code Multiple : "+JSON.stringify(qrcodeEns.qrcode));
   });
 
   //$("#empty").on('click',viderZone);
@@ -148,6 +150,8 @@ function ajoutQrCcode() {
   activer_button();
 
   document.getElementById("saveQRCode").disabled = true;
+
+  logger.info("Ajout d'un QR Code : "+JSON.stringify(newQrUnique.qrcode));
 }
 
 /** permet la continuité entre les onflet spécifiquement pour l'onglet multiple */
@@ -246,7 +250,7 @@ function genererLigne(name, numLigne) {
   baliseDiv.appendChild(baliseButtonUp);
   baliseDiv.appendChild(baliseButtonDown);
 
-  txtZone.appendChild(baliseDiv);
+  txtZone.appendChild(baliseDiv); 
 }
 
 /** Affiche le qrCode unique lie à la ligne cliquable */
@@ -269,6 +273,7 @@ function afficherQrCode(e) {
   }
 
   console.log(controllerMultiple.getQRCodeSelectionne());
+  logger.info("Prévisualisation d'un Qr code : "+JSON.stringify(controllerMultiple.getQRCodeSelectionne()));
 }
 
 /** Supprime une ligne dans la zone de drop */
@@ -300,6 +305,8 @@ function effacerLigne() {
     console.log("coucou");
     $('#txtDragAndDrop').show();
   }
+  
+  logger.info("Suppression d'un QR Code; id : "+JSON.stringify(id));
 }
 
 /** Vide les tableaux qrCodes, files et les lignes de la zone drop */
@@ -326,6 +333,8 @@ function viderZone() {
     }
   }
   numFich = 0;
+
+  logger.info("Réinitialisation de la page multiple");
 }
 
 /** Redonne l'apparance par default d'une ligne */
@@ -370,6 +379,8 @@ function saveQRCodeImage() {
   }
 
   xhr.send();
+  
+  logger.info("Exportation du QR Code multiple");
 }
 
 
@@ -392,6 +403,7 @@ function upItem(e) {
   store.set(`fichierDrop${tmpVal}`, prevVal);
 
   $(parentElement).insertBefore($(parentElement).prev());
+  logger.info("Déplacement d'un QR Code vers le haut; id : "+JSON.stringify(parentElementVal));
 }
 
 /** fonction deplacement de fichier vers bas  &&& */
@@ -413,6 +425,7 @@ function downItem(e) {
   store.set(`fichierDrop${tmpVal}`, nextVal);
 
   $(parentElement).insertAfter($(parentElement).next());
+  logger.info("Déplacement d'un QR Code vers le bas; id : "+JSON.stringify(parentElementVal));
 }
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut

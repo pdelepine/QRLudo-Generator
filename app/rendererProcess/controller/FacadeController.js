@@ -22,15 +22,7 @@ class FacadeController {
   constructor() {
   }
 
-  /** Renvoie un nouveau QRCodeAtomique */
-  creerQRCodeAtomique() {
-    return new QRCodeAtomique();
-  }
 
-  /** Renvoie un nouveau QRCodemultiple */
-  creerQRCodeMultiple() {
-    return new QRCodeMultiple();
-  }
 
 
   /** Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre */
@@ -42,9 +34,6 @@ class FacadeController {
 
       switch (qrcode.qrcode.type) {
         case "unique":
-          qrcode.qrcode.version = '3';
-          break;
-        case "xl":
           qrcode.qrcode.version = '3';
           break;
         case "ensemble":
