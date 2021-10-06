@@ -1,6 +1,6 @@
+/** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
 class SGNode {
 	/**
-	 * 
 	 * @param {number} x coordinate
 	 * @param {number} y coordinate
 	 * @param {number} w : width
@@ -81,3 +81,7 @@ class SGNode {
 		}
 	}
 }
+
+module.exports = {
+	SGNode
+};

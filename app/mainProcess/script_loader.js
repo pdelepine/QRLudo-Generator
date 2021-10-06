@@ -160,5 +160,8 @@ const { ProjetSeriousGame,
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
 
+const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
+const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
+
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();

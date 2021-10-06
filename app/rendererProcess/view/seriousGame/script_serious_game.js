@@ -1,13 +1,20 @@
-const { link } = require("original-fs");
+
+try{
+ require(root + "/rendererProcess/utils/p5.min.js");
+} catch(err) {
+	logger.info('problme p5');
+}
 
 var parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
+var zoom = 1;
+var nodeArray = [];
+var linkArray = [];
+var buttonCreateQuestion;
+var translateX = 0; var diagramOffsetX = 0;
+var translateY = 0; var diagramOffsetY = 0;
+var initX = 150;
+var initY = 0;
 
-let zoom = 1;
-let nodeArray = [];
-let linkArray = [];
-let buttonCreateQuestion;
-let translateX = 0; let diagramOffsetX = 0;
-let translateY = 0; let diagramOffsetY = 0;
 /* P5Js part */
 /** Setup of the canvas */
 function setup() {
@@ -68,8 +75,6 @@ function createNode() {
 	let newNode = new SGNode(x1, x2, 100, 80);
 	nodeArray.push(newNode);
 }
-let initX = 150;
-let initY = 0;
 
 function moveDiagram() {
 	let mouseIsOnNodes = nodeArray.filter(n => n.isMouseHover() || n.dragging);

@@ -1,3 +1,4 @@
+/** Cette classe représente un lien entre 2 SGNode de l'interface du serious game fait avec p5.js */
 class SGLink {
 	/**
 	 * 
@@ -201,3 +202,7 @@ class SGLink {
 		return { from: this.node1.name, to: this.node2.name };
 	}
 }
+
+module.exports = {
+	SGLink
+};
