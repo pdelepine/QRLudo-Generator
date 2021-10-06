@@ -12,53 +12,74 @@ var questionQCMQRCode;
 
 function genererJsonQCM(){
   questionOuverte = null;
-  var questionText = $("#QuestionQCM").val();
-  var reponseParIdentifiant = $("#reponseParIdentifiant").is(':checked');
   var messageBonneReponse = $("#MessageBonnereponseQCM").val();
   var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
+  var questions = [];
+  nbQues=1;
 
-  var reponses = [];
-  // Ajout de la réponse 1 
-  var controlLabel1 = "réponse numéro 1";
-  var isGoodAnswer1 = $("#divQuestion1 #gridCheck1").is(':checked');
-  var responseText1 = $("#divQuestion1 #reponseinitiale").val();
-  let reponse1 = new ReponseVocale(controlLabel1, isGoodAnswer1, responseText1);
-  reponses.push([reponse1.getNumeroEnigme(), reponse1.getEstBonneReponse(), reponse1.getTextQuestion()]);
-
-  // Ajout des autres réponses
-  $("#repContainer .form-row").each(function(index){
-    var controlLabel = "réponse numéro ".concat(index + 2);
-    var isGoodAnswer = $(this).find("#gridCheck".concat(index + 2)).is(':checked');
-    var responseText = $(this).find("#reponse".concat(index + 2)).val();
-    let reponse = new ReponseVocale(controlLabel, isGoodAnswer, responseText);
-    reponses.push([reponse.getNumeroEnigme(), reponse.getEstBonneReponse(), reponse.getTextQuestion()]);
-  });
-
-  // On vérifie que les réponses sont complètes avant de générer le QR code
-  var reponsesComplete = true;
-  for(let i = 0; i < reponses.length; i++) {
-    if(reponses[i][2] === "") { // reponses[i][2] correspond au texte de la réponse
-      reponsesComplete = false;
-      break;
+  for(let i = 1;i<=nbQues;++i){
+    var questionText = $("#QuestionQCM").val();
+    var reponses = [];
+    nbReponse=2;
+    // Ajout des réponss
+    for(let j=1;j<=nbReponse;++j){
+      var id = "question"+i.toString()+"reponse"+j.toString();
+      var isGoodAnswer = $("#divQuestion"+j.toString()+" #gridCheck"+j.toString()).is(':checked');
+      if(j==1)
+        var responseText = $("#divQuestion"+j.toString()+" #reponseinitiale").val();  
+      else
+        var responseText = $("#divQuestion"+j.toString()+" #reponse"+j.toString()).val();
+      let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
+      reponses.push(reponse);
     }
-  }
 
-  if(questionText !== "" && messageBonneReponse != "" && messageMauvaiseReponse != "" && reponsesComplete) {
-    questionQCM = new QRCodeQCM(questionText, reponses, reponseParIdentifiant, messageBonneReponse, messageMauvaiseReponse);
-    
-    initMessages();
+    // Ajout des autres réponses
+   /* $("#repContainer .form-row").each(function(index){
+      var controlLabel = "réponse numéro ".concat(index + 2);
+      var isGoodAnswer = $(this).find("#gridCheck".concat(index + 2)).is(':checked');
+      var responseText = $(this).find("#reponse".concat(index + 2)).val();
+      /*let reponse = new ReponseVocale(controlLabel, isGoodAnswer, responseText);
+      reponses.push([reponse.getNumeroEnigme(), reponse.getEstBonneReponse(), reponse.getTextQuestion()]);
+      let reponse = new ReponseQCM(1,responceText,isGoodAnswer);
+      reponses.push(reponse);
+    });*/
 
-    console.log(questionQCM.qrcode);
-    questionQCMQRCode = questionQCM.qrcode
-    // On génére le QrCode a afficher
-    previewQRCodeQCM();
-    // On affiche le qrCode
-    $('#qrView').show();
-    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCM) }`);
-  } else {
-    messageInfos("Veuillez remplir tous les champs.", "danger");
-    logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
-  }
+    // On vérifie que les réponses sont complètes avant de générer le QR code
+    var reponsesComplete = true;
+    for(let i = 0; i < reponses.length; i++) {
+      if(reponses[i].getReponse() === "") { // reponses[i][2] correspond au texte de la réponse
+        reponsesComplete = false;
+        break;
+      }
+    }
+
+    if(questionText !== "" && reponsesComplete) {
+      //questionQCM = new QRCodeQCM(questionText, reponses, reponseParIdentifiant, messageBonneReponse, messageMauvaiseReponse);
+      id = "question"+i.toString();
+      question = new QuestionQCM(id,questionText,reponses);
+      questions.push(question);
+    }
+    else{
+      messageInfos("Veuillez remplir tous les champs.", "danger");
+    }
+}
+
+if(messageBonneReponse != "" && messageMauvaiseReponse != ""){
+  projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
+
+  initMessages();
+
+  console.log(projet.qrcode);
+  questionQCMQRCode = projet.qrcode
+  // On génére le QrCode a afficher
+  previewQRCodeQCM();
+  // On affiche le qrCode
+  $('#qrView').show();
+  logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCMQR) }`);
+} else {
+  messageInfos("Veuillez remplir tous les champs.", "danger");
+  logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
+}
 }
 
 function previewQRCodeQCM() {
