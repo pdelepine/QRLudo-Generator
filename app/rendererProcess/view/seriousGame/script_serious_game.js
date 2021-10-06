@@ -1,4 +1,3 @@
-require(root + "/rendererProcess/utils/p5.min.js");
 var sketch = function (p) {
 	p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 	p.zoom = 1;
