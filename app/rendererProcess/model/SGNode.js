@@ -32,12 +32,12 @@ class SGNode {
 	/** Updating SGNode coordinates */
 	update() {
 		if (this.dragging) {
-			console.log(`x * zoom ${this.x * myP5.zoom}`);
-			console.log(`Deplacement X ${myP5.mouseX - myP5.translateX + this.offsetX}`);
+			//console.log(`x * zoom ${this.x * myP5.zoom}`);
+			//console.log(`Deplacement X ${myP5.mouseX - myP5.translateX + this.offsetX}`);
 			this.x = ((myP5.mouseX - myP5.translateX)  + this.offsetX ) / myP5.zoom;
 			this.y = ((myP5.mouseY - myP5.translateY) + this.offsetY) / myP5.zoom;
-			console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
-			console.log(`-- Node x ${this.x} y ${this.y}`);
+			//console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
+			//console.log(`-- Node x ${this.x} y ${this.y}`);
 		}
 	}
 
