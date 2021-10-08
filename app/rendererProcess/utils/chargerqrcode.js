@@ -15,21 +15,9 @@ $().ready(function() {
 
 /** fonction permettant de charger, importer un qr code */
 function importQRCodeImport(filename) {
-
   logger.info(`Import du fichier <${ filename }>`);
   let facade = new FacadeController();
-  let blob = null;
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", filename);
-  xhr.responseType = "blob";
-  /** force the HTTP response, response-type header to be blob */
-  xhr.onload = function() {
-    /** xhr.response is now a blob object */
-    
-    blob = xhr.response;
-    facade.importQRCode(blob, drawQRCodeImport);
-  }
-  xhr.send();
+  facade.importQRCode(filename, drawQRCodeImport);
 }
 
 /** fonction permettant de recréer visuellement un qr code */
