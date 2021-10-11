@@ -18,43 +18,28 @@ function genererJsonQCM(){
   nbQues=1;
 
   for(let i = 1;i<=nbQues;++i){
-    var questionText = $("#QuestionQCM").val();
+    var questionText = $("#textQuestion"+i.toString()).val();
     var reponses = [];
     nbReponse=2;
     // Ajout des réponss
     for(let j=1;j<=nbReponse;++j){
-      var id = "question"+i.toString()+"reponse"+j.toString();
-      var isGoodAnswer = $("#divQuestion"+j.toString()+" #gridCheck"+j.toString()).is(':checked');
-      if(j==1)
-        var responseText = $("#divQuestion"+j.toString()+" #reponseinitiale").val();  
-      else
-        var responseText = $("#divQuestion"+j.toString()+" #reponse"+j.toString()).val();
+      var id = "question"+i.toString()+"Reponse"+j.toString();
+      var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
+      var responseText = $("#textQuestion"+i.toString()+"Reponse"+j.toString()).val();  
+      //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
       let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
       reponses.push(reponse);
     }
-
-    // Ajout des autres réponses
-   /* $("#repContainer .form-row").each(function(index){
-      var controlLabel = "réponse numéro ".concat(index + 2);
-      var isGoodAnswer = $(this).find("#gridCheck".concat(index + 2)).is(':checked');
-      var responseText = $(this).find("#reponse".concat(index + 2)).val();
-      /*let reponse = new ReponseVocale(controlLabel, isGoodAnswer, responseText);
-      reponses.push([reponse.getNumeroEnigme(), reponse.getEstBonneReponse(), reponse.getTextQuestion()]);
-      let reponse = new ReponseQCM(1,responceText,isGoodAnswer);
-      reponses.push(reponse);
-    });*/
-
     // On vérifie que les réponses sont complètes avant de générer le QR code
     var reponsesComplete = true;
     for(let i = 0; i < reponses.length; i++) {
-      if(reponses[i].getReponse() === "") { // reponses[i][2] correspond au texte de la réponse
+      if(reponses[i].getReponse() === "") { // reponses[i].getReponse() correspond au texte de la réponse
         reponsesComplete = false;
         break;
       }
     }
-
     if(questionText !== "" && reponsesComplete) {
-      //questionQCM = new QRCodeQCM(questionText, reponses, reponseParIdentifiant, messageBonneReponse, messageMauvaiseReponse);
+      //création d'une questionQCM et on l'ajoute dans le tableau des questions 
       id = "question"+i.toString();
       question = new QuestionQCM(id,questionText,reponses);
       questions.push(question);
@@ -62,24 +47,24 @@ function genererJsonQCM(){
     else{
       messageInfos("Veuillez remplir tous les champs.", "danger");
     }
-}
+  }
+  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
+    //création d'un nouveau projetQCM
+    projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
 
-if(messageBonneReponse != "" && messageMauvaiseReponse != ""){
-  projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
+    initMessages();
 
-  initMessages();
-
-  console.log(projet.qrcode);
-  questionQCMQRCode = projet.qrcode
-  // On génére le QrCode a afficher
-  previewQRCodeQCM();
-  // On affiche le qrCode
-  $('#qrView').show();
-  logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCMQR) }`);
-} else {
-  messageInfos("Veuillez remplir tous les champs.", "danger");
-  logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
-}
+    console.log(projet.qrcode);
+    questionQCMQRCode = projet.qrcode
+    // On génére le QrCode a afficher
+    previewQRCodeQCM();
+    // On affiche le qrCode
+    $('#qrView').show();
+    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCMQR) }`);
+  } else {
+    messageInfos("Veuillez remplir tous les champs.", "danger");
+    logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
+  }
 }
 
 function previewQRCodeQCM() {
