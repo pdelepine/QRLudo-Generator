@@ -117,11 +117,7 @@ $(document).ready(function() {
 
   initMessages();
 
-  // Ajouter une nouvelle Reponse une fois qu'on va clicker sur la button Ajouterreponse
-  $("#ajouterQuestion").on('click',function () {
-    ajouterNouvelleReponse();
 
-  })
 
   // Aucun champs audio à lire dans cet onglet
   $("#play-sound-div").hide();
@@ -129,69 +125,137 @@ $(document).ready(function() {
 
 // Ajouter une nouvelle Reponse une fois qu'on va clicker sur la button Ajouterreponse
 
-var compteurReponse = 1;
-function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
-  compteurReponse++;
+var compteurReponse = {1:1};
+var compteurQuestion = 1;
+function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1){
+  compteurReponse[question_id]++;
   logger.info('Ajout d\'une nouvelle réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
-  if (compteurReponse < 30) {
+  if (compteurReponse[question_id] < 30) {
     type = "Reponse";
     let reponse = document.createElement('div');
-    reponse.innerHTML = `<div class="form-row" id="divQuestion` + compteurReponse + `">
+    reponse.innerHTML = `<div class="form-row" id="divquestion` + question_id + `reponse`+ compteurReponse[question_id] +`">
                             <div class="form-group col-md-3">
-                                  <label class="control-label">Réponse `+ compteurReponse + ` :</label>
+                                  <label class="control-label">Réponse `+ compteurReponse[question_id] + ` :</label>
                                 </div>
                           <div class="form-group col-md-6">
                             <span class="row">
-                                <input type="text" class="form-control col-sm-6" id="reponse`+ compteurReponse + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('reponse`+compteurReponse+`');">
+                                <input type="text" class="form-control col-sm-6" id="question` + question_id + `reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `reponse`+compteurReponse[question_id]+`');">
                                 <i class="fas fa-info-circle mt-2 ml-2" 
                                     title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
                                     data-toggle="tooltip" data-placement="right"></i>
                               </span>
                            </div>
                            <div class="form-group col-md-2">
-                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheck`+ compteurReponse + `" style="width:70px;" 
-                                      value="option"` + compteurReponse + `" onclick="activerSaveCheckbox('gridCheck`+compteurReponse+`')" >
-                                      <label class="form-check-label" for="gridCheck`+ compteurReponse + `">
+                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckquestion` + question_id +`reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
+                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + question_id +`reponse`+compteurReponse[question_id]+`')" >
+                                      <label class="form-check-label" for="gridCheck`+ compteurReponse[question_id] + `">
                             </div>
                             <div class="form-group col-md-1">
-                                <button id="deleteQRCode`+ compteurReponse + `" type="button"
-                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(` + compteurReponse + ",\'" + type + `\');">
+                                <button id="deleteQRCodequestion` + question_id +`reponse`+ compteurReponse[question_id] + `" type="button"
+                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(`+question_id+"," + compteurReponse[question_id] + ",\'" + type + `\');">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                     </div>
                             </div>`;
 
-    let container = $("#repContainer");
+    let container = $("#repContainer"+question_id);
     container.append(reponse);
 
-    $("#reponse"+ compteurReponse).val(contenu);
-    $("#gridCheck"+ compteurReponse).prop('checked', isBonneRep);
+    $("#reponse"+ compteurReponse[question_id]).val(contenu);
+    $("#gridCheck"+ compteurReponse[question_id]).prop('checked', isBonneRep);
 
-    store.set("nbReponse",compteurReponse);
+    store.set("nbReponse",compteurReponse[question_id]);
   }
 }
+
+function ajouterNouvelleQuestion(){
+  compteurQuestion++;
+  compteurReponse[compteurQuestion]=1;
+  logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
+  let question = document.createElement('div');
+  question.innerHTML = `<div class="question`+compteurQuestion+`">
+                          <div class="question-intro">
+                            <div class="row"> 
+                              <label class="control-label" data-toggle="collapse" data-target="#collapseReponses`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseReponses" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
+                              <input type="text" class="form-control input-lg" style="width:400px;"  id="QuestionQCM" cols="10" name="nomprojet"
+                                placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
+                              <button class="btn btn-outline-success align-self-center btn-question" type="button" data-toggle="collapse" data-target="#collapseReponses`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseReponses1" id="testcollapse">
+                                <i class="fa fa-chevron-up pull-right"></i>
+                                <i class="fa fa-chevron-down pull-right"></i>
+                              </button>
+                              <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </button>
+      
+                            </div>
+                          </div>
+                          <div class="collapse" id="collapseReponses`+compteurQuestion+`">
+                            <br>
+                            <div class="form-row">
+                              <div class="form-group col-md-10" style="text-align: right;">
+                                <label>Bonne(s) réponse(s)</label>
+                              </div>
+                            </div>
+                            <div class="form-row" id="divquestion` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] +`">
+                              <div class="form-group col-md-3">
+                                <label class="control-label">Réponse `+ compteurReponse[compteurQuestion] + ` :</label>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <span class="row">
+                                  <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `reponse`+compteurReponse[compteurQuestion]+`');">
+                                  <i class="fas fa-info-circle mt-2 ml-2" 
+                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
+                                    data-toggle="tooltip" data-placement="right"></i>
+                                </span>
+                              </div>
+                              <div class="form-group col-md-2">
+                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckquestion` + compteurQuestion +`reponse`+ compteurReponse[compteurQuestion] + `" style="width:70px;" 
+                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + compteurQuestion +`reponse`+compteurReponse[compteurQuestion]+`')" >
+                                <label class="form-check-label" for="gridCheck`+ compteurReponse[compteurQuestion] + `">
+                              </div>
+                              <div class="form-group col-md-1">
+                                <button id="deleteQRCodequestion` + compteurQuestion +`reponse`+ compteurReponse[compteurQuestion] + `" type="button"
+                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(`+compteurQuestion+"," + compteurReponse[compteurQuestion] + ",\'" + type + `\');">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                              </div>
+                            </div>
+                            <div id="repContainer`+compteurQuestion+`"></div>
+                            <div class="form-group col-md-6">
+                              <label style="color:#a5b2af;">Ajouter une réponse</label>
+                              <button id="ajouterReponse1" type="button"
+                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);" style="color:#a5b2af;" name="ajouterReponse">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>`;
+
+    let container = $("#questionContainer");
+    container.append(question);
+  }
 
 
 
 //Pour supprimer une énigme ou bien une réponse 
-function supprLigne(idLigne, element) {
+function supprLigne(question_id,idLigne, element) {
   if (element == "Reponse") {
-    if(compteurReponse>1){
-      compteurReponse--;
+    if(compteurReponse[question_id]>1){
+      compteurReponse[question_id]--;
       logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
-      store.set("nbReponse",compteurReponse);
-      $("#divQuestion" + idLigne).on('click', function() {
+      store.set("nbReponse",compteurReponse[question_id]);
+      $("#divquestion" +question_id+"reponse"+ idLigne).on('click', function() {
         $(this).remove();
-        for(let cpt = idLigne; cpt <= compteurReponse; cpt++) {
+        for(let cpt = idLigne; cpt <= compteurReponse[question_id]; cpt++) {
           let id = cpt+1;
-          let div = $("#divQuestion" + id)[0].getElementsByTagName("div");
+          let div = $("#divquestion"+question_id+"reponse" + id)[0].getElementsByTagName("div");
           div[0].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt + " :";
-          div[2].getElementsByTagName("input")[0].id = "gridCheck" + cpt;
-          div[2].getElementsByTagName("label")[0].for = "gridCheck" + cpt;
-          div[1].getElementsByTagName("input")[0].id = "reponse" + cpt;
-          div[3].getElementsByTagName("button")[0].id = "deleteQRCode" + cpt;
-          div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne(" + cpt + ",\'" + element +"\')");
-          $("#divQuestion" + id)[0].id = "divQuestion" + cpt;
+          div[2].getElementsByTagName("input")[0].id = "gridCheckquestion"+question_id+"reponse" + cpt;
+          div[2].getElementsByTagName("label")[0].for = "gridCheckquestion"+question_id+"reponse" + cpt;
+          div[1].getElementsByTagName("input")[0].id = "question"+question_id+"reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].id = "deleteQRCodequestion"+question_id+"reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne("+question_id+"," + cpt + ",\'" + element +"\')");
+          $("#divquestion"+question_id+"reponse" + id)[0].id = "divquestion"+question_id+"reponse" + cpt;
 
           if(store.get(`reponse${id}`) && store.get(`gridCheck${id}`)) {
             store.set(`reponse${cpt}`, store.get(`reponse${id}`));
