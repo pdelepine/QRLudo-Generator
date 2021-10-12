@@ -15,6 +15,8 @@ class SGNode {
 		this.h = h;
 		this.offsetX = 0;
 		this.offsetY = 0;
+		this.entryDot = new SGDot(this, this.w / 2, 0);
+		this.exitDots = [];
 	}
 
 	setName(name) { this.name = name }
@@ -58,6 +60,10 @@ class SGNode {
 		myP5.pop();
 	}
 
+	displayDot() {
+		this.entryDot.display();
+	}
+
 	/** When SGNode pressed, begin dragging */
 	pressed() {
 		if (this.isMouseHover()) {
@@ -74,10 +80,36 @@ class SGNode {
 	}
 
 	createLink(callback) {
-		if (this.isMouseHover()) {
-			let newLink = new SGLink(this, new SGNode(myP5.mouseX, myP5.mouseY, 0, 0));
+		if (this.isMouseHoveringDots()) {
+			let endNode = new SGNode(myP5.mouseX, myP5.mouseY, 0, 0);
+			let newLink = new SGLink(this, this.entryDot, endNode, endNode.entryDot);
 			newLink.type = 'dynamic';
 			callback(newLink);
+		}
+	}
+
+	/** Return true if the mouse is hovering one of the node's dot */
+	isMouseHoveringDots() {
+		if(this.entryDot.isMouseHover()) {
+			return true;
+		}
+		for(let dot of this.exitDots) {
+			if(dot.isMouseHover()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/** Return the dot of the node which the mouse is hovering */
+	getDotHovering() {
+		if(this.entryDot.isMouseHover()) {
+			return this.entryDot;
+		}
+
+		for(let dot of this.exitDots) {
+			if(dot.isMouseHover()) {
+				return dot;
+			}
 		}
 	}
 }

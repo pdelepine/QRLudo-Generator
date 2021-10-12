@@ -26,6 +26,8 @@ var sketch = function (p) {
 	p.seriousGameCanvas;
 	p.hoveringNode = false;
 
+	p.creatingLink = false;
+
 	/* P5Js part */
 	/** Setup of the canvas */
 	p.setup = function () {
@@ -42,7 +44,7 @@ var sketch = function (p) {
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
 		/** Link creation between the to Node */
-		let link1 = new SGLink(node1, node2);
+		let link1 = new SGLink(node1, node1.entryDot, node2, node2.entryDot);
 		link1.type = 'static';
 		p.linkArray.push(link1);
 
@@ -65,8 +67,10 @@ var sketch = function (p) {
 		p.translate(p.translateX, p.translateY);
 		p.scale(p.zoom);
 		p.nodeArray.forEach(n => n.update());
-		p.linkArray.forEach(l => l.display());
 		p.nodeArray.forEach(n => n.display());
+		p.linkArray.forEach(l => l.display());
+		p.nodeArray.forEach(n => n.displayDot());
+
 		p.pop();
 		p.displayCreateNode();
 		p.drawPalette();
@@ -160,9 +164,12 @@ var sketch = function (p) {
 			/** Create Link from node with Mouse Hovering 
 			 * The link will follow the mouse until the button is released on an
 			 */
-			p.nodeArray.forEach(n => n.createLink(function (link) {
-				p.linkArray.push(link);
-			}));
+			if(!p.creatingLink) {
+				p.nodeArray.forEach(n => n.createLink(function (link) {
+					p.creatingLink = true;
+					p.linkArray.push(link);
+				}));
+			}
 		}
 	}
 
@@ -176,9 +183,11 @@ var sketch = function (p) {
 			p.linkArray.forEach(function (l) {
 				if (l.type === 'dynamic') {
 					p.nodeArray.forEach(function (n) {
-						if (n.isMouseHover()) {
+						if (n.isMouseHoveringDots()) {
 							l.node2 = n;
+							l.node2Dot = n.getDotHovering();
 							l.type = 'static';
+							p.creatingLink = false;
 						}
 					});
 				}

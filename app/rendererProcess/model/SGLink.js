@@ -5,9 +5,11 @@ class SGLink {
 	 * @param {SGNode} fromNode1 
 	 * @param {SGNode} toNode2 
 	 */
-	constructor(fromNode1, toNode2) {
+	constructor(fromNode1, node1Dot, toNode2, node2Dot) {
 		this.node1 = fromNode1;
+		this.node1Dot = node1Dot;
 		this.node2 = toNode2;
+		this.node2Dot = node2Dot;
 		this.flags = {
 			hover: false,
 			dragging: false
@@ -45,10 +47,10 @@ class SGLink {
 		if(this.flags.dragging) {
 			fill(100, 255, 255);
 		}
-		const x1 = this.node1.x + (this.node1.w / 2);
-		const y1 = this.node1.y + (this.node1.h / 2);
-		const x2 = this.node2.x + (this.node2.w / 2);
-		const y2 = this.node2.y + (this.node2.h / 2);
+		const x1 = this.node1Dot.getPositionX();
+		const y1 = this.node1Dot.getPositionY();
+		const x2 = this.node2Dot.getPositionX();
+		const y2 = this.node2Dot.getPositionY();
 		myP5.line(x1, y1, x2, y2);
 		myP5.pop();
 	}
@@ -63,9 +65,14 @@ class SGLink {
 				myP5.strokeWeight(8);
 			}
 			
-			myP5.translate(nearestPt.x, nearestPt.y);
-			const x = (this.node2.x + (this.node2.w / 2)) - (this.node1.x + (this.node1.w / 2));
-			const y = (this.node2.y + (this.node2.h / 2)) - (this.node1.y + (this.node1.h / 2));
+			if(this.type === 'dynamic') {
+				myP5.translate(nearestPt.x - myP5.translateX, nearestPt.y - myP5.translateY);
+			} else {
+				myP5.translate(nearestPt.x, nearestPt.y);
+			}
+			
+			const x = this.node2Dot.getPositionX() - this.node1Dot.getPositionX();
+			const y = this.node2Dot.getPositionY() - this.node1Dot.getPositionY();
 			const dir = myP5.createVector(x,y);
 			myP5.rotate(dir.heading());
 			myP5.triangle(-15, -2, -15, 2, -7, 0);
@@ -75,17 +82,17 @@ class SGLink {
 
 	/** Testing if the mouse is hovering the link */
 	isMouseHover() {
-		const x1 = (this.node1.x + (this.node1.w / 2)) * myP5.zoom;
-		const y1 = (this.node1.y + (this.node1.h / 2)) * myP5.zoom;
-		const x2 = (this.node2.x + (this.node2.w / 2)) * myP5.zoom;
-		const y2 = (this.node2.y + (this.node2.h / 2)) * myP5.zoom;
+		const x1 = this.node1Dot.getPositionX() * myP5.zoom;
+		const y1 = this.node1Dot.getPositionY() * myP5.zoom;
+		const x2 = this.node2Dot.getPositionX() * myP5.zoom;
+		const y2 = this.node2Dot.getPositionY() * myP5.zoom;
 
 		const d1 = myP5.dist(x1, y1, myP5.mouseX - myP5.translateX, myP5.mouseY - myP5.translateY);
 		const d2 = myP5.dist(x2, y2, myP5.mouseX - myP5.translateX, myP5.mouseY - myP5.translateY);
 
-		if(this.node1.isMouseHover() || this.node2.isMouseHover()) return false;
+		if(this.node1Dot.isMouseHover() || this.node2Dot.isMouseHover()) return false;
 
-		const length = myP5.dist(x1, y1,	x2, y2);
+		const length = myP5.dist(x1, y1, x2, y2);
 
 		const cond1 = (d1 + d2) - 0.5 <= length;
 		const cond2 = (d1 + d2) + 0.5 >= length;
@@ -101,101 +108,24 @@ class SGLink {
 
 	/**
 	 * 
-	 * @returns the intersection point between node2 and a ray cast from node1
+	 * @returns the intersection point between node2Dot and a ray cast from node1Dot
 	 */
 	#cast() {
-		/** Array of intersection point */
-		let arrayPt = [];
 
-		/** Left Wall of node2 */
-		let x1 = this.node2.x;
-		let y1 = this.node2.y;
-		let x2 = this.node2.x;
-		let y2 = this.node2.y + this.node2.h;
+		let vector1 = myP5.createVector(this.node2Dot.getPositionX() - this.node1Dot.getPositionX(), this.node2Dot.getPositionY() - this.node1Dot.getPositionY());
+		/** We substract the dot radius from the vector length  */
+		let vecLength = vector1.mag();
+		let newvecLength = vecLength - this.node2Dot.d / 2;
+		/** We set the new length of the vector */
+		vector1.setMag(newvecLength);
+		/** We substract the starting point of the vector from the coordinate to get the intersection point */
+		let vector2 = myP5.createVector(vector1.x + this.node1Dot.getPositionX(), vector1.y + this.node1Dot.getPositionY());
 
-		let x3 = this.node1.x + (this.node1.w / 2);
-		let y3 = this.node1.y + (this.node1.h / 2);
-		let x4 = this.node2.x + (this.node2.w / 2);
-		let y4 = this.node2.y + (this.node2.h / 2);
-
-		let den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-		if(den == 0) return;
-
-		let t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
-		let u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
-		if(t > 0 && t < 1 && u > 0) {
-			const pt = myP5.createVector();
-			pt.x = x1 + t * (x2 - x1);
-			pt.y = y1 + t * (y2 - y1);
-			arrayPt.push(pt);
-		}
-
-		/** Right Wall of node2 */
-		x1 = this.node2.x + this.node2.w;
-		y1 = this.node2.y;
-		x2 = this.node2.x + this.node2.w;
-		y2 = this.node2.y + this.node2.h;
-
-
-		den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-		if(den == 0) return;
-
-		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
-		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
-		if(t > 0 && t < 1 && u > 0) {
-			const pt = myP5.createVector();
-			pt.x = x1 + t * (x2 - x1);
-			pt.y = y1 + t * (y2 - y1);
-			arrayPt.push(pt);
-		}
-
-		/** Top Wall of node2 */
-		x1 = this.node2.x;
-		y1 = this.node2.y;
-		x2 = this.node2.x + this.node2.w;
-		y2 = this.node2.y;
-
-		den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-		if(den == 0) return;
-
-		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
-		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
-		if(t > 0 && t < 1 && u > 0) {
-			const pt = myP5.createVector();
-			pt.x = x1 + t * (x2 - x1);
-			pt.y = y1 + t * (y2 - y1);
-			arrayPt.push(pt);
-		}
-
-		/** Bottom Wall of node2 */
-		x1 = this.node2.x;
-		y1 = this.node2.y + this.node2.h;
-		x2 = this.node2.x + this.node2.w;
-		y2 = this.node2.y + this.node2.h;
-
-		den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-		if(den == 0) return;
-
-		t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
-		u = - ((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
-		if(t > 0 && t < 1 && u > 0) {
-			const pt = myP5.createVector();
-			pt.x = x1 + t * (x2 - x1);
-			pt.y = y1 + t * (y2 - y1);
-			arrayPt.push(pt);
-		}
-
-		let min = 100000;
-		let nearestPt = null;
-		for(let pt of arrayPt){
-			const ptDist = myP5.dist(x3, y3, pt.x, pt.y);
-			if(ptDist < min){
-				min = ptDist;
-				nearestPt = pt;
-			} 
-		}
-
-		return nearestPt;
+		if(this.type === 'dynamic') {
+			return myP5.createVector(myP5.mouseX, myP5.mouseY);
+		} else {
+			return vector2;
+		}		
 	}
 
 	toJson(){
