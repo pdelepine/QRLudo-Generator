@@ -123,7 +123,7 @@ $(document).ready(function() {
   $("#play-sound-div").hide();
 });
 
-// Ajouter une nouvelle Reponse une fois qu'on va clicker sur la button Ajouterreponse
+// Ajouter une nouvelle Reponse une fois qu'on va clicker sur le button AjouterReponse
 
 var compteurReponse = {1:1};
 var compteurQuestion = 1;
@@ -171,25 +171,25 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
 function ajouterNouvelleQuestion(){
   compteurQuestion++;
   compteurReponse[compteurQuestion]=1;
+  type = "Reponse";
   logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
   let question = document.createElement('div');
-  question.innerHTML = `<div class="question`+compteurQuestion+`">
+  question.innerHTML = `<div class="question" id="`+compteurQuestion+`">
                           <div class="question-intro">
                             <div class="row"> 
-                              <label class="control-label" data-toggle="collapse" data-target="#collapseReponses`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseReponses" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
+                              <label class="control-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
                               <input type="text" class="form-control input-lg" style="width:400px;"  id="QuestionQCM" cols="10" name="nomprojet"
                                 placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
-                              <button class="btn btn-outline-success align-self-center btn-question" type="button" data-toggle="collapse" data-target="#collapseReponses`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseReponses1" id="testcollapse">
+                              <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
                                 <i class="fa fa-chevron-up pull-right"></i>
                                 <i class="fa fa-chevron-down pull-right"></i>
                               </button>
                               <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </button>
-      
                             </div>
                           </div>
-                          <div class="collapse" id="collapseReponses`+compteurQuestion+`">
+                          <div class="collapse" id="collapseQuestion`+compteurQuestion+`">
                             <br>
                             <div class="form-row">
                               <div class="form-group col-md-10" style="text-align: right;">
