@@ -147,8 +147,9 @@ const { Projet,
   Reponse,
   Question } = require(`${root}/rendererProcess/model/QRCodeQuestionReponse`);
 
-const { QRCodeQCM,
-  ReponseVocale } = require(`${root}/rendererProcess/model/QRCodeQCM`);
+const { ProjetQCM,
+  QuestionQCM,
+  ReponseQCM } = require(`${root}/rendererProcess/model/QRCodeQCM`);
 
 const { ProjetSeriousGame,
   QRCodeSeriousGame,
