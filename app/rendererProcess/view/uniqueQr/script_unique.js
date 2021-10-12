@@ -5,6 +5,8 @@
  * @Last modified time: 2019-02-04T21:09:51+01:00
  */
 
+const { setTimeout } = require('timers');
+
 // fichier script concernant les qr codes uniques
 var qrcode;
 var qrType;
@@ -23,7 +25,7 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-
+  
 
   // desactiver les boutons s'il y a rien à lire ou generer
   if(document.getElementById('qrName') !== null){
@@ -299,79 +301,88 @@ function saveQRCodeImage() {
 }
 
 function getMusicFromUrl() {
-  let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
-  let loader = document.createElement('div');
-  let errorMsg = document.createElement('label');
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
 
-  const { clipboard } = require('electron');
+    const { clipboard } = require('electron');
 
-  let url = clipboard.readText();
-  let xhr = new XMLHttpRequest();
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
 
-  logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
+    logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
 
-  Music.getDownloadLink(url, link => {
-    if (link == null) {
-      showError(modal, errorMsg);
-      logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
-      return
-    }
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
+        return
+      }
 
-    try {
-      xhr.open('GET', link, true);
-    } catch (e) {
-      showError(modal, errorMsg);
-    }
-    xhr.responseType = 'blob';
-    xhr.onload = function (e) {
-
-      if (this.status == 200) {
-        let blob = this.response; // get binary data as a response
-        let contentType = xhr.getResponseHeader("content-type");
-
-        if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
-          // get filename
-          let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
-          filename = filename.replace('filename="', '');
-          filename = filename.replace('.mp3"', '.mp3');
-
-          // save file in folder projet/download
-          let fileReader = new FileReader();
-          fileReader.onload = function () {
-            fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
-
-            $(loader, errorMsg).remove();
-            $('#closeModalListeMusic').on('click',); // close modal add music
-          };
-          fileReader.readAsArrayBuffer(blob);
-
-          logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
-
-          ajouterChampSon(filename, link);
-        } else {
-          logger.error('Le fichier n\'est pas un fichier audio');
-          showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
-        }
-      } else {
-        // request failed
-        logger.error('La requête de téléchargement a échouée');
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
         showError(modal, errorMsg);
       }
-    };
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
 
-    xhr.onloadstart = function (e) {
-      logger.info(`Début téléchargement du fichier audio`);
-      $(loader).addClass('loader');
-      $(modal).find('.errorLoader').remove();
-      $(modal).prepend(loader); // show loader when request progress
-    };
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
 
-    xhr.onerror = function (e) {
-      showError(modal, errorMsg);
-    };
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
 
-    xhr.send();
-  });
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
+
+            ajouterChampSon(filename, link);
+          } else {
+            logger.error('Le fichier n\'est pas un fichier audio');
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          logger.error('La requête de téléchargement a échouée');
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        logger.info(`Début téléchargement du fichier audio`);
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
