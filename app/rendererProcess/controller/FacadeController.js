@@ -54,7 +54,7 @@ class FacadeController {
       }
 
       /** Génération du QRcode dans la div en paramètre */
-      QRCodeGenerator.toDataURL("image/png", { errorCorrectionLevel: 'L', margin: 0 }, function (err, url) {
+      QRCodeGenerator.toDataURL(qrcode.getDataString(), { errorCorrectionLevel: 'L', margin: 0 }, function (err, url) {
         if (err) logger.error('Erreur lors de la prévisualisation du QRCode');
         let image = new Image();
         image.src = url;
