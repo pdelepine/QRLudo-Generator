@@ -8,7 +8,6 @@ function genererJson() {
 }
 
 var questionQCM =null;
-var questionQCMQRCode;
 
 function genererJsonQCM(){
   questionOuverte = null;
@@ -55,12 +54,11 @@ function genererJsonQCM(){
     initMessages();
 
     console.log(projet.qrcode);
-    questionQCMQRCode = projet.qrcode
     // On génére le QrCode a afficher
     previewQRCodeQCM();
     // On affiche le qrCode
     $('#qrView').show();
-    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCMQR) }`);
+    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(projet.qrcode) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
     logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
@@ -68,7 +66,7 @@ function genererJsonQCM(){
 }
 
 function previewQRCodeQCM() {
-  previewQRCode(questionQCM, $('#qrView')[0]);
+  previewQRCode(projet, $('#qrView')[0]);
 }
 
 
@@ -107,7 +105,6 @@ function previewQRCodeQuestionOuverte() {
 // generate and print qr code
 function previewQRCode(qrcode, div) {
   let facade = new FacadeController();
-  qrcode.qrcode.color = $('#qrColor').val();
   facade.genererQRCode(div, qrcode);
 }
 

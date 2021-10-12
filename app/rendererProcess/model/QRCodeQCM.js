@@ -75,7 +75,7 @@ class QuestionQCM {
  */
 class ProjetQCM {
   /**
-   * 
+   * @param type - Qr Code type
    * @param {} questions tableau de QuestionQCM
    * @param {} textBonneReponse le message de bonne réponse 
    * @param {} textMauvaiseReponse le message de mauvaise réponse
@@ -89,6 +89,7 @@ class ProjetQCM {
     
     this.qrcode = {
       id: md5Value,
+      type: "ExerciceReconnaissanceVocaleQCM",
       questions: questions,
       textBonneReponse: textBonneReponse,
       textMauvaiseReponse: textMauvaiseReponse

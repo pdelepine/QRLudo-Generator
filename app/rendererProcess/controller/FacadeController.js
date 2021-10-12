@@ -46,6 +46,7 @@ class FacadeController {
           qrcode.qrcode.version = '4';
           break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
+          console.log("test");
           qrcode.qrcode.version = '4';
           break;
         case "SeriousGameScenario":
