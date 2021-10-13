@@ -14,17 +14,15 @@ function genererJsonQCM(){
   var messageBonneReponse = $("#MessageBonnereponseQCM").val();
   var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
   var questions = [];
-  nbQues=1;
 
-  for(let i = 1;i<=nbQues;++i){
+  for(let i = 1;i <= compteurQuestion;++i){
     var questionText = $("#textQuestion"+i.toString()).val();
     var reponses = [];
-    nbReponse=2;
     // Ajout des réponss
-    for(let j=1;j<=nbReponse;++j){
-      var id = "question"+i.toString()+"Reponse"+j.toString();
+    for(let j=1;j <= compteurReponse[i];++j){
+      var id = "question"+i.toString()+"reponse"+j.toString();
       var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
-      var responseText = $("#textQuestion"+i.toString()+"Reponse"+j.toString()).val();  
+      var responseText = $("#question"+i.toString()+"reponse"+j.toString()).val();  
       //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
       let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
       reponses.push(reponse);
@@ -150,7 +148,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
                               </span>
                            </div>
                            <div class="form-group col-md-2">
-                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckquestion` + question_id +`reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
+                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id +`Reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
                                       value="option" onclick="activerSaveCheckbox('gridCheckquestion` + question_id +`reponse`+compteurReponse[question_id]+`')" >
                                       <label class="form-check-label" for="gridCheck`+ compteurReponse[question_id] + `">
                             </div>
@@ -181,7 +179,7 @@ function ajouterNouvelleQuestion(){
                           <div class="question-intro">
                             <div class="row"> 
                               <label class="control-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
-                              <input type="text" class="form-control input-lg" style="width:400px;"  id="QuestionQCM" cols="10" name="nomprojet"
+                              <input type="text" class="form-control input-lg" style="width:400px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
                                 placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
                               <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
                                 <i class="fa fa-chevron-up pull-right"></i>
@@ -213,7 +211,7 @@ function ajouterNouvelleQuestion(){
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
-                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckquestion` + compteurQuestion +`reponse`+ compteurReponse[compteurQuestion] + `" style="width:70px;" 
+                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + compteurQuestion +`Reponse`+ compteurReponse[compteurQuestion] + `" style="width:70px;" 
                                       value="option" onclick="activerSaveCheckbox('gridCheckquestion` + compteurQuestion +`reponse`+compteurReponse[compteurQuestion]+`')" >
                                 <label class="form-check-label" for="gridCheck`+ compteurReponse[compteurQuestion] + `">
                               </div>
