@@ -34,7 +34,7 @@ class SGDot {
 
 	isMouseHover() {
 		const distMouse = myP5.dist((this.nodeToAttach.x + this.x) * myP5.zoom, (this.nodeToAttach.y + this.y) * myP5.zoom, myP5.mouseX - myP5.translateX, myP5.mouseY - myP5.translateY);
-		return (distMouse <= this.d / 2);
+		return (distMouse <= (this.d * myP5.zoom) / 2);
 	}
 }
 
