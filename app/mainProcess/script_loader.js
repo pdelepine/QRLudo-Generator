@@ -161,6 +161,8 @@ const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQ
 const { SGDot } = require(`${root}/rendererProcess/model/SGDot`);
 const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
 const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
+const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
+const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode`);
 
 
 // Instanciate object
