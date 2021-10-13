@@ -19,12 +19,7 @@
   static loadImage(qrcodeString, callback) {
 
     let qrcode;
-
     let qr = JSON.parse(qrcodeString);
-    
-    // console.log(QRCodeLoaderJson.UTF8ArraytoString(qrcodeString));
-    console.log("**************************************");
-    console.log(qr);
     
     switch (JSON.parse(qrcodeString).type) {
       case "unique":
@@ -67,7 +62,7 @@
     }
 
     logger.info(`QR Code chargé avec succès : ${JSON.stringify(qrcode)}`);
-    console.log("restored qr code : ", qrcode);
+    console.log("QR code restauré : ", qrcode);
 
     if (callback)
       callback(qrcode);

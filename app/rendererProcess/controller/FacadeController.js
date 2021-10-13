@@ -91,33 +91,29 @@ class FacadeController {
   
     var buffer = fs.readFileSync(file);
 
-    console.log(file);
-
     Jimp.read(buffer, function(err, image) {
 
         if (err) {
             console.error(err);
-            // TODO handle error
+            logger.error('Impossible de lire l\'Image de QR Code');
         }
+       
+        var width  = image.bitmap.width;
 
-        var qr = new QRCodeReader();
-       // console.log(qr);
+        var height = image.bitmap.height;
 
-        qr.callback = function(err, value) {
+        const qrCodeImageArray = new Uint8ClampedArray(image.bitmap.data.buffer);
 
-            if (err) {
-                  console.error(err);
-                  return;
-            }
-            //console.log(value);
-           // console.log("*********");
-            QRCodeLoaderJson.loadImage(value.result,callback);
-        };
+        const code = jsQR(qrCodeImageArray, width, height);
 
-        qr.decode(image.bitmap);
-        
+          if (code) {
+           // console.log("Found QR code", code);
+            QRCodeLoaderJson.loadImage(code.data,callback);
+          } else {
+            logger.error('Impossible de Décoder le QR Code');
+          }
+          
     });
-
 
   }
 

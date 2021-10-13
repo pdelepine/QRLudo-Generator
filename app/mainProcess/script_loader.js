@@ -163,3 +163,4 @@ let controllerMultiple = new ControllerMultiple();
 
 QRCodeReader = require('qrcode-reader');
 const Jimp = require('jimp');
+const jsQR = require("jsqr");
