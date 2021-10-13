@@ -29,6 +29,8 @@ var sketch = function (p) {
 	/** État pour la création de noeud suivant la souris */
 	p.hoveringNode = false;
 
+	p.creatingNodeType = null;
+
 	p.creatingLink = false;
 
 	/* P5Js part */
@@ -42,8 +44,8 @@ var sketch = function (p) {
 		p.translateY = p.initY;
 
 		/** First & Second Node integration */
-		let node1 = new SGNode(100, 100, 100, 80);
-		let node2 = new SGNode(200, 200, 100, 80);
+		let node1 = new SGTextNode(100, 100, 100, 80);
+		let node2 = new SGQuestionNode(200, 200, 100, 80);
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
 		/** Link creation between the to Node */
@@ -52,15 +54,17 @@ var sketch = function (p) {
 		p.linkArray.push(link1);
 
 		/** Declaration of Button to create Node */
-		p.buttonCreateQuestion = p.createButton('Create Node');
+		p.buttonCreateQuestion = p.createButton('Créer une question');
 		p.buttonCreateQuestion.position(20, 150);
-		p.buttonCreateQuestion.mousePressed(p.createNode);
+		p.buttonCreateQuestion.mousePressed(p.createQuestionNode);
+		p.buttonCreateQuestion.size(115);
 		p.buttonCreateQuestion.parent("seriousGameDiagram");
 
 		/** Declaration of button to create TextNode */
 		p.buttonCreateTextNode = p.createButton('Créer un champ texte');
-		p.buttonCreateTextNode.position(20, 170);
+		p.buttonCreateTextNode.position(20, 220);
 		p.buttonCreateTextNode.mousePressed(p.createTextNode);
+		p.buttonCreateTextNode.size(115);
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 	}
 
@@ -96,8 +100,19 @@ var sketch = function (p) {
 	}
 
 	/** Fonction qui permet de créer un noeud */
-	p.createNode = function () {
+	p.createQuestionNode = function () {
 		p.hoveringNode = true;
+		p.creatingNodeType = 'questionNode';
+		/*
+		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
+		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
+		let newNode = new SGNode(x1, x2, 100, 80);
+		p.nodeArray.push(newNode);*/
+	}
+
+	p.createTextNode = function () {
+		p.hoveringNode = true;
+		p.creatingNodeType = 'textNode';
 		/*
 		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
 		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
@@ -164,8 +179,18 @@ var sketch = function (p) {
 				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
 				if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
-					let newNode = new SGNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
-					p.nodeArray.push(newNode);
+					switch (p.creatingNodeType) {
+						case 'questionNode':
+							let newNode1 = new SGQuestionNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
+							p.nodeArray.push(newNode1);
+							break;
+						case 'textNode':
+							let newNode2 = new SGTextNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
+							p.nodeArray.push(newNode2);
+							break;
+						default:
+					}
+
 					p.hoveringNode = false;
 				}
 			}
@@ -174,7 +199,7 @@ var sketch = function (p) {
 			/** Create Link from node with Mouse Hovering 
 			 * The link will follow the mouse until the button is released on an
 			 */
-			if(!p.creatingLink) {
+			if (!p.creatingLink) {
 				p.nodeArray.forEach(n => n.createLink(function (link) {
 					p.creatingLink = true;
 					p.linkArray.push(link);
@@ -231,9 +256,9 @@ var sketch = function (p) {
 		}
 	}
 
-	p.windowResized = function() {
+	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
-		console.log(p.parentDiv.width + " "+  p.parentDiv.height);
+		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 	}
 }
