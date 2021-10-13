@@ -98,13 +98,7 @@ class FacadeController {
             logger.error('Impossible de lire l\'Image de QR Code');
         }
        
-        var width  = image.bitmap.width;
-
-        var height = image.bitmap.height;
-
-        const qrCodeImageArray = new Uint8ClampedArray(image.bitmap.data.buffer);
-
-        const code = jsQR(qrCodeImageArray, width, height);
+          const code = jsQR(image.bitmap.data, image.bitmap.width, image.bitmap.height);
 
           if (code) {
            // console.log("Found QR code", code);
@@ -112,7 +106,7 @@ class FacadeController {
           } else {
             logger.error('Impossible de Décoder le QR Code');
           }
-          
+         
     });
 
   }
