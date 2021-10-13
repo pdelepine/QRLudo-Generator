@@ -5,8 +5,6 @@
  * @Last modified time: 2019-02-04T21:09:51+01:00
  */
 
-const { setTimeout } = require('timers');
-
 // fichier script concernant les qr codes uniques
 var qrcode;
 var qrType;
