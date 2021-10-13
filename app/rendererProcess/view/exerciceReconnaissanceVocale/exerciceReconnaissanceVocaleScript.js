@@ -53,11 +53,11 @@ function genererJsonQCM(){
 
     initMessages();
 
-    console.log(projet.qrcode);
     // On génére le QrCode a afficher
     previewQRCodeQCM();
     // On affiche le qrCode
     $('#qrView').show();
+    console.log(JSON.stringify(projet.qrcode));
     logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(projet.qrcode) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");

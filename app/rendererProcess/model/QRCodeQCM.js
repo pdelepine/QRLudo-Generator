@@ -97,28 +97,32 @@ class ProjetQCM {
   }
 
   getId(){
-    return this.projet.id;
+    return this.qrcode.id;
   }
 
   getQuestions(){
-    return this.projet.questions;
+    return this.qrcode.questions;
   }
 
   getQuestionFromId(id){
-    for(let i = 0 ; i < this.projet.questions.length; i++){
-      if(this.projet.questions[i].id == id){
-          return this.projet.questions[i];
+    for(let i = 0 ; i < this.qrcode.questions.length; i++){
+      if(this.qrcode.questions[i].id == id){
+          return this.qrcode.questions[i];
       }
   }
   return null;
   }
 
   getTextBonneReponse(){
-    return this.projet.textBonneReponse;
+    return this.qrcode.textBonneReponse;
   }
 
   getTextMauvaiseReponse(){
-    return this.projet.textMauvaiseReponse;
+    return this.qrcode.textMauvaiseReponse;
+  }
+
+  getDataString() {
+    return JSON.stringify(this.qrcode);
   }
  }
 
