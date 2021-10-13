@@ -10,6 +10,8 @@ var sketch = function (p) {
 	p.linkArray = [];
 	/** Le bouton de création de question */
 	p.buttonCreateQuestion;
+	/** Le bouton de création de champ de texte */
+	p.buttonCreateTextNode;
 	/** Paramètre gérant la translation du canvas sur l'axe des x */
 	p.translateX = 0;
 	/** Paramètre gérant la translation du canvas sur l'axe des y */
@@ -24,6 +26,7 @@ var sketch = function (p) {
 	p.initY = 0;
 	/** Paramètre du canvas */
 	p.seriousGameCanvas;
+	/** État pour la création de noeud suivant la souris */
 	p.hoveringNode = false;
 
 	p.creatingLink = false;
@@ -53,6 +56,12 @@ var sketch = function (p) {
 		p.buttonCreateQuestion.position(20, 150);
 		p.buttonCreateQuestion.mousePressed(p.createNode);
 		p.buttonCreateQuestion.parent("seriousGameDiagram");
+
+		/** Declaration of button to create TextNode */
+		p.buttonCreateTextNode = p.createButton('Créer un champ texte');
+		p.buttonCreateTextNode.position(20, 170);
+		p.buttonCreateTextNode.mousePressed(p.createTextNode);
+		p.buttonCreateTextNode.parent("seriousGameDiagram");
 	}
 
 	/** Event loop */
@@ -96,6 +105,7 @@ var sketch = function (p) {
 		p.nodeArray.push(newNode);*/
 	}
 
+	/** Fonction qui dessine le curseur pour la création des noeuds */
 	p.displayCreateNode = function () {
 		if (p.hoveringNode) {
 			p.push();

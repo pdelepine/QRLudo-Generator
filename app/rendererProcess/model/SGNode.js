@@ -16,7 +16,7 @@ class SGNode {
 		this.offsetX = 0;
 		this.offsetY = 0;
 		this.entryDot = new SGDot(this, this.w / 2, 0);
-		this.exitDots = [];
+		this.exitDot = new SGDot(this, this.w / 2, this.h);
 	}
 
 	setName(name) { this.name = name }
@@ -62,6 +62,7 @@ class SGNode {
 
 	displayDot() {
 		this.entryDot.display();
+		this.exitDot.display();
 	}
 
 	/** When SGNode pressed, begin dragging */
@@ -93,10 +94,8 @@ class SGNode {
 		if(this.entryDot.isMouseHover()) {
 			return true;
 		}
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
-				return true;
-			}
+		if(this.exitDot.isMouseHover()) {
+			return true;
 		}
 		return false;
 	}
@@ -105,11 +104,8 @@ class SGNode {
 		if(this.entryDot.isMouseHover()) {
 			return this.entryDot;
 		}
-
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
-				return dot;
-			}
+		if(this.exitDot.isMouseHover()) {
+			return this.exitDot;
 		}
 	}
 }
