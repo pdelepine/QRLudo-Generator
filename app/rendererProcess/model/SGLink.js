@@ -66,7 +66,7 @@ class SGLink {
 			}
 			
 			if(this.type === 'dynamic') {
-				myP5.translate(nearestPt.x - myP5.translateX, nearestPt.y - myP5.translateY);
+				myP5.translate((nearestPt.x - myP5.translateX) / myP5.zoom, (nearestPt.y - myP5.translateY) / myP5.zoom);
 			} else {
 				myP5.translate(nearestPt.x, nearestPt.y);
 			}
