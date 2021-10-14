@@ -49,7 +49,7 @@ var sketch = function (p) {
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
 		/** Link creation between the to Node */
-		let link1 = new SGLink(node1, node1.entryDot, node2, node2.entryDot);
+		let link1 = new SGLink(node1, node1.exitDots[0], node2, node2.entryDot);
 		link1.type = 'static';
 		p.linkArray.push(link1);
 

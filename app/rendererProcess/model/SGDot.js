@@ -6,11 +6,12 @@ class SGDot {
 	 * @param {*} x , x coordinates relative to the nodeToAttach
 	 * @param {*} y , y coordinates relative to the nodeToAttach
 	 */
-	constructor(nodeToAttach, x, y) {
+	constructor(nodeToAttach, x, y, color) {
 		this.nodeToAttach = nodeToAttach;
 		this.x = x;
 		this.y = y;
 		this.d = 20;
+		this.color = new Array(color);
 	}
 
 	getPositionX() {
@@ -26,7 +27,7 @@ class SGDot {
 		if(this.isMouseHover()) {
 			myP5.fill(150, 150, 250);
 		} else {
-			myP5.fill(0, 0, 255);
+			myP5.fill(this.color[0], this.color[1], this.color[2]);
 		}
 		myP5.circle(this.nodeToAttach.x + this.x, this.nodeToAttach.y + this.y, this.d);
 		myP5.pop();

@@ -8,7 +8,8 @@ class SGQuestionNode extends SGNode {
 	 */
 	constructor(x, y, w, h) {
 		super(x, y, w, h);
-		this.entryDot = new SGDot(this, this.w / 2, - this.h);
+		this.entryDot = new SGDot(this, this.w / 2, - this.h, [154, 231, 197]);
+		this.exitDots = [ new SGDot(this, this.w / 2, 0, [86, 101, 90])];
 	}
 
 	isMouseHover() {

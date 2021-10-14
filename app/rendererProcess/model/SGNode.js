@@ -15,8 +15,8 @@ class SGNode {
 		this.h = h;
 		this.offsetX = 0;
 		this.offsetY = 0;
-		this.entryDot = new SGDot(this, this.w / 2, 0);
-		this.exitDots = [];
+		this.entryDot = new SGDot(this, this.w / 2, 0, [154, 231, 197]);
+		this.exitDots = [ new SGDot(this, this.w / 2, this.h, [86, 101, 90])];
 	}
 
 	setName(name) { this.name = name }
@@ -83,9 +83,9 @@ class SGNode {
 	}
 
 	createLink(callback) {
-		if (this.isMouseHoveringDots()) {
+		if (this.isMouseHoveringDots() && !this.entryDot.isMouseHover()) {
 			let endNode = new SGNode(myP5.mouseX, myP5.mouseY, 0, 0);
-			let newLink = new SGLink(this, this.entryDot, endNode, endNode.entryDot);
+			let newLink = new SGLink(this, this.getDotHovering(), endNode, endNode.entryDot);
 			newLink.type = 'dynamic';
 			callback(newLink);
 		}
