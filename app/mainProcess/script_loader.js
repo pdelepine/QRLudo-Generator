@@ -35,15 +35,22 @@ const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger()
 const store = remoteElectron.getGlobal('sharedObject').store;
 
 console.log('Root : ' + root);
-console.log('Root replace : ' + root.replace(/\s+/g, '\\$1'));
+
+function getNormalizePath(pathToNormalize) {
+  if(process.platform === 'win32') {
+    return path.resolve(pathToNormalize).replaceAll(/[^\\]*\s+[^\\]*/g, "\"$&\"").replaceAll(/\\/g, "\\\\");
+  } else {
+    return pathToNormalize;
+  }
+}
 /** Import de $ comme appel à jQuery */
-window.$ = window.jQuery = require(path.normalize(root + "/rendererProcess/utils/jquery/jquery.min.js"));
-require(path.normalize(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js"));
-require(path.normalize(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js"));
-require(path.normalize(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js"));
-require(path.normalize(root + "/rendererProcess/utils/bootstrap.min.js"));
-require(path.normalize(root + "/rendererProcess/utils/fontawesome/solid.js"));
-require(path.normalize(root + "/rendererProcess/utils/fontawesome/fontawesome.js"));
+window.$ = window.jQuery = require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.min.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/bootstrap.min.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/fontawesome/solid.js"));
+require(getNormalizePath(root + "/rendererProcess/utils/fontawesome/fontawesome.js"));
 
 /** Create QRLudo temp folder if not exist
  * C'est ici que sont entreposé les fichier télécharger de dropbox et google drive
@@ -125,45 +132,45 @@ if (!navigator.onLine) {
 const { ipcRenderer } = require('electron');
 const dialog = remoteElectron.dialog;
 
-const { CompresseurTexte } = require(`${root}/rendererProcess/controller/CompresseurTexte`);
-const { ControllerMultiple } = require(`${root}/rendererProcess/controller/ControllerMultiple`);
-const { FacadeController } = require(`${root}/rendererProcess/controller/FacadeController`);
-const { ImageGenerator } = require(`${root}/rendererProcess/controller/ImageGenerator`);
-const { ImageGeneratorJson } = require(`${root}/rendererProcess/controller/ImageGeneratorJson`);
-const { JsonCompressor } = require(`${root}/rendererProcess/controller/JsonCompressor`);
-const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveConverter`);
-const { QRCodeLoader } = require(`${root}/rendererProcess/controller/QRCodeLoader`);
-const { QRCodeLoaderJson } = require(`${root}/rendererProcess/controller/QRCodeLoaderJson`);
+const { CompresseurTexte } = require(getNormalizePath(`${root}/rendererProcess/controller/CompresseurTexte`));
+const { ControllerMultiple } = require(getNormalizePath(`${root}/rendererProcess/controller/ControllerMultiple`));
+const { FacadeController } = require(getNormalizePath(`${root}/rendererProcess/controller/FacadeController`));
+const { ImageGenerator } = require(getNormalizePath(`${root}/rendererProcess/controller/ImageGenerator`));
+const { ImageGeneratorJson } = require(getNormalizePath(`${root}/rendererProcess/controller/ImageGeneratorJson`));
+const { JsonCompressor } = require(getNormalizePath(`${root}/rendererProcess/controller/JsonCompressor`));
+const { MDFiveConverter } = require(getNormalizePath(`${root}/rendererProcess/controller/MDFiveConverter`));
+const { QRCodeLoader } = require(getNormalizePath(`${root}/rendererProcess/controller/QRCodeLoader`));
+const { QRCodeLoaderJson } = require(getNormalizePath(`${root}/rendererProcess/controller/QRCodeLoaderJson`));
 
 /**
  * On charge les modèle de données 
  */
 
-const { DictionnaireXml } = require(`${root}/rendererProcess/model/DictionnaireXml`);
-const { Music } = require(`${root}/rendererProcess/model/Music`);
-const { QRCode } = require(`${root}/rendererProcess/model/QRCode`);
-const { QRCodeAtomique } = require(`${root}/rendererProcess/model/QRCodeAtomique`);
-const { QRCodeMultiple } = require(`${root}/rendererProcess/model/QRCodeMultiple`);
-const { QRCodeMultipleJson } = require(`${root}/rendererProcess/model/QRCodeMultipleJson`);
+const { DictionnaireXml } = require(getNormalizePath(`${root}/rendererProcess/model/DictionnaireXml`));
+const { Music } = require(getNormalizePath(`${root}/rendererProcess/model/Music`));
+const { QRCode } = require(getNormalizePath(`${root}/rendererProcess/model/QRCode`));
+const { QRCodeAtomique } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeAtomique`));
+const { QRCodeMultiple } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeMultiple`));
+const { QRCodeMultipleJson } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeMultipleJson`));
 const { QRCodeUnique,
-  QRCodeXL } = require(`${root}/rendererProcess/model/QRCodeJson`);
+  QRCodeXL } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeJson`));
 
-const { QRCodeXMLJson } = require(`${root}/rendererProcess/model/QRCodeXMLJson`);
+const { QRCodeXMLJson } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeXMLJson`));
 
 const { Projet,
   Reponse,
-  Question } = require(`${root}/rendererProcess/model/QRCodeQuestionReponse`);
+  Question } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeQuestionReponse`));
 
 const { QRCodeQCM,
-  ReponseVocale } = require(`${root}/rendererProcess/model/QRCodeQCM`);
+  ReponseVocale } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeQCM`));
 
 const { ProjetSeriousGame,
   QRCodeSeriousGame,
   QRCodeQuestion,
   RecVocaleQuestion,
-  ReponseQuestionQR } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
+  ReponseQuestionQR } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeSeriousGame`));
 
-const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
+const { QRCodeQuestionOuverte } = require(getNormalizePath(`${root}/rendererProcess/model/QRCodeQuestionOuverte`));
 
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();

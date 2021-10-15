@@ -5,41 +5,41 @@
 /** ce fichier regroupe toutes les fonctions et scripts en commun avec les autres pages */
 $(function() {
   /** Affichage de l'accueil au lancement de l'application */
-  $("#charger-page").load(root + "/rendererProcess/view/accueil/accueil.html", loadDefaultColor);
+  $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/accueil/accueil.html"), loadDefaultColor);
 
   /** Pour chaque item dans le menu on charge une page html */
   $("#accueil-html").on('click',function() {
-    $("#charger-page").load(root + "/rendererProcess/view/accueil/accueil.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/accueil/accueil.html"), loadDefaultColor);
     logger.info('Déplacement page : accueil');
   });
   $("#unique-html").on('click',function() {
     isImportationQRUnique = false;
-    $("#charger-page").load(root + "/rendererProcess/view/uniqueQr/unique.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/uniqueQr/unique.html"), loadDefaultColor);
     logger.info('Déplacement page : QRCode Unique');
   });
   $("#multiple-html").on('click',function() {
-    $("#charger-page").load(root + "/rendererProcess/view/multipleQr/multiple.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/multipleQr/multiple.html"), loadDefaultColor);
     logger.info('Déplacement page : QRCode Multiple');
   });
   $("#quesRep-html").on('click',function() {
-    $("#charger-page").load(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html"), loadDefaultColor);
     logger.info('Déplacement page : Exercice QRCode');
   });
   $("#rec-vocale-html").on('click',function() {
     isImportationExerciceRecoVocaleQCM = false;
-    $("#charger-page").load(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), loadDefaultColor);
     logger.info('Déplacement page : Exercice à Reconnaissance vocale');
   });
   $("#serious-html").on('click',function() {
-    $("#charger-page").load(root + "/rendererProcess/view/seriousGame/seriousGame.html", loadDefaultColor);
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/seriousGame/seriousGame.html"), loadDefaultColor);
     logger.info('Déplacement page : Serious Game');
   });
   $("#parametres").on('click',function(){
-    $("#charger-page").load(root + "/rendererProcess/view/parametres/parametres.html");
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/parametres/parametres.html"));
     logger.info('Déplacement page : paramètres');
   });
   $("#infos").on('click',function(){
-    $("#charger-page").load(root + "/rendererProcess/view/aide/info.html");
+    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/aide/info.html"));
     logger.info('Déplacement page : aide');
   });
 

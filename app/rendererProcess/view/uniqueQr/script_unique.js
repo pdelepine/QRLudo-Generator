@@ -616,5 +616,5 @@ function disableButtonAddNewData() {
 /** pour ouvrir la page info.html quand on clique sur le bouton info du haut */
 $("#infos-unique").on('click',function () {
   require('electron').remote.getGlobal('sharedObject').ongletAideActif = 'unique'
-  $("#charger-page").load(root + "/rendererProcess/view/aide/info.html");
+  $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/aide/info.html"));
 });
