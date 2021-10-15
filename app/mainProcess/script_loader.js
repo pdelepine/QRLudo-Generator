@@ -34,15 +34,16 @@ const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger()
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
 
-
+console.log('Root : ' + root);
+console.log('Root replace : ' + root.replace(/\s+/g, '\\$1'));
 /** Import de $ comme appel à jQuery */
-window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
-require(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js");
-require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js");
-require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js");
-require(root + "/rendererProcess/utils/bootstrap.min.js");
-require(root + "/rendererProcess/utils/fontawesome/solid.js");
-require(root + "/rendererProcess/utils/fontawesome/fontawesome.js");
+window.$ = window.jQuery = require(path.normalize(root + "/rendererProcess/utils/jquery/jquery.min.js"));
+require(path.normalize(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js"));
+require(path.normalize(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js"));
+require(path.normalize(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js"));
+require(path.normalize(root + "/rendererProcess/utils/bootstrap.min.js"));
+require(path.normalize(root + "/rendererProcess/utils/fontawesome/solid.js"));
+require(path.normalize(root + "/rendererProcess/utils/fontawesome/fontawesome.js"));
 
 /** Create QRLudo temp folder if not exist
  * C'est ici que sont entreposé les fichier télécharger de dropbox et google drive
