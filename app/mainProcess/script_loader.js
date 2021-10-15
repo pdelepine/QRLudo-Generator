@@ -38,14 +38,14 @@ console.log('Root : ' + root);
 
 function getNormalizePath(pathToNormalize) {
   if(process.platform === 'win32') {
-    console.log(path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\"));
+    logger.info('Transformation du chemin en : ' + path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\"));
     return path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\");
   } else {
     return pathToNormalize;
   }
 }
 /** Import de $ comme appel à jQuery */
-console.log(require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.min.js")));
+logger.info('Test si require fonctionne : ' + require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.min.js")));
 window.$ = window.jQuery = require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.min.js"));
 require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js"));
 require(getNormalizePath(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js"));
