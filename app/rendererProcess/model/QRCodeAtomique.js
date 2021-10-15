@@ -10,9 +10,8 @@
  * 2017
  **/
 
-const root = __dirname.match(`.*app`)[0];
-const { QRCode } = require(`${root}/rendererProcess/model/QRCode.js`);
-const { DictionnaireXml } = require(`${root}/rendererProcess/model/DictionnaireXml`);
+const { QRCode } = require(getNormalizePath(`${root}/rendererProcess/model/QRCode.js`));
+const { DictionnaireXml } = require(getNormalizePath(`${root}/rendererProcess/model/DictionnaireXml`));
 
 /**
  * Classe permettant de stocker et d'accéder aux données contenues dans un QRCode de type atomique

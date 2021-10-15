@@ -9,8 +9,7 @@
  * 2017
  **/
 
-const root = __dirname.match(`.*app`)[0];
-const { DictionnaireXml } = require(`${root}/rendererProcess/model/DictionnaireXml.js`);
+const { DictionnaireXml } = require(getNormalizePath(`${root}/rendererProcess/model/DictionnaireXml.js`));
 /**
  * Classe permettant de stocker et d'accéder au données contenues dans un QRCode
  */
