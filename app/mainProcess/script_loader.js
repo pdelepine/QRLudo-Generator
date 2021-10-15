@@ -38,7 +38,7 @@ console.log('Root : ' + root);
 
 function getNormalizePath(pathToNormalize) {
   if(process.platform === 'win32') {
-    return path.resolve(pathToNormalize).replaceAll(/[^\\]*\s+[^\\]*/g, "\"$&\"").replaceAll(/\\/g, "\\\\");
+    return path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\");
   } else {
     return pathToNormalize;
   }
