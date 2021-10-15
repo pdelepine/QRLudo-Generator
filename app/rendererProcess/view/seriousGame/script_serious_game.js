@@ -968,7 +968,7 @@ $("#saveQRCode").on('click', function () {
 
 /** Cette fonction sauvegarde l'image du qrcode dans un div pour le pouvoir generer apres */
 function saveQRCodeImage(div, qrcode, directoryName) {
-  let img = $(div).children()[0].src;
+  let img = document.getElementById("qrView").children[0].src;
   //let data = img.replace(/^data:image\/\w+;base64,/, '');
   let matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
   let data = new Buffer(matches[2], 'base64');
