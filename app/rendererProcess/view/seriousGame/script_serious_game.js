@@ -70,7 +70,7 @@ var sketch = function (p) {
 
 	/** Event loop */
 	p.draw = function () {
-		p.background("#DAE4E4");
+		p.background("#e1f1ff");
 		/*console.log(`Mouse x ${mouseX} y ${mouseY}`);
 		console.log(`Zoom ${p.zoom}`);*/
 
@@ -92,10 +92,12 @@ var sketch = function (p) {
 	/** Fonction de dessin de la palette de bouton de création  */
 	p.drawPalette = function () {
 		p.push();
-		p.fill(200);
+		p.fill('#677798');
 		p.rect(0, 0, 150, p.parentDiv.height);
 		p.fill(0);
-		p.text("Palette", 55, 20);
+		p.textSize(20);
+		p.textFont('Helvetica');
+		p.text("Palette", 45, 25);
 		p.pop();
 	}
 
@@ -138,12 +140,14 @@ var sketch = function (p) {
 
 	/** Fonction qui gère le déplacement du dessin avec un clic gauche */
 	p.moveDiagram = function () {
-		let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
-		let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
-		if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
-			if (p.mouseIsPressed && p.mouseButton === p.LEFT) {
-				p.translateX = p.initX + (p.mouseX - p.diagramOffsetX);
-				p.translateY = p.initY + (p.mouseY - p.diagramOffsetY);
+		if (p.mouseIsPressed && p.mouseButton === p.LEFT) {
+			if (p.mouseX < p.width && p.mouseX > 0 && p.mouseY < p.height && p.mouseY > 0) {
+				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
+				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
+				if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
+					p.translateX = p.initX + (p.mouseX - p.diagramOffsetX);
+					p.translateY = p.initY + (p.mouseY - p.diagramOffsetY);
+				}
 			}
 		}
 	}
