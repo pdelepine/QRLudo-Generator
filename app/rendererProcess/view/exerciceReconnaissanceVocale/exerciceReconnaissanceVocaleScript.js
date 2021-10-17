@@ -48,6 +48,7 @@ function genererJsonQCM(){
   if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
     //création d'un nouveau projetQCM
     projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
+    questionQCM=projet;
 
     initMessages();
 
@@ -347,7 +348,7 @@ function saveQRCodeImage(questionQCM, questionOuverte) {
   logger.info('Exportation du QR Code de l\'exercice à reconnaissance vocale');
 
   let img = $('#qrView img')[0].src;
-var qrcode
+  var qrcode;
   var data = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
 
   if (questionOuverte == null) {
@@ -367,8 +368,8 @@ var qrcode
       var filesaver = require('file-saver');
       console.log(xhr.response);
       //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un bolléen
-      if (filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg') == true) {
-        console.log(filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg').getName);
+      if (filesaver.saveAs(xhr.response, qrcode.getId() + '.png') == true) {
+        console.log(filesaver.saveAs(xhr.response, qrcode.getId() + '.png').getName);
         messageInfos("Le QR code a bien été enregistré", "success"); //message a afficher en haut de la page
       }
 
