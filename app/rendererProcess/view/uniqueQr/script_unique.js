@@ -354,7 +354,7 @@ function getMusicFromUrl() {
 
             logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
 
-            ajouterChampSon(filename, link);
+            changementChampLegendeEnChampSon(filename, link);
           } else {
             logger.error('Le fichier n\'est pas un fichier audio');
             showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
@@ -420,6 +420,9 @@ function ajouterChampLegende(valeur = "") {
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
     <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (255 caractères maximum)'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});">${valeur}</textarea>
+    <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});'>
+      <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+    </button>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success align-self-center legendeQR-close-btn' onclick='supprimerChampLegende(this, ${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>
@@ -504,6 +507,28 @@ function supprimerChampLegende(e, numText) {
 
   //calcul et mise a jour de la bar de progression
   SetProgressBar();
+}
+
+//permet de savoir quel bouton audio a été clické
+var audioSource="";
+
+/** Fonction qui modifie la variable audioSource */
+function changementAudioSource(numText){
+  audioSource=numText;
+}
+
+/** Fonction qui modifie un champ legende en champ son */
+function changementChampLegendeEnChampSon(nom, url){
+  let textArea = document.getElementById("textarea"+audioSource);
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+  //cache le bouton audio
+  let boutonAudio = document.getElementById("showAudio"+audioSource);
+    boutonAudio.style.visibility="hidden";
+  
+//calcul et mise a jour de la bar de progression
+SetProgressBar();
 }
 
 /** generer un input 'pour un fichier audio' -> nom de fichier + url 
