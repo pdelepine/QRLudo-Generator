@@ -420,7 +420,7 @@ function ajouterChampLegende(valeur = "") {
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
     <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (255 caractères maximum)'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});">${valeur}</textarea>
-    <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});'>
+    <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
       <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
     </button>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success align-self-center legendeQR-close-btn' onclick='supprimerChampLegende(this, ${numZoneCourante});'>
