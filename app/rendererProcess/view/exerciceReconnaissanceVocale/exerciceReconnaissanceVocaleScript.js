@@ -318,6 +318,8 @@ function supprimerQuestion(question_id, element) {
             div[last_div+5].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne("+cpt+"," + cpt_rep + ",'Reponse')");
             last_div+=5;
           }
+          div[last_div+1].getElementsByTagName("button")[0].id="ajouterReponseQuestion"+cpt;
+          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");");
           $("#question"+id)[0].id="question"+cpt;
         }
         compteurReponse[compteurQuestion+1]=0;
