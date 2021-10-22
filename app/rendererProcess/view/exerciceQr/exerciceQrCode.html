@@ -34,6 +34,11 @@
                   <input type='text' class="form-control col-sm-14" id="newQuestionText" onkeyup="activerSave('newQuestionText');" name="nomQuest" placeholder="Saisissez la question"/>
                 </div>
               </td>
+              <td>
+                <button type="button" id="newQuestionAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                </button>
+              </td>
             </tr>
             <tr>
               <td>
@@ -44,6 +49,11 @@
                     <input type='text' class="form-control col-sm-14" id="newBonneReponseText" name="nomQuest" onkeyup="activerSave('newBonneReponseText');" placeholder="Saisissez la bonne réponse"/>
                 </div>
               </td>
+              <td>
+                <button type="button" id="newBonneReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                </button>
+              </td>
             </tr>
             <tr>
               <td>
@@ -53,6 +63,11 @@
                 <div class="form-inline">
                   <input type='text' class="form-control col-sm-14" id="newMauvaiseReponseText" name="nomQuest" onkeyup="activerSave('newMauvaiseReponseText');" placeholder="Saisissez la mauvaise réponse"/>
                 </div>
+              </td>
+              <td>
+                <button type="button" id="newMauvaiseReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                </button>
               </td>
             </tr>
             <tr>
@@ -174,6 +189,43 @@
 </div>
 </div>
 <!-- fin fenetre pour ajouter nouvelle reponse  -->
+
+<!-- Modal Popup Fichier audio -->
+<div class="modal fade" id="listeMusic" tabindex="-1" role="dialog" data-backdrop="static"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Ajouter un fichier audio</h5>
+                <button type="button" class="close" id="closeModalListeMusic" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body scrollbar-success">
+                <div class="list-group" id="elementsAudio">
+                    <div class="form-group">
+
+                        <label class="col-sm-12 control-label" style="color:#28a745;padding-top:10px;">Veuillez copier
+                            et coller le
+                            lien téléchargeable du fichier audio</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="musicUrl" name="musicUrl" class="form-control"
+                                onpaste="getMusicFromUrl()">
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-outline-success" id="showInfo" title="Afficher aide">
+                            <i class="fa fa-info-circle"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Popup Fichier Audio -->
+
 <!--Début Modal-1 -->
 <div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
