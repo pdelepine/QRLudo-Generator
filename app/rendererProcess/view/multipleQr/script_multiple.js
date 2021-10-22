@@ -44,6 +44,7 @@ $().ready(function () {
   //$("#empty").on('click',viderZone);
   $("#emptyFields").on('click', function () {
     viderZone();
+    verifNombreCaractere();
   })
 
   $("#saveQRCode").on('click', e => {
@@ -56,6 +57,8 @@ $().ready(function () {
 
   if (numFich > 0)
     document.getElementById('preview').disabled = false;
+
+verifNombreCaractere();
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -209,6 +212,7 @@ function genererLigne(name, numLigne) {
   /** fonctionnalité bouton delete   && */
   setAttributes(baliseIDelete, { "class": "fa fa-trash-alt ", "height": "8px", "width": "8px" });
   baliseButtonDelete.addEventListener("click", effacerLigne);
+  baliseButtonDelete.addEventListener("click", verifNombreCaractere);
   baliseButtonDelete.setAttribute("class", "btn btn-outline-success float-right");
   baliseButtonDelete.setAttribute("padding", "10px 10px");
   baliseButtonDelete.appendChild(baliseIDelete);
@@ -382,6 +386,108 @@ function saveQRCodeImage() {
   
   logger.info("Exportation du QR Code multiple");
 }
+
+/**  function pour calculer le nombre de caractères du QRcode Multiple intermédiaire */
+function caractDansQRMult (){
+  let char = 0;
+  let qrColor = $('#qrColor').val();
+  let qrName = $('#qrName').val();
+  let qrData = "random String";
+
+  let newQrMult = new QRCodeMultipleJson(qrName, qrData, qrColor);
+  
+  char += qrColor.length;
+  char += newQrMult.getType().length;
+  char ++ ;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson 
+  char +=63;  // la taille de  {"name":"","type":"ensemble","data":[],"color":"","version":""}
+
+return char;
+}
+
+
+/**  une fonction pour calculer la somme des caractères de chaque qrcode unique */
+function caractDeQRCodesUniques(){
+  let char = 0;
+  let qrcodes = controllerMultiple.getQRCodeAtomiqueArray();
+
+  for (const element of qrcodes) {
+      char += element.getData().toString().length;
+      char += element.getColor().toString().length;
+      char += element.getId().toString().length; 
+      char += element.getName().toString().length; 
+      char += element.getType().toString().length; 
+      char += 63; // la taille de {"qrcode":{"id":"","name":"","type":"","data":[""],"color":""}}
+  }
+
+  char += caractDansQRMult();  // plus les caractères dans le qrmult
+  return char;
+}
+
+function verifNombreCaractere() {
+
+  var nombreCaratereMAX = 1240;
+  //progress bar gestion
+  var total = SetProgressBar();
+
+  $('#messages').empty();
+
+  if (total >= nombreCaratereMAX) {
+    messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
+    //si nombre de caractére max attein on disable le button pour l'ajoute d'autre qrCode
+    document.getElementById("addNewQR").disabled=true;  
+    document.getElementById("qrName").setAttribute("maxlength", 0);
+  }
+  else {
+    document.getElementById("addNewQR").disabled=false;
+    document.getElementById("qrName").setAttribute("maxlength", nombreCaratereMAX);
+  }
+
+  // si le nombre de caractére max n'est pas attein mais le progress bar est > 85%, on disable le button d'ajoute 
+  if (Math.round((total * 100) / nombreCaratereMAX)>=85){
+    document.getElementById("addNewQR").disabled=true;
+  }
+
+  // si le champ de qrName est vide ou si le pourcentage>100 , on disable le button de génération de QRcode
+  if (document.getElementById("qrName").value.length==0 || total > nombreCaratereMAX){
+    
+    document.getElementById("preview").disabled=true;
+  
+  } else {
+
+    document.getElementById("preview").disabled=false;
+
+  }
+
+if (document.getElementById("qrName").value.length==0 && controllerMultiple.getQRCodeAtomiqueArray()==0)
+    {
+      document.getElementById("progressbarId").style.width=0;
+    }
+
+}
+
+
+/** foncion qui fait la mis à jour de Progress Bar */
+function SetProgressBar() {
+  //progress bar gestion
+  var total = 0;
+
+  var nombreCaratereMAX = 1240;
+
+  if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
+
+  // on ajoute la tailles des uniques qrcodes
+  total += caractDeQRCodesUniques();   
+  
+  var totalSeted = Math.round((total * 100) / nombreCaratereMAX);
+
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
+
 
 
 /** fonction deplacement de fichier vers le haut ou bas  &&& */
