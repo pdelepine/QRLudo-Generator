@@ -162,3 +162,6 @@ const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQ
 
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();
+
+const jsQR = require("jsqr");
+const Jimp = require('jimp');

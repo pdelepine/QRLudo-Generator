@@ -87,8 +87,31 @@ class FacadeController {
     //   console.log(qrcode);
     //   callback(qrcode); // faire le view du qrcode
     // });
-    QRCodeLoader.loadImage(file, callback);
+
+   // QRCodeLoader.loadImage(file, callback);
+  
+    var buffer = fs.readFileSync(file);
+
+    Jimp.read(buffer, function(err, image) {
+
+        if (err) {
+            console.error(err);
+            logger.error('Impossible de lire l\'Image de QR Code');
+        }
+       
+          const code = jsQR(image.bitmap.data, image.bitmap.width, image.bitmap.height);
+
+          if (code) {
+           // console.log("Found QR code", code);
+            QRCodeLoaderJson.loadImage(code.data,callback);
+          } else {
+            logger.error('Impossible de Décoder le QR Code');
+          }
+         
+    });
+
   }
+
 
   /** Renvoie la taille réelle du qrcode après compression */
   getTailleReelleQRCode(qrcode) {
