@@ -182,8 +182,17 @@ function addReponseLine(reponse) {
 $("#genererQestion").on('click', function () {
   $("#ajoutNewReponse").attr('disabled', false);
   let question = $('#newQuestionText').val();
+  if (question.substring(question.length - 3, question.length) == "mp3") {
+    question = document.getElementById("newQuestionText").name;
+  }
   let bonneReponse = $('#newBonneReponseText').val();
+  if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
+    bonneReponse = document.getElementById("newBonneReponseText").name;
+  }
   let mauvaiseReponse = $('#newMauvaiseReponseText').val();
+  if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
+    mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
+  }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();
 
