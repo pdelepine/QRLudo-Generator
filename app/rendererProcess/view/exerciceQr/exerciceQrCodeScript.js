@@ -539,7 +539,7 @@ function previewQRCodeQuestion() {
   var question = projet.getQuestion();
   question.qrcode.color = $('#qrColor').val();
   previewQRCode(question, $('#qrView')[0]);
-  logger.info(`Génération du QR Code Unique : ${JSON.stringify(question.qrcode)}`);
+  logger.info(`Génération du QR Code ExerciceQR : ${JSON.stringify(question.qrcode)}`);
 }
 
 // Previsualiser les reponses
