@@ -63,8 +63,9 @@ class FacadeController {
       });
 
       $('#saveQRCode, #listenField').attr('disabled', false);
-    } catch (e) {
-      logger.error('Problème fans la fonction genererQRCode du FacadeController');
+    } catch(e) {
+      logger.error('Problème dans la fonction genererQRCode du FacadeController');
+      logger.error(e);
     }
   }
 

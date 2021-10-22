@@ -31,6 +31,7 @@ const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
 const QRCodeGenerator = require('qrcode');
+const { setTimeout } = require('timers');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
@@ -112,7 +113,7 @@ switch (process.platform) {
     break;
 }
 
-/** Check internet connection */
+/** Check internet connection 
 logger.info('Test de la connexion internet');
 if (!navigator.onLine) {
   logger.error(`L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet`);
@@ -120,7 +121,7 @@ if (!navigator.onLine) {
   window.close();
 } else {
   logger.info('L\'application est bien connectée à internet');
-}
+}*/
 
 const { ipcRenderer } = require('electron');
 const dialog = remoteElectron.dialog;
@@ -147,8 +148,9 @@ const { Projet,
   Reponse,
   Question } = require(`${root}/rendererProcess/model/QRCodeQuestionReponse`);
 
-const { QRCodeQCM,
-  ReponseVocale } = require(`${root}/rendererProcess/model/QRCodeQCM`);
+const { ProjetQCM,
+  QuestionQCM,
+  ReponseQCM } = require(`${root}/rendererProcess/model/QRCodeQCM`);
 
 const { ProjetSeriousGame,
   QRCodeSeriousGame,

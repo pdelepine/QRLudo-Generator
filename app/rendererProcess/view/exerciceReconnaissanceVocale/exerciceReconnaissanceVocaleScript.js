@@ -8,53 +8,56 @@ function genererJson() {
 }
 
 var questionQCM =null;
-var questionQCMQRCode;
 
 function genererJsonQCM(){
   questionOuverte = null;
-  var questionText = $("#QuestionQCM").val();
-  var reponseParIdentifiant = $("#reponseParIdentifiant").is(':checked');
   var messageBonneReponse = $("#MessageBonnereponseQCM").val();
   var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
+  var questions = [];
 
-  var reponses = [];
-  // Ajout de la réponse 1 
-  var controlLabel1 = "réponse numéro 1";
-  var isGoodAnswer1 = $("#divQuestion1 #gridCheck1").is(':checked');
-  var responseText1 = $("#divQuestion1 #reponseinitiale").val();
-  let reponse1 = new ReponseVocale(controlLabel1, isGoodAnswer1, responseText1);
-  reponses.push([reponse1.getNumeroEnigme(), reponse1.getEstBonneReponse(), reponse1.getTextQuestion()]);
-
-  // Ajout des autres réponses
-  $("#repContainer .form-row").each(function(index){
-    var controlLabel = "réponse numéro ".concat(index + 2);
-    var isGoodAnswer = $(this).find("#gridCheck".concat(index + 2)).is(':checked');
-    var responseText = $(this).find("#reponse".concat(index + 2)).val();
-    let reponse = new ReponseVocale(controlLabel, isGoodAnswer, responseText);
-    reponses.push([reponse.getNumeroEnigme(), reponse.getEstBonneReponse(), reponse.getTextQuestion()]);
-  });
-
-  // On vérifie que les réponses sont complètes avant de générer le QR code
-  var reponsesComplete = true;
-  for(let i = 0; i < reponses.length; i++) {
-    if(reponses[i][2] === "") { // reponses[i][2] correspond au texte de la réponse
-      reponsesComplete = false;
-      break;
+  for(let i = 1;i <= compteurQuestion;++i){
+    var questionText = $("#textQuestion"+i.toString()).val();
+    var reponses = [];
+    // Ajout des réponss
+    for(let j=1;j <= compteurReponse[i];++j){
+      var id = "question"+i.toString()+"reponse"+j.toString();
+      var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
+      var responseText = $("#question"+i.toString()+"reponse"+j.toString()).val();  
+      //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
+      let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
+      reponses.push(reponse);
+    }
+    // On vérifie que les réponses sont complètes avant de générer le QR code
+    var reponsesComplete = true;
+    for(let i = 0; i < reponses.length; i++) {
+      if(reponses[i].getReponse() === "") { // reponses[i].getReponse() correspond au texte de la réponse
+        reponsesComplete = false;
+        break;
+      }
+    }
+    if(questionText !== "" && reponsesComplete) {
+      //création d'une questionQCM et on l'ajoute dans le tableau des questions 
+      id = "question"+i.toString();
+      question = new QuestionQCM(id,questionText,reponses);
+      questions.push(question);
+    }
+    else{
+      messageInfos("Veuillez remplir tous les champs.", "danger");
     }
   }
+  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
+    //création d'un nouveau projetQCM
+    projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
+    questionQCM=projet;
 
-  if(questionText !== "" && messageBonneReponse != "" && messageMauvaiseReponse != "" && reponsesComplete) {
-    questionQCM = new QRCodeQCM(questionText, reponses, reponseParIdentifiant, messageBonneReponse, messageMauvaiseReponse);
-    
     initMessages();
 
-    console.log(questionQCM.qrcode);
-    questionQCMQRCode = questionQCM.qrcode
     // On génére le QrCode a afficher
     previewQRCodeQCM();
     // On affiche le qrCode
     $('#qrView').show();
-    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(questionQCM) }`);
+    console.log(JSON.stringify(projet.qrcode));
+    logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${ JSON.stringify(projet.qrcode) }`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
     logger.error(`Génération du QR Code QCM impossible : certains champs ne sont pas remplis`);
@@ -62,7 +65,7 @@ function genererJsonQCM(){
 }
 
 function previewQRCodeQCM() {
-  previewQRCode(questionQCM, $('#qrView')[0]);
+  previewQRCode(projet, $('#qrView')[0]);
 }
 
 
@@ -101,7 +104,6 @@ function previewQRCodeQuestionOuverte() {
 // generate and print qr code
 function previewQRCode(qrcode, div) {
   let facade = new FacadeController();
-  qrcode.qrcode.color = $('#qrColor').val();
   facade.genererQRCode(div, qrcode);
 }
 
@@ -117,81 +119,145 @@ $(document).ready(function() {
 
   initMessages();
 
-  // Ajouter une nouvelle Reponse une fois qu'on va clicker sur la button Ajouterreponse
-  $("#ajouterQuestion").on('click',function () {
-    ajouterNouvelleReponse();
 
-  })
 
   // Aucun champs audio à lire dans cet onglet
   $("#play-sound-div").hide();
 });
 
-// Ajouter une nouvelle Reponse une fois qu'on va clicker sur la button Ajouterreponse
+// Ajouter une nouvelle Reponse une fois qu'on va clicker sur le button AjouterReponse
 
-var compteurReponse = 1;
-function ajouterNouvelleReponse(contenu = "", isBonneRep = false){
-  compteurReponse++;
+var compteurReponse = {1:1};
+var compteurQuestion = 1;
+function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1){
+  compteurReponse[question_id]++;
   logger.info('Ajout d\'une nouvelle réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
-  if (compteurReponse < 30) {
+  if (compteurReponse[question_id] < 30) {
     type = "Reponse";
     let reponse = document.createElement('div');
-    reponse.innerHTML = `<div class="form-row" id="divQuestion` + compteurReponse + `">
+    reponse.innerHTML = `<div class="form-row" id="divquestion` + question_id + `reponse`+ compteurReponse[question_id] +`">
                             <div class="form-group col-md-3">
-                                  <label class="control-label">Réponse `+ compteurReponse + ` :</label>
+                                  <label class="control-label">Réponse `+ compteurReponse[question_id] + ` :</label>
                                 </div>
                           <div class="form-group col-md-6">
                             <span class="row">
-                                <input type="text" class="form-control col-sm-6" id="reponse`+ compteurReponse + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('reponse`+compteurReponse+`');">
+                                <input type="text" class="form-control col-sm-6" id="question` + question_id + `reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `reponse`+compteurReponse[question_id]+`');">
                                 <i class="fas fa-info-circle mt-2 ml-2" 
                                     title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
                                     data-toggle="tooltip" data-placement="right"></i>
                               </span>
                            </div>
                            <div class="form-group col-md-2">
-                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheck`+ compteurReponse + `" style="width:70px;" 
-                                      value="option"` + compteurReponse + `" onclick="activerSaveCheckbox('gridCheck`+compteurReponse+`')" >
-                                      <label class="form-check-label" for="gridCheck`+ compteurReponse + `">
+                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id +`Reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
+                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + question_id +`reponse`+compteurReponse[question_id]+`')" >
+                                      <label class="form-check-label" for="gridCheck`+ compteurReponse[question_id] + `">
                             </div>
                             <div class="form-group col-md-1">
-                                <button id="deleteQRCode`+ compteurReponse + `" type="button"
-                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(` + compteurReponse + ",\'" + type + `\');">
+                                <button id="deleteQRCodequestion` + question_id +`reponse`+ compteurReponse[question_id] + `" type="button"
+                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(`+question_id+"," + compteurReponse[question_id] + ",\'" + type + `\');">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                     </div>
                             </div>`;
 
-    let container = $("#repContainer");
+    let container = $("#repContainer"+question_id);
     container.append(reponse);
 
-    $("#reponse"+ compteurReponse).val(contenu);
-    $("#gridCheck"+ compteurReponse).prop('checked', isBonneRep);
+    $("#reponse"+ compteurReponse[question_id]).val(contenu);
+    $("#gridCheck"+ compteurReponse[question_id]).prop('checked', isBonneRep);
 
-    store.set("nbReponse",compteurReponse);
+    store.set("nbReponse",compteurReponse[question_id]);
   }
 }
+
+function ajouterNouvelleQuestion(){
+  compteurQuestion++;
+  compteurReponse[compteurQuestion]=1;
+  type = "Reponse";
+  logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
+  let question = document.createElement('div');
+  question.innerHTML = `<div class="question" id="`+compteurQuestion+`">
+                          <div class="question-intro">
+                            <div class="row"> 
+                              <label class="control-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
+                              <input type="text" class="form-control input-lg" style="width:400px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
+                                placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
+                              <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
+                                <i class="fa fa-chevron-up pull-right"></i>
+                                <i class="fa fa-chevron-down pull-right"></i>
+                              </button>
+                              <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="collapse" id="collapseQuestion`+compteurQuestion+`">
+                            <br>
+                            <div class="form-row">
+                              <div class="form-group col-md-10" style="text-align: right;">
+                                <label>Bonne(s) réponse(s)</label>
+                              </div>
+                            </div>
+                            <div class="form-row" id="divquestion` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] +`">
+                              <div class="form-group col-md-3">
+                                <label class="control-label">Réponse `+ compteurReponse[compteurQuestion] + ` :</label>
+                              </div>
+                              <div class="form-group col-md-6">
+                                <span class="row">
+                                  <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `reponse`+compteurReponse[compteurQuestion]+`');">
+                                  <i class="fas fa-info-circle mt-2 ml-2" 
+                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
+                                    data-toggle="tooltip" data-placement="right"></i>
+                                </span>
+                              </div>
+                              <div class="form-group col-md-2">
+                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + compteurQuestion +`Reponse`+ compteurReponse[compteurQuestion] + `" style="width:70px;" 
+                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + compteurQuestion +`reponse`+compteurReponse[compteurQuestion]+`')" >
+                                <label class="form-check-label" for="gridCheck`+ compteurReponse[compteurQuestion] + `">
+                              </div>
+                              <div class="form-group col-md-1">
+                                <button id="deleteQRCodequestion` + compteurQuestion +`reponse`+ compteurReponse[compteurQuestion] + `" type="button"
+                                    class="btn btn-outline-success align-self-center" onclick="supprLigne(`+compteurQuestion+"," + compteurReponse[compteurQuestion] + ",\'" + type + `\');">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                              </div>
+                            </div>
+                            <div id="repContainer`+compteurQuestion+`"></div>
+                            <div class="form-group col-md-6">
+                              <label style="color:#a5b2af;">Ajouter une réponse</label>
+                              <button id="ajouterReponse1" type="button"
+                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);" style="color:#a5b2af;" name="ajouterReponse">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>`;
+
+    let container = $("#questionContainer");
+    container.append(question);
+  }
 
 
 
 //Pour supprimer une énigme ou bien une réponse 
-function supprLigne(idLigne, element) {
+function supprLigne(question_id,idLigne, element) {
   if (element == "Reponse") {
-    if(compteurReponse>1){
-      compteurReponse--;
+    if(compteurReponse[question_id]>1){
+      compteurReponse[question_id]--;
       logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
-      store.set("nbReponse",compteurReponse);
-      $("#divQuestion" + idLigne).on('click', function() {
+      store.set("nbReponse",compteurReponse[question_id]);
+      $("#divquestion" +question_id+"reponse"+ idLigne).on('click', function() {
         $(this).remove();
-        for(let cpt = idLigne; cpt <= compteurReponse; cpt++) {
+        for(let cpt = idLigne; cpt <= compteurReponse[question_id]; cpt++) {
           let id = cpt+1;
-          let div = $("#divQuestion" + id)[0].getElementsByTagName("div");
+          let div = $("#divquestion"+question_id+"reponse" + id)[0].getElementsByTagName("div");
           div[0].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt + " :";
-          div[2].getElementsByTagName("input")[0].id = "gridCheck" + cpt;
-          div[2].getElementsByTagName("label")[0].for = "gridCheck" + cpt;
-          div[1].getElementsByTagName("input")[0].id = "reponse" + cpt;
-          div[3].getElementsByTagName("button")[0].id = "deleteQRCode" + cpt;
-          div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne(" + cpt + ",\'" + element +"\')");
-          $("#divQuestion" + id)[0].id = "divQuestion" + cpt;
+          div[2].getElementsByTagName("input")[0].id = "gridCheckquestion"+question_id+"reponse" + cpt;
+          div[2].getElementsByTagName("label")[0].for = "gridCheckquestion"+question_id+"reponse" + cpt;
+          div[1].getElementsByTagName("input")[0].id = "question"+question_id+"reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].id = "deleteQRCodequestion"+question_id+"reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne("+question_id+"," + cpt + ",\'" + element +"\')");
+          $("#divquestion"+question_id+"reponse" + id)[0].id = "divquestion"+question_id+"reponse" + cpt;
 
           if(store.get(`reponse${id}`) && store.get(`gridCheck${id}`)) {
             store.set(`reponse${cpt}`, store.get(`reponse${id}`));
@@ -282,7 +348,7 @@ function saveQRCodeImage(questionQCM, questionOuverte) {
   logger.info('Exportation du QR Code de l\'exercice à reconnaissance vocale');
 
   let img = $('#qrView img')[0].src;
-var qrcode
+  var qrcode;
   var data = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
 
   if (questionOuverte == null) {
@@ -302,8 +368,8 @@ var qrcode
       var filesaver = require('file-saver');
       console.log(xhr.response);
       //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un bolléen
-      if (filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg') == true) {
-        console.log(filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg').getName);
+      if (filesaver.saveAs(xhr.response, qrcode.getId() + '.png') == true) {
+        console.log(filesaver.saveAs(xhr.response, qrcode.getId() + '.png').getName);
         messageInfos("Le QR code a bien été enregistré", "success"); //message a afficher en haut de la page
       }
 

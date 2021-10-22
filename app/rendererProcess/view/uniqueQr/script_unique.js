@@ -30,7 +30,7 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-
+  
 
   // desactiver les boutons s'il y a rien à lire ou generer
   if(document.getElementById('qrName') !== null){
@@ -323,7 +323,6 @@ function previewQRCode(name, data, color, div) {
 
   // instanciate a qrcode unique object
   qrcode = new QRCodeUnique(name, data, color);
-
   let facade = new FacadeController();
   
   facade.genererQRCode(div, qrcode);
@@ -357,79 +356,88 @@ function saveQRCodeImage() {
 }
 
 function getMusicFromUrl() {
-  let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
-  let loader = document.createElement('div');
-  let errorMsg = document.createElement('label');
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
 
-  const { clipboard } = require('electron');
+    const { clipboard } = require('electron');
 
-  let url = clipboard.readText();
-  let xhr = new XMLHttpRequest();
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
 
-  logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
+    logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
 
-  Music.getDownloadLink(url, link => {
-    if (link == null) {
-      showError(modal, errorMsg);
-      logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
-      return
-    }
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
+        return
+      }
 
-    try {
-      xhr.open('GET', link, true);
-    } catch (e) {
-      showError(modal, errorMsg);
-    }
-    xhr.responseType = 'blob';
-    xhr.onload = function (e) {
-
-      if (this.status == 200) {
-        let blob = this.response; // get binary data as a response
-        let contentType = xhr.getResponseHeader("content-type");
-
-        if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
-          // get filename
-          let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
-          filename = filename.replace('filename="', '');
-          filename = filename.replace('.mp3"', '.mp3');
-
-          // save file in folder projet/download
-          let fileReader = new FileReader();
-          fileReader.onload = function () {
-            fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
-
-            $(loader, errorMsg).remove();
-            $('#closeModalListeMusic').on('click',); // close modal add music
-          };
-          fileReader.readAsArrayBuffer(blob);
-          set
-          logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
-
-          ajouterChampSon(filename, link);
-        } else {
-          logger.error('Le fichier n\'est pas un fichier audio');
-          showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
-        }
-      } else {
-        // request failed
-        logger.error('La requête de téléchargement a échouée');
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
         showError(modal, errorMsg);
       }
-    };
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
 
-    xhr.onloadstart = function (e) {
-      logger.info(`Début téléchargement du fichier audio`);
-      $(loader).addClass('loader');
-      $(modal).find('.errorLoader').remove();
-      $(modal).prepend(loader); // show loader when request progress
-    };
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
 
-    xhr.onerror = function (e) {
-      showError(modal, errorMsg);
-    };
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
 
-    xhr.send();
-  });
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
+
+            changementChampLegendeEnChampSon(filename, link);
+          } else {
+            logger.error('Le fichier n\'est pas un fichier audio');
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          logger.error('La requête de téléchargement a échouée');
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        logger.info(`Début téléchargement du fichier audio`);
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
@@ -470,6 +478,9 @@ function ajouterChampLegende(valeur = "") {
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
     <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1200 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});">${valeur}</textarea>
+    <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
+      <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+    </button>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success align-self-center legendeQR-close-btn' onclick='supprimerChampLegende(this, ${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>
@@ -566,6 +577,28 @@ function supprimerChampLegende(e, numText) {
 
   //calcul et mise a jour de la bar de progression
   SetProgressBar();
+}
+
+//permet de savoir quel bouton audio a été clické
+var audioSource="";
+
+/** Fonction qui modifie la variable audioSource */
+function changementAudioSource(numText){
+  audioSource=numText;
+}
+
+/** Fonction qui modifie un champ legende en champ son */
+function changementChampLegendeEnChampSon(nom, url){
+  let textArea = document.getElementById("textarea"+audioSource);
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+  //cache le bouton audio
+  let boutonAudio = document.getElementById("showAudio"+audioSource);
+    boutonAudio.style.visibility="hidden";
+  
+//calcul et mise a jour de la bar de progression
+SetProgressBar();
 }
 
 /** generer un input 'pour un fichier audio' -> nom de fichier + url 
