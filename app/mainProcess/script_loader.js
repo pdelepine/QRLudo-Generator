@@ -32,6 +32,7 @@ const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
 logger.info('Le chemin est ' + require.resolve('qrcode'));
 const QRCodeGenerator = require('qrcode');
+const { setTimeout } = require('timers');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
@@ -114,7 +115,7 @@ switch (process.platform) {
     break;
 }
 
-/** Check internet connection */
+/** Check internet connection 
 logger.info('Test de la connexion internet');
 /*if (!navigator.onLine) {
   logger.error(`L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet`);
@@ -149,8 +150,9 @@ const { Projet,
   Reponse,
   Question } = require(`${root}/rendererProcess/model/QRCodeQuestionReponse`);
 
-const { QRCodeQCM,
-  ReponseVocale } = require(`${root}/rendererProcess/model/QRCodeQCM`);
+const { ProjetQCM,
+  QuestionQCM,
+  ReponseQCM } = require(`${root}/rendererProcess/model/QRCodeQCM`);
 
 const { ProjetSeriousGame,
   QRCodeSeriousGame,
@@ -169,3 +171,6 @@ const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode
 
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();
+
+const jsQR = require("jsqr");
+const Jimp = require('jimp');

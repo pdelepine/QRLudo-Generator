@@ -273,4 +273,3 @@ if (typeof myP5 === 'undefined') {
 	myP5.remove();
 	myP5 = new p5(sketch);
 }
-
