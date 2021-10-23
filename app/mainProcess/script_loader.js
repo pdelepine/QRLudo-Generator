@@ -30,6 +30,7 @@ const piexif = require('piexifjs');
 const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
+logger.info('Le chemin est ' + require.resolve('qrcode'));
 const QRCodeGenerator = require('qrcode');
 const { setTimeout } = require('timers');
 
@@ -39,6 +40,7 @@ const store = remoteElectron.getGlobal('sharedObject').store;
 
 /** Import de $ comme appel à jQuery */
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
+// window.$ = window.jQuery = require('jquery');
 require(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js");
@@ -115,7 +117,7 @@ switch (process.platform) {
 
 /** Check internet connection 
 logger.info('Test de la connexion internet');
-if (!navigator.onLine) {
+/*if (!navigator.onLine) {
   logger.error(`L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet`);
   alert("L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet");
   window.close();
@@ -159,6 +161,13 @@ const { ProjetSeriousGame,
   ReponseQuestionQR } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
+
+const { SGDot } = require(`${root}/rendererProcess/model/SGDot`);
+const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
+const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
+const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
+const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode`);
+
 
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();

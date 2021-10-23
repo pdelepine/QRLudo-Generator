@@ -29,6 +29,7 @@
 			"warn", { "before": false, "after": true }
 		],
 		"space-before-blocks": "warn",
-		"no-undef":"off"
+		"no-undef":"off",
+		"no-case-declarations":"off"
 	}
   }
