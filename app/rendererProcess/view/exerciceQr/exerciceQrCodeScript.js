@@ -719,8 +719,6 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-  // Gestion de la continuité
-  enregistrement();
 
   /** Show the information about the audio file import (help) */
  $('button#showInfo').on('click', e => {
