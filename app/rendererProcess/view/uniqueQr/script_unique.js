@@ -164,10 +164,10 @@ $('#preview').on('click',e => {
   let qrData = [];
 
   for (let data of document.getElementsByClassName("form-control qrData")) {
-    if (data.name == 'AudioName') {
+    if (data.name.substr(0,5) == 'https') {
       let dataAudio = {
         type: 'music',
-        url: data.id,
+        url: data.name,
         name: data.value
       }
 
