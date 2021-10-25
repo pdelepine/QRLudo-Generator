@@ -279,13 +279,21 @@ function supprLigne(question_id,idLigne, element) {
   }
 }
 
+function reinitialisationQuestions(){
+  nb_questions=compteurQuestion;
+  ajouterNouvelleQuestion();
+  for (let idQ=1;idQ<=nb_questions;idQ++){
+    $("#deleteQuestion1").trigger('click');
+  }
+}
+
 //Pour supprimer une énigme ou bien une réponse 
 function supprimerQuestion(question_id, element) {
   if (element == "Question") {
     if(compteurQuestion>1){
       compteurQuestion--;
       logger.info('Suppression d\'une question dans le QCM de l\'exercice à reconnaissance vocale');
-      // UPDATE NBQUESTIONS A FAIRE store.set("nbReponse",compteurReponse[question_id]);
+      // A METTRE A JOUR : store.set("nbReponse",compteurReponse[question_id]);
       $("#question" +question_id).on('click', function() {
         $(this).remove();
         for(let cpt = question_id; cpt <= compteurQuestion; cpt++) {
@@ -388,12 +396,15 @@ function viderChamps(){
   deleteStore('MessageBonnereponseQCM');
   deleteStore('reponseParIdentifiant');
   deleteStore('gridCheck1');
+  /*
+  A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
   for(var i = 2; i<=compteurReponse; i++) {
     deleteStore(`reponse${i}`);
     deleteStore(`gridCheck${i}`);
-  }
+  }*/
 
-  compteurReponse = 1;
+  reinitialisationQuestions();
+
   store.set("nbReponse", compteurReponse);
 
   logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
