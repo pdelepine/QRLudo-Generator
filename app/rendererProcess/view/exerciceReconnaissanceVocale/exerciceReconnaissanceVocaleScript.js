@@ -135,32 +135,33 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
   if (compteurReponse[question_id] < 30) {
     type = "Reponse";
     let reponse = document.createElement('div');
-    reponse.innerHTML = `<div class="form-row" id="divquestion` + question_id + `reponse`+ compteurReponse[question_id] +`">
-                            <div class="form-group col-md-3">
-                                  <label class="control-label">Réponse `+ compteurReponse[question_id] + ` :</label>
-                                </div>
+    reponse.innerHTML = ` <div class="form-group col-md-3">
+                            <label class="control-label">Réponse `+ compteurReponse[question_id] + ` :</label>
+                          </div>
                           <div class="form-group col-md-6">
                             <span class="row">
-                                <input type="text" class="form-control col-sm-6" id="question` + question_id + `reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `reponse`+compteurReponse[question_id]+`');">
-                                <i class="fas fa-info-circle mt-2 ml-2" 
+                              <input type="text" class="form-control col-sm-6" id="question` + question_id + `Reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');">
+                              <i class="fas fa-info-circle mt-2 ml-2" 
                                     title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
                                     data-toggle="tooltip" data-placement="right"></i>
-                              </span>
-                           </div>
-                           <div class="form-group col-md-2">
-                                   <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id +`Reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
-                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + question_id +`reponse`+compteurReponse[question_id]+`')" >
-                                      <label class="form-check-label" for="gridCheck`+ compteurReponse[question_id] + `">
-                            </div>
-                            <div class="form-group col-md-1">
-                                <button id="deleteQRCodequestion` + question_id +`reponse`+ compteurReponse[question_id] + `" type="button"
+                            </span>
+                          </div>
+                          <div class="form-group col-md-2">
+                            <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id +`Reponse`+ compteurReponse[question_id] + `" style="width:70px;" 
+                                  value="option" onclick="activerSaveCheckbox('gridCheckQuestion` + question_id +`Reponse`+compteurReponse[question_id]+`')" >
+                            <label class="form-check-label" for="gridCheckQuestion`+ question_id +`Reponse`+ compteurReponse[question_id] + `">
+                          </div>
+                          <div class="form-group col-md-1">
+                            <button id="deleteQuestion` + question_id +`Reponse`+ compteurReponse[question_id] + `" type="button"
                                     class="btn btn-outline-success align-self-center" onclick="supprLigne(`+question_id+"," + compteurReponse[question_id] + ",\'" + type + `\');">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                    </div>
-                            </div>`;
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                          </div>`;
 
-    let container = $("#repContainer"+question_id);
+    reponse.setAttribute("class","form-row");
+    reponse.id="divQuestion" + question_id + "Reponse"+ compteurReponse[question_id];
+
+    let container = $("#reponseContainerQuestion"+question_id);
     container.append(reponse);
 
     $("#reponse"+ compteurReponse[question_id]).val(contenu);
@@ -176,19 +177,22 @@ function ajouterNouvelleQuestion(){
   type = "Reponse";
   logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
   let question = document.createElement('div');
-  question.innerHTML = `<div class="question" id="`+compteurQuestion+`">
-                          <div class="question-intro">
+  question.innerHTML = `  <div class="question-intro">
                             <div class="row"> 
-                              <label class="control-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion" style="color:#28a745;padding-right:32px;">Question `+compteurQuestion+` : </label>
-                              <input type="text" class="form-control input-lg" style="width:400px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
-                                placeholder="Quelle est Votre Question" onkeyup="activerSave('QuestionQCM');" />
-                              <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
-                                <i class="fa fa-chevron-up pull-right"></i>
-                                <i class="fa fa-chevron-down pull-right"></i>
-                              </button>
-                              <button class="btn btn-outline-success align-self-center btn-sup-question" type="button">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                              </button>
+                              <div class="col">
+                                <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion`+compteurQuestion+`" style="color:#28a745;padding-right:25px;">Question `+compteurQuestion+` : </label>
+                                <input type="text" class="input-lg question-intro-input" style="width:400px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
+                                  placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');" />
+                              </div>
+                              <div class="btn-question col-2">
+                                <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion`+compteurQuestion+`" id="btnCollapseQuestion`+compteurQuestion+`">
+                                  <i class="fa fa-chevron-up pull-right"></i>
+                                  <i class="fa fa-chevron-down pull-right"></i>
+                                </button>
+                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestion`+compteurQuestion+`" onclick="supprimerQuestion(`+compteurQuestion+`,'Question');">
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                              </div>
                             </div>
                           </div>
                           <div class="collapse" id="collapseQuestion`+compteurQuestion+`">
@@ -198,14 +202,15 @@ function ajouterNouvelleQuestion(){
                                 <label>Bonne(s) réponse(s)</label>
                               </div>
                             </div>
-                            <div class="form-row" id="divquestion` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] +`">
+                            <div id="reponseContainerQuestion`+compteurQuestion+`">
+                            <div class="form-row" id="divQuestion` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] +`">
                               <div class="form-group col-md-3">
                                 <label class="control-label">Réponse `+ compteurReponse[compteurQuestion] + ` :</label>
                               </div>
                               <div class="form-group col-md-6">
                                 <span class="row">
-                                  <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `reponse`+compteurReponse[compteurQuestion]+`');">
+                                  <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
+                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');">
                                   <i class="fas fa-info-circle mt-2 ml-2" 
                                     title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
                                     data-toggle="tooltip" data-placement="right"></i>
@@ -213,25 +218,27 @@ function ajouterNouvelleQuestion(){
                               </div>
                               <div class="form-group col-md-2">
                                 <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + compteurQuestion +`Reponse`+ compteurReponse[compteurQuestion] + `" style="width:70px;" 
-                                      value="option" onclick="activerSaveCheckbox('gridCheckquestion` + compteurQuestion +`reponse`+compteurReponse[compteurQuestion]+`')" >
-                                <label class="form-check-label" for="gridCheck`+ compteurReponse[compteurQuestion] + `">
+                                      value="option" onclick="activerSaveCheckbox('gridCheckQuestion` + compteurQuestion +`Reponse`+compteurReponse[compteurQuestion]+`')" >
+                                <label class="form-check-label" for="gridCheckQuestion` + compteurQuestion +`Reponse`+ compteurReponse[compteurQuestion] + `">
                               </div>
                               <div class="form-group col-md-1">
-                                <button id="deleteQRCodequestion` + compteurQuestion +`reponse`+ compteurReponse[compteurQuestion] + `" type="button"
+                                <button id="deleteQuestion` + compteurQuestion +`Reponse`+ compteurReponse[compteurQuestion] + `" type="button"
                                     class="btn btn-outline-success align-self-center" onclick="supprLigne(`+compteurQuestion+"," + compteurReponse[compteurQuestion] + ",\'" + type + `\');">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                               </div>
                             </div>
-                            <div id="repContainer`+compteurQuestion+`"></div>
+                            </div>
                             <div class="form-group col-md-6">
                               <label style="color:#a5b2af;">Ajouter une réponse</label>
-                              <button id="ajouterReponse1" type="button"
+                              <button id="ajouterReponseQuestion`+compteurQuestion+`" type="button"
                                 class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);" style="color:#a5b2af;" name="ajouterReponse">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                               </button>
                             </div>
-                          </div>
-                        </div>`;
+                          </div>`;
+    
+    question.setAttribute("class","question");
+    question.id="question"+compteurQuestion;
 
     let container = $("#questionContainer");
     container.append(question);
@@ -246,18 +253,18 @@ function supprLigne(question_id,idLigne, element) {
       compteurReponse[question_id]--;
       logger.info('Suppression d\'une réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
       store.set("nbReponse",compteurReponse[question_id]);
-      $("#divquestion" +question_id+"reponse"+ idLigne).on('click', function() {
+      $("#divQuestion" +question_id+"Reponse"+ idLigne).on('click', function() {
         $(this).remove();
         for(let cpt = idLigne; cpt <= compteurReponse[question_id]; cpt++) {
           let id = cpt+1;
-          let div = $("#divquestion"+question_id+"reponse" + id)[0].getElementsByTagName("div");
+          let div = $("#divQuestion"+question_id+"Reponse" + id)[0].getElementsByTagName("div");
           div[0].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt + " :";
-          div[2].getElementsByTagName("input")[0].id = "gridCheckquestion"+question_id+"reponse" + cpt;
-          div[2].getElementsByTagName("label")[0].for = "gridCheckquestion"+question_id+"reponse" + cpt;
-          div[1].getElementsByTagName("input")[0].id = "question"+question_id+"reponse" + cpt;
-          div[3].getElementsByTagName("button")[0].id = "deleteQRCodequestion"+question_id+"reponse" + cpt;
+          div[2].getElementsByTagName("input")[0].id = "gridCheckQuestion"+question_id+"Reponse" + cpt;
+          div[2].getElementsByTagName("label")[0].for = "gridCheckQuestion"+question_id+"Reponse" + cpt;
+          div[1].getElementsByTagName("input")[0].id = "question"+question_id+"Reponse" + cpt;
+          div[3].getElementsByTagName("button")[0].id = "deleteQuestion"+question_id+"Reponse" + cpt;
           div[3].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne("+question_id+"," + cpt + ",\'" + element +"\')");
-          $("#divquestion"+question_id+"reponse" + id)[0].id = "divquestion"+question_id+"reponse" + cpt;
+          $("#divQuestion"+question_id+"Reponse" + id)[0].id = "divQuestion"+question_id+"Reponse" + cpt;
 
           if(store.get(`reponse${id}`) && store.get(`gridCheck${id}`)) {
             store.set(`reponse${cpt}`, store.get(`reponse${id}`));
@@ -267,6 +274,64 @@ function supprLigne(question_id,idLigne, element) {
       });
       deleteStore("reponse"+compteurReponse+1);
       deleteStore("gridCheck"+compteurReponse+1)
+    }
+  }
+}
+
+function reinitialisationQuestions(){
+  nb_questions=compteurQuestion;
+  ajouterNouvelleQuestion();
+  for (let idQ=1;idQ<=nb_questions;idQ++){
+    $("#deleteQuestion1").trigger('click');
+  }
+}
+
+//Pour supprimer une énigme ou bien une réponse 
+function supprimerQuestion(question_id, element) {
+  if (element == "Question") {
+    if(compteurQuestion>1){
+      compteurQuestion--;
+      logger.info('Suppression d\'une question dans le QCM de l\'exercice à reconnaissance vocale');
+      // A METTRE A JOUR : store.set("nbReponse",compteurReponse[question_id]);
+      $("#question" +question_id).on('click', function() {
+        $(this).remove();
+        for(let cpt = question_id; cpt <= compteurQuestion; cpt++) {
+          let id = cpt+1;
+          compteurReponse[cpt]=compteurReponse[id];
+          
+          let div = $("#question"+id)[0].getElementsByTagName("div");
+          div[2].getElementsByTagName("label")[0].setAttribute("data-target","#collapseQuestion"+cpt);
+          div[2].getElementsByTagName("label")[0].innerHTML = "Question "+cpt+" :";
+          div[2].getElementsByTagName("label")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
+          div[2].getElementsByTagName("input")[0].id="textQuestion"+cpt;
+          div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');");
+          div[3].getElementsByTagName("button")[0].setAttribute("data-target","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[0].id="btnCollapseQuestion"+cpt;
+          div[3].getElementsByTagName("button")[1].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
+          div[3].getElementsByTagName("button")[1].id="deleteQuestion"+cpt;
+          div[4].id="collapseQuestion"+cpt;
+          div[7].id="reponseContainerQuestion"+cpt;
+          let last_div=7;
+          for(let cpt_rep=1;cpt_rep<=compteurReponse[cpt];cpt_rep++){
+            div[last_div+1].id="divQuestion"+cpt+"Reponse"+cpt_rep;
+            div[last_div+2].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt_rep + " :";
+            div[last_div+3].getElementsByTagName("input")[0].id = "question"+cpt+"Reponse" + cpt_rep;
+            div[last_div+3].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('question"+cpt+"Reponse"+cpt_rep+"');");
+            div[last_div+4].getElementsByTagName("input")[0].id = "gridCheckQuestion"+cpt+"Reponse" + cpt_rep;
+            div[last_div+4].getElementsByTagName("input")[0].setAttribute("onclick","activerSaveCheckbox('gridCheckQuestion"+cpt+"Reponse"+cpt_rep+"');");
+            div[last_div+4].getElementsByTagName("label")[0].setAttribute("for","gridCheckQuestion"+cpt+"Reponse" + cpt_rep);
+            div[last_div+5].getElementsByTagName("button")[0].id = "deleteQuestion"+cpt+"Reponse" + cpt_rep;
+            div[last_div+5].getElementsByTagName("button")[0].setAttribute("onclick", "supprLigne("+cpt+"," + cpt_rep + ",'Reponse')");
+            last_div+=5;
+          }
+          div[last_div+1].getElementsByTagName("button")[0].id="ajouterReponseQuestion"+cpt;
+          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");");
+          $("#question"+id)[0].id="question"+cpt;
+        }
+        compteurReponse[compteurQuestion+1]=0;
+      });
+      
     }
   }
 }
@@ -330,12 +395,15 @@ function viderChamps(){
   deleteStore('MessageBonnereponseQCM');
   deleteStore('reponseParIdentifiant');
   deleteStore('gridCheck1');
+  /*
+  A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
   for(var i = 2; i<=compteurReponse; i++) {
     deleteStore(`reponse${i}`);
     deleteStore(`gridCheck${i}`);
-  }
+  }*/
 
-  compteurReponse = 1;
+  reinitialisationQuestions();
+
   store.set("nbReponse", compteurReponse);
 
   logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
