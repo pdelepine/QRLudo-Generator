@@ -14,17 +14,15 @@ function genererJsonQCM(){
   var messageBonneReponse = $("#MessageBonnereponseQCM").val();
   var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
   var questions = [];
-  nbQues=1;
 
-  for(let i = 1;i<=nbQues;++i){
+  for(let i = 1;i <= compteurQuestion;++i){
     var questionText = $("#textQuestion"+i.toString()).val();
     var reponses = [];
-    nbReponse=2;
     // Ajout des réponss
-    for(let j=1;j<=nbReponse;++j){
-      var id = "question"+i.toString()+"Reponse"+j.toString();
+    for(let j=1;j <= compteurReponse[i];++j){
+      var id = "question"+i.toString()+"reponse"+j.toString();
       var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
-      var responseText = $("#textQuestion"+i.toString()+"Reponse"+j.toString()).val();  
+      var responseText = $("#question"+i.toString()+"reponse"+j.toString()).val();  
       //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
       let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
       reponses.push(reponse);
@@ -50,6 +48,7 @@ function genererJsonQCM(){
   if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
     //création d'un nouveau projetQCM
     projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
+    questionQCM=projet;
 
     initMessages();
 
@@ -417,7 +416,7 @@ function saveQRCodeImage(questionQCM, questionOuverte) {
   logger.info('Exportation du QR Code de l\'exercice à reconnaissance vocale');
 
   let img = $('#qrView img')[0].src;
-var qrcode
+  var qrcode;
   var data = img.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
 
   if (questionOuverte == null) {
@@ -437,8 +436,8 @@ var qrcode
       var filesaver = require('file-saver');
       console.log(xhr.response);
       //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un bolléen
-      if (filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg') == true) {
-        console.log(filesaver.saveAs(xhr.response, qrcode.getName() + '.jpeg').getName);
+      if (filesaver.saveAs(xhr.response, qrcode.getId() + '.png') == true) {
+        console.log(filesaver.saveAs(xhr.response, qrcode.getId() + '.png').getName);
         messageInfos("Le QR code a bien été enregistré", "success"); //message a afficher en haut de la page
       }
 

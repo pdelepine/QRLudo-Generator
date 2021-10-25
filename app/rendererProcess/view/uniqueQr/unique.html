@@ -29,7 +29,7 @@
           <div class="form-group">
             <label class="col-sm-12 control-label" style="color:#28a745;padding-top:10px;">Nom du QR Code</label>
             <div class="col-sm-7">
-              <input type="text" id="qrName" name="NomQR" class="form-control" onkeyup="activer_button(this.value);">
+              <input type="text" id="qrName" name="NomQR" class="form-control"  onkeyup="activer_button(this.value);generQRInter();">
             </div>
             <!-- le type du QRCode, ici -> XL -->
             <input id="typeQRCode" name="typeQRCode" type="hidden" value="xl">
@@ -57,10 +57,10 @@
     </div>
     <div class="card-footer form-inline">
       <div class="card col-md-auto ">
-        <button type="button" id="showAudio" class="btn btn-outline-success btn-unique-xl  " name="ajouterSon"
+        <!--<button type="button" id="showAudio" class="btn btn-outline-success btn-unique-xl  " name="ajouterSon"
           data-toggle="modal" data-target="#listeMusic">
           <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
-        </button>
+        </button>-->
         <button style="margin-top:10px" class="btn btn-outline-success btn-unique-xl" data-toggle="modal" id="emptyZones" data-target="#confirmation">
           <i class="fa fa-undo"></i>&nbsp;&nbsp;Réinitialiser
         </button>

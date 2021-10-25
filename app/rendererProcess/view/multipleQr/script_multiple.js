@@ -16,7 +16,7 @@ $().ready(function () {
   /** Genere le qrCode multiple */
   $("#preview").on('click', function () {
 
-    affichageLigneParDefault();
+    affichageLigneParDefault(); 
 
     let qrColor = $("#qrColor").val();
     controllerMultiple.setQRCodeMultiple(new QRCodeMultipleJson(document.getElementById('qrName').value, [], qrColor));
@@ -44,6 +44,7 @@ $().ready(function () {
   //$("#empty").on('click',viderZone);
   $("#emptyFields").on('click', function () {
     viderZone();
+    verifNombreCaractere();
   })
 
   $("#saveQRCode").on('click', e => {
@@ -56,6 +57,8 @@ $().ready(function () {
 
   if (numFich > 0)
     document.getElementById('preview').disabled = false;
+
+verifNombreCaractere();
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -129,12 +132,16 @@ function ajoutQrCcode() {
   let qrColor = $('#qrColor').val();
   var qrName = $("#nomQR").val();
   var donnee = $("#ContenuQR").val();
+  if (donnee.substring(donnee.length - 3, donnee.length) == "mp3") {
+    donnee = document.getElementById("ContenuQR").name;
+  }
   var qrData = [];
   qrData.push(donnee);
 
   /** Reset de la boite de dialogue */
   document.getElementById("nomQR").value = "";
   document.getElementById("ContenuQR").value = "";
+  document.getElementById("ContenuQR").disabled = false;
 
   let newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
   console.log(newQrUnique);
@@ -209,6 +216,7 @@ function genererLigne(name, numLigne) {
   /** fonctionnalité bouton delete   && */
   setAttributes(baliseIDelete, { "class": "fa fa-trash-alt ", "height": "8px", "width": "8px" });
   baliseButtonDelete.addEventListener("click", effacerLigne);
+  baliseButtonDelete.addEventListener("click", verifNombreCaractere);
   baliseButtonDelete.setAttribute("class", "btn btn-outline-success float-right");
   baliseButtonDelete.setAttribute("padding", "10px 10px");
   baliseButtonDelete.appendChild(baliseIDelete);
@@ -383,6 +391,108 @@ function saveQRCodeImage() {
   logger.info("Exportation du QR Code multiple");
 }
 
+/**  function pour calculer le nombre de caractères du QRcode Multiple intermédiaire */
+function caractDansQRMult (){
+  let char = 0;
+  let qrColor = $('#qrColor').val();
+  let qrName = $('#qrName').val();
+  let qrData = "random String";
+
+  let newQrMult = new QRCodeMultipleJson(qrName, qrData, qrColor);
+  
+  char += qrColor.length;
+  char += newQrMult.getType().length;
+  char ++ ;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson 
+  char +=63;  // la taille de  {"name":"","type":"ensemble","data":[],"color":"","version":""}
+
+return char;
+}
+
+
+/**  une fonction pour calculer la somme des caractères de chaque qrcode unique */
+function caractDeQRCodesUniques(){
+  let char = 0;
+  let qrcodes = controllerMultiple.getQRCodeAtomiqueArray();
+
+  for (const element of qrcodes) {
+      char += element.getData().toString().length;
+      char += element.getColor().toString().length;
+      char += element.getId().toString().length; 
+      char += element.getName().toString().length; 
+      char += element.getType().toString().length; 
+      char += 63; // la taille de {"qrcode":{"id":"","name":"","type":"","data":[""],"color":""}}
+  }
+
+  char += caractDansQRMult();  // plus les caractères dans le qrmult
+  return char;
+}
+
+function verifNombreCaractere() {
+
+  var nombreCaratereMAX = 1240;
+  //progress bar gestion
+  var total = SetProgressBar();
+
+  $('#messages').empty();
+
+  if (total >= nombreCaratereMAX) {
+    messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
+    //si nombre de caractére max attein on disable le button pour l'ajoute d'autre qrCode
+    document.getElementById("addNewQR").disabled=true;  
+    document.getElementById("qrName").setAttribute("maxlength", 0);
+  }
+  else {
+    document.getElementById("addNewQR").disabled=false;
+    document.getElementById("qrName").setAttribute("maxlength", nombreCaratereMAX);
+  }
+
+  // si le nombre de caractére max n'est pas attein mais le progress bar est > 85%, on disable le button d'ajoute 
+  if (Math.round((total * 100) / nombreCaratereMAX)>=85){
+    document.getElementById("addNewQR").disabled=true;
+  }
+
+  // si le champ de qrName est vide ou si le pourcentage>100 , on disable le button de génération de QRcode
+  if (document.getElementById("qrName").value.length==0 || total > nombreCaratereMAX){
+    
+    document.getElementById("preview").disabled=true;
+  
+  } else {
+
+    document.getElementById("preview").disabled=false;
+
+  }
+
+if (document.getElementById("qrName").value.length==0 && controllerMultiple.getQRCodeAtomiqueArray()==0)
+    {
+      document.getElementById("progressbarId").style.width=0;
+    }
+
+}
+
+
+/** foncion qui fait la mis à jour de Progress Bar */
+function SetProgressBar() {
+  //progress bar gestion
+  var total = 0;
+
+  var nombreCaratereMAX = 1240;
+
+  if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
+
+  // on ajoute la tailles des uniques qrcodes
+  total += caractDeQRCodesUniques();   
+  
+  var totalSeted = Math.round((total * 100) / nombreCaratereMAX);
+
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
+
+
 
 /** fonction deplacement de fichier vers le haut ou bas  &&& */
 function upItem(e) {
@@ -432,4 +542,143 @@ function downItem(e) {
 $("#infos-multiple").on('click', function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'multiple'
   $("#charger-page").load(root + '/rendererProcess/view/aide/info.html');
+});
+
+//Partie audio
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
+
+    const {
+      clipboard
+    } = require('electron');
+
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
+
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        return
+      }
+
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
+        showError(modal, errorMsg);
+      }
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
+
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
+          console.log(contentType);
+
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
+
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            ajouterChampSon(filename, link);
+          } else {
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        console.log('load start');
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+    let textArea = document.getElementById("ContenuQR");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+  console.log('error ');
+  $(modal).find('.loader').remove();
+  $(errorMsg).text(message);
+  $(errorMsg).css('color', '#f35b6a');
+  $(errorMsg).addClass('errorLoader');
+  $(modal).prepend(errorMsg); // add error message
+}
+
+$(document).ready(function () {
+  //Use to implement information on the audio import
+  var info = document.createElement('div'); // balise div : contain html information
+  var info_activ = false; // boolean : give the etat of info (up/off)
+  // Gestion de la continuité
+  enregistrement();
+
+  /** Show the information about the audio file import (help) */
+ $('button#showInfo').on('click', e => {
+    e.preventDefault();
+    if (info_activ == false) {
+      info.innerHTML = ``;
+      fetch(root + '/rendererProcess/components/audioinfo.html').then(function (response) {
+        return response.text();
+      }).then(function (string) {
+        // console.log(string);
+        info.innerHTML = string;
+      }).catch(function (err) {
+        console.log(info.innerHTML);
+        info.innerHTML = `Erreur`;
+      });
+      document.getElementById('elementsAudio').appendChild(info);
+      info_activ = true;
+    }
+    else {
+      document.getElementById('elementsAudio').removeChild(info);
+      info_activ = false;
+    }
+  });
+
+  $('#closeModalListeMusic').on('click', e => {
+    $('#musicUrl').val('');
+    $('#listeMusic').find('.errorLoader').remove();
+  });
+
+  $("#play-sound-div").hide();
 });

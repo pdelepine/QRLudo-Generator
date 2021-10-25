@@ -3,7 +3,7 @@
  * BAH Marouwane
  * 2019
  */
-
+ 
 var projet = new Projet();
 
 nombre_reponse = 0;
@@ -182,8 +182,17 @@ function addReponseLine(reponse) {
 $("#genererQestion").on('click', function () {
   $("#ajoutNewReponse").attr('disabled', false);
   let question = $('#newQuestionText').val();
+  if (question.substring(question.length - 3, question.length) == "mp3") {
+    question = document.getElementById("newQuestionText").name;
+  }
   let bonneReponse = $('#newBonneReponseText').val();
+  if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
+    bonneReponse = document.getElementById("newBonneReponseText").name;
+  }
   let mauvaiseReponse = $('#newMauvaiseReponseText').val();
+  if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
+    mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
+  }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();
 
@@ -485,7 +494,7 @@ function enregistrement() {
 
 //Cette fonction sauvegarde l'image du qrcode dans un div pour le pouvoir generer apres
 function saveQRCodeImages(div, qrcode, directoryName) {
-  let img = $(div).children()[0].src;
+  let img = document.getElementById("qrView").children[0].src;
   //let data = img.replace(/^data:image\/\w+;base64,/, '');
   let matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
   let data = new Buffer(matches[2], 'base64');
@@ -530,7 +539,7 @@ function previewQRCodeQuestion() {
   var question = projet.getQuestion();
   question.qrcode.color = $('#qrColor').val();
   previewQRCode(question, $('#qrView')[0]);
-  logger.info(`Génération du QR Code Unique : ${JSON.stringify(question.qrcode)}`);
+  logger.info(`Génération du QR Code ExerciceQR : ${JSON.stringify(question.qrcode)}`);
 }
 
 // Previsualiser les reponses
@@ -573,4 +582,171 @@ function deleteStore(del) {
 $("#infos-exercice-qrcode").on('click', function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'exerciceQrCode';
   $("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+});
+
+
+//Partie audio
+
+var audioSource="";
+
+$("#newQuestionAudio").on('click', function () {
+  audioSource = "Question";
+  logger.info("Ajout d'un fichier audio pour la question ");
+});
+$("#newBonneReponseAudio").on('click', function () {
+  audioSource = "BonneReponse";
+  logger.info("Ajout d'un fichier audio pour la bonne réponse");
+});
+$("#newMauvaiseReponseAudio").on('click', function () {
+  audioSource = "MauvaiseReponse";
+  logger.info("Ajout d'un fichier audio pour la mauvaise réponse");
+});
+
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
+
+    const {
+      clipboard
+    } = require('electron');
+
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
+
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        return
+      }
+
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
+        showError(modal, errorMsg);
+      }
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
+
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
+          console.log(contentType);
+
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
+
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            ajouterChampSon(filename, link);
+          } else {
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        console.log('load start');
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+  if (audioSource == "Question") {
+    let textArea = document.getElementById("newQuestionText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+  } else if (audioSource == "BonneReponse") {
+    let textArea = document.getElementById("newBonneReponseText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+  } else if (audioSource == "MauvaiseReponse") {
+    let textArea = document.getElementById("newMauvaiseReponseText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+  }
+  
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+  console.log('error ');
+  $(modal).find('.loader').remove();
+  $(errorMsg).text(message);
+  $(errorMsg).css('color', '#f35b6a');
+  $(errorMsg).addClass('errorLoader');
+  $(modal).prepend(errorMsg); // add error message
+}
+
+$(document).ready(function () {
+  //Use to implement information on the audio import
+  var info = document.createElement('div'); // balise div : contain html information
+  var info_activ = false; // boolean : give the etat of info (up/off)
+
+  /** Show the information about the audio file import (help) */
+ $('button#showInfo').on('click', e => {
+    e.preventDefault();
+    if (info_activ == false) {
+      info.innerHTML = ``;
+      fetch(root + '/rendererProcess/components/audioinfo.html').then(function (response) {
+        return response.text();
+      }).then(function (string) {
+        // console.log(string);
+        info.innerHTML = string;
+      }).catch(function (err) {
+        console.log(info.innerHTML);
+        info.innerHTML = `Erreur`;
+      });
+      document.getElementById('elementsAudio').appendChild(info);
+      info_activ = true;
+    }
+    else {
+      document.getElementById('elementsAudio').removeChild(info);
+      info_activ = false;
+    }
+  });
+
+  $('#closeModalListeMusic').on('click', e => {
+    $('#musicUrl').val('');
+    $('#listeMusic').find('.errorLoader').remove();
+  });
+
+  $("#play-sound-div").hide();
 });
