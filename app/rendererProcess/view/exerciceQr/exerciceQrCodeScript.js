@@ -17,8 +17,6 @@ $(document).ready(function () {
 
   if (numReponse > 0)
     document.getElementById("ajoutNewReponse").disabled = false;
-    
-
 
   //fonction pour ajouter un nouvelle reponse
   $("#validerDataDialog").on('click', function () {
@@ -139,6 +137,11 @@ $(document).ready(function () {
     $('#newMauvaiseReponseText').val('');
     $('#newNbMinimalBonneReponse').val('');
 
+    $('#newQuestionText').attr('disabled', false);
+    $("#newBonneReponseText").attr('disabled', false);
+    $("#newMauvaiseReponseText").attr('disabled', false);
+    $('#newNbMinimalBonneReponse').attr('disabled', false);
+
     deleteStore(`newQuestionText`);
 
     deleteStore(`newBonneReponseText`);
@@ -185,15 +188,19 @@ $("#genererQestion").on('click', function () {
   if (question.substring(question.length - 3, question.length) == "mp3") {
     question = document.getElementById("newQuestionText").name;
   }
+  document.getElementById("newQuestionText").disabled = true;
   let bonneReponse = $('#newBonneReponseText').val();
   if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
     bonneReponse = document.getElementById("newBonneReponseText").name;
   }
+  document.getElementById("newBonneReponseText").disabled = true;
   let mauvaiseReponse = $('#newMauvaiseReponseText').val();
   if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
     mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
   }
+  document.getElementById("newMauvaiseReponseText").disabled = true;
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
+  document.getElementById("newNbMinimalBonneReponse").disabled = true;
   let qrColor = $('#qrColor').val();
 
   //On verifie si le texte de la question n'est pas vide
@@ -248,9 +255,6 @@ function viderChamps() {
   document.getElementById("newMauvaiseReponseText").value = "";
   document.getElementById("newNbMinimalBonneReponse").value = "";
 }
-
-//compteur du nombre de reponse pour  pouvoir reinitliser la zone de drad and drop
-
 
 
 // Supprime une ligne dans la zone de drop
