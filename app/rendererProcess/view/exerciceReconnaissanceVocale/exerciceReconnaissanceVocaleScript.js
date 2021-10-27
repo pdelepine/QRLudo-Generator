@@ -326,11 +326,13 @@ function supprimerQuestion(question_id, element) {
           div[2].getElementsByTagName("label")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("input")[0].id="textQuestion"+cpt;
           div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');");
-          div[3].getElementsByTagName("button")[0].setAttribute("data-target","#collapseQuestion"+cpt);
-          div[3].getElementsByTagName("button")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
-          div[3].getElementsByTagName("button")[0].id="btnCollapseQuestion"+cpt;
-          div[3].getElementsByTagName("button")[1].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
-          div[3].getElementsByTagName("button")[1].id="deleteQuestion"+cpt;
+          div[3].getElementsByTagName("button")[0].setAttribute("onclick","chamgementAudioSource('textQuestion"+cpt+"');");
+          div[3].getElementsByTagName("button")[0].id="audioQuestion"+cpt;
+          div[3].getElementsByTagName("button")[1].setAttribute("data-target","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[1].setAttribute("aria-controls","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[1].id="btnCollapseQuestion"+cpt;
+          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
+          div[3].getElementsByTagName("button")[2].id="deleteQuestion"+cpt;
           div[4].id="collapseQuestion"+cpt;
           div[7].id="reponseContainerQuestion"+cpt;
           let last_div=7;
