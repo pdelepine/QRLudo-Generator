@@ -33,13 +33,13 @@ function genererJsonQCM(){
       var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
       var responseText = $("#question"+i.toString()+"Reponse"+j.toString()).val();  
       //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
-      let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
+      let reponse = ["réponse numéro " + j,responseText,isGoodAnswer];
       reponses.push(reponse);
     }
     // On vérifie que les réponses sont complètes avant de générer le QR code
     var reponsesComplete = true;
     for(let i = 0; i < reponses.length; i++) {
-      if(reponses[i].getReponse() === "") { // reponses[i].getReponse() correspond au texte de la réponse
+      if(reponses[i][1] == "") { // reponses[i].getReponse() correspond au texte de la réponse
         reponsesComplete = false;
         break;
       }
