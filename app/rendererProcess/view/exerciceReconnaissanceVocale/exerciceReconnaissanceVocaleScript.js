@@ -20,7 +20,7 @@ function genererJsonQCM(){
     messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM").name;
   }
   var questions = [];
-
+  var tousLesChampsSontRemplis=true;
   for(let i = 1;i <= compteurQuestion;++i){
     var questionText = $("#textQuestion"+i.toString()).val();
     if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
@@ -38,13 +38,17 @@ function genererJsonQCM(){
     }
     // On vérifie que les réponses sont complètes avant de générer le QR code
     var reponsesComplete = true;
+    var minimumUneBonneReponse = false;
     for(let i = 0; i < reponses.length; i++) {
       if(reponses[i].getReponse() === "") { // reponses[i].getReponse() correspond au texte de la réponse
         reponsesComplete = false;
         break;
       }
+      if(reponses[i].getIsGoodAnswer() == true){
+        minimumUneBonneReponse=true;
+      }
     }
-    if(questionText !== "" && reponsesComplete) {
+    if(questionText !== "" && reponsesComplete && minimumUneBonneReponse) {
       //création d'une questionQCM et on l'ajoute dans le tableau des questions 
       id = "question"+i.toString();
       question = new QuestionQCM(id,questionText,reponses);
@@ -52,9 +56,10 @@ function genererJsonQCM(){
     }
     else{
       messageInfos("Veuillez remplir tous les champs.", "danger");
+      tousLesChampsSontRemplis=false;
     }
   }
-  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
+  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0 && tousLesChampsSontRemplis){
     //création d'un nouveau projetQCM
     projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
     questionQCM=projet;
@@ -160,9 +165,6 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
                             <span class="row">
                               <input type="text" class="form-control col-sm-6" id="question` + question_id + `Reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
                                     placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');">
-                              <i class="fas fa-info-circle mt-2 ml-2" 
-                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                    data-toggle="tooltip" data-placement="right"></i>
                             </span>
                           </div>
                           <div class="form-group col-md-2">
@@ -232,9 +234,6 @@ function ajouterNouvelleQuestion(){
                                 <span class="row">
                                   <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
                                     placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');">
-                                  <i class="fas fa-info-circle mt-2 ml-2" 
-                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                    data-toggle="tooltip" data-placement="right"></i>
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
@@ -396,40 +395,52 @@ $("#emptyFields").on('click',function(){
 
 
 function viderChamps(){
-  $('#Question').val('');
-  $('#Bonnereponse').val('');
-  $('#MessageBonnereponse').val('');
-  $('#MessageMauvaisereponse').val('');
-  $('#reponseinitiale').val('');
-  $('#QuestionQCM').val('');
-  $('#reponseParIdentifiant').prop('checked', false);
-  $('#gridCheck1').prop('checked', false);
-  $('#MessageMauvaisereponseQCM').val('');
-  $('#MessageBonnereponseQCM').val('');
-  $("#repContainer").empty();
+  if(document.getElementById('questionOuverteOnglet').classList.contains('active')){
+    $('#Question').val('');
+    document.getElementById('Question').disabled=false;
+    $('#Bonnereponse').val('');
+    $('#MessageBonnereponse').val('');
+    document.getElementById('MessageBonnereponse').disabled=false;
+    $('#MessageMauvaisereponse').val('');
+    document.getElementById('MessageMauvaisereponse').disabled=false;
 
-  deleteStore(`Question`);
-  deleteStore(`Bonnereponse`);
-  deleteStore('MessageBonnereponse');
-  deleteStore('MessageMauvaisereponse');
-  deleteStore(`reponseinitiale`);
-  deleteStore(`QuestionQCM`);
-  deleteStore(`MessageMauvaisereponseQCM`);
-  deleteStore('MessageBonnereponseQCM');
-  deleteStore('reponseParIdentifiant');
-  deleteStore('gridCheck1');
-  /*
-  A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
-  for(var i = 2; i<=compteurReponse; i++) {
-    deleteStore(`reponse${i}`);
-    deleteStore(`gridCheck${i}`);
-  }*/
+    deleteStore(`Question`);
+    deleteStore(`Bonnereponse`);
+    deleteStore('MessageBonnereponse');
+    deleteStore('MessageMauvaisereponse');
 
-  reinitialisationQuestions();
+    logger.info('Réinitialisation de l\'exercice à reconnaissance vocale question ouverte');
+  }
+  else{
+    $('#reponseinitiale').val('');
+    $('#QuestionQCM').val('');
+    $('#reponseParIdentifiant').prop('checked', false);
+    $('#gridCheck1').prop('checked', false);
+    $('#MessageMauvaisereponseQCM').val('');
+    document.getElementById('MessageMauvaisereponseQCM').disabled=false;
+    $('#MessageBonnereponseQCM').val('');
+    document.getElementById('MessageBonnereponseQCM').disabled=false;
+    $("#repContainer").empty();
+    
+    deleteStore(`reponseinitiale`);
+    deleteStore(`QuestionQCM`);
+    deleteStore(`MessageMauvaisereponseQCM`);
+    deleteStore('MessageBonnereponseQCM');
+    deleteStore('reponseParIdentifiant');
+    deleteStore('gridCheck1');
+    /*
+    A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
+    for(var i = 2; i<=compteurReponse; i++) {
+      deleteStore(`reponse${i}`);
+      deleteStore(`gridCheck${i}`);
+    }*/
 
-  store.set("nbReponse", compteurReponse);
+    reinitialisationQuestions();
 
-  logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
+    store.set("nbReponse", compteurReponse);
+    logger.info('Réinitialisation de l\'exercice à reconnaissance vocale QCM');
+  }
+  //logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
 }
 
 // save image qr code
