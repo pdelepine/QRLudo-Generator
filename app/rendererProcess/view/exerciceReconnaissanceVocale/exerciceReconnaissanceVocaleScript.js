@@ -441,6 +441,8 @@ function viderChamps(){
     logger.info('Réinitialisation de l\'exercice à reconnaissance vocale QCM');
   }
   //logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
+  $('#qrView').hide();
+  $('#saveQRCode').attr('disabled', true);
 }
 
 // save image qr code
