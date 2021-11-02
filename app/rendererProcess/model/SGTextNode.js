@@ -13,13 +13,13 @@ class SGTextNode extends SGNode {
 	/** Draw the node */
 	display() {
 		myP5.push();
-		myP5.stroke(0);
+		myP5.stroke('#91abe1');
 		if (this.dragging)
 			myP5.fill(80);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else
-			myP5.fill(175);
+			myP5.fill(235);
 		myP5.rect(this.x, this.y, this.w, this.h);
 		myP5.fill(0);
 		myP5.noStroke();
