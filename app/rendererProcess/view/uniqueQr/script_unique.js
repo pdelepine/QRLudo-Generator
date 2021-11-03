@@ -19,7 +19,7 @@ var menu = new Menu();
 $(document).ready(function () {
 
 
-  store.set("charMax",1240);
+  store.set("charMax",1134);
 
   //appel à la fonction qui permet de lire les enregistrement
   chargement();
@@ -477,7 +477,7 @@ function ajouterChampLegende(valeur = "") {
 
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
-    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1200 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});">${valeur}</textarea>
+    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1100 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();">${valeur}</textarea>
     <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
       <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
     </button>
@@ -511,7 +511,7 @@ function SetProgressBar() {
     //console.log(total);
   });
 
-     if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
+  if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
   // on va ajouter la taille du qr nom aussi
 
   //$("#cible input").val().length;
@@ -538,8 +538,6 @@ function verifNombreCaractere(num) {
   var nombreCaratereMAX = store.get("charMax");
   //progress bar gestion
   var total = SetProgressBar();
-
-  //console.log($('#textarea'+num).attr('maxlength'));
   
   $('#messages').empty();
   if (total >= nombreCaratereMAX) {
@@ -547,9 +545,9 @@ function verifNombreCaractere(num) {
     disableButtonAddNewData();
     //si nombre de caractére max attein toute les zone de texte sont fermer a l'jout de caractère
     $("#cible textarea").each(function () {
-      $(this).attr('maxlength', 0);
+      $(this).attr('maxlength', $(this).val().length);
     });
-    document.getElementById("qrName").setAttribute("maxlength", 0);
+    document.getElementById("qrName").setAttribute("maxlength", $("#qrName").val().length);
   }
   else {
     activateButtonAddNewData();
@@ -558,6 +556,21 @@ function verifNombreCaractere(num) {
       $(this).attr('maxlength', store.get("charMax"));
     });
     document.getElementById("qrName").setAttribute("maxlength", store.get("charMax"));
+  }
+
+  if(total > nombreCaratereMAX){
+    if (document.getElementById("preview").disabled == false)
+      document.getElementById("preview").disabled = true;
+  }
+  else {
+    if(document.getElementById("qrName") != null){
+      if(document.getElementById("qrName").value.length == 0){
+        document.getElementById("preview").disabled = true;
+      }
+      else {
+        document.getElementById("preview").disabled = false;
+      }
+    }
   }
 }
 

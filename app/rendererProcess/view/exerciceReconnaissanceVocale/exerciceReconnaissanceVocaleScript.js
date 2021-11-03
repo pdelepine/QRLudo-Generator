@@ -12,30 +12,43 @@ var questionQCM =null;
 function genererJsonQCM(){
   questionOuverte = null;
   var messageBonneReponse = $("#MessageBonnereponseQCM").val();
+  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
+    messageBonneReponse = document.getElementById("MessageBonnereponseQCM").name;
+  }
   var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
+  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
+    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM").name;
+  }
   var questions = [];
-
+  var tousLesChampsSontRemplis=true;
   for(let i = 1;i <= compteurQuestion;++i){
     var questionText = $("#textQuestion"+i.toString()).val();
+    if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
+      questionText = document.getElementById("textQuestion"+i.toString()).name;
+    }
     var reponses = [];
     // Ajout des réponss
     for(let j=1;j <= compteurReponse[i];++j){
       var id = "question"+i.toString()+"reponse"+j.toString();
       var isGoodAnswer = $("#gridCheckQuestion"+i.toString()+"Reponse"+j.toString()).is(':checked');
-      var responseText = $("#question"+i.toString()+"reponse"+j.toString()).val();  
+      var responseText = $("#question"+i.toString()+"Reponse"+j.toString()).val();  
       //création d'une reponseQCM et on l'ajoute dans le tableau des réponses
-      let reponse = new ReponseQCM(id,responseText,isGoodAnswer);
+      let reponse = ["réponse numéro " + j, responseText, isGoodAnswer];
       reponses.push(reponse);
     }
     // On vérifie que les réponses sont complètes avant de générer le QR code
     var reponsesComplete = true;
+    var minimumUneBonneReponse = false;
     for(let i = 0; i < reponses.length; i++) {
-      if(reponses[i].getReponse() === "") { // reponses[i].getReponse() correspond au texte de la réponse
+      if(reponses[i][1] == "") { // reponses[i].getReponse() correspond au texte de la réponse
         reponsesComplete = false;
         break;
       }
+      if(reponses[i][2] == true){
+        minimumUneBonneReponse=true;
+      }
     }
-    if(questionText !== "" && reponsesComplete) {
+    if(questionText !== "" && reponsesComplete && minimumUneBonneReponse) {
       //création d'une questionQCM et on l'ajoute dans le tableau des questions 
       id = "question"+i.toString();
       question = new QuestionQCM(id,questionText,reponses);
@@ -43,9 +56,10 @@ function genererJsonQCM(){
     }
     else{
       messageInfos("Veuillez remplir tous les champs.", "danger");
+      tousLesChampsSontRemplis=false;
     }
   }
-  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0){
+  if(messageBonneReponse != "" && messageMauvaiseReponse != "" && questions.length>0 && tousLesChampsSontRemplis){
     //création d'un nouveau projetQCM
     projet = new ProjetQCM(questions,messageBonneReponse,messageMauvaiseReponse);
     questionQCM=projet;
@@ -74,9 +88,18 @@ var questionOuverte=null;
 function genererJsonQuestionOuverte(){
   questionQCM = null;
   var questionText = $("#Question").val();
+  if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
+    questionText = document.getElementById("Question").name;
+  }
   var reponseText = $("#Bonnereponse").val();
   var messageBonneReponse = $("#MessageBonnereponse").val();
+  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
+    messageBonneReponse = document.getElementById("MessageBonnereponse").name;
+  }
   var messageMauvaiseReponse = $("#MessageMauvaisereponse").val();
+  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
+    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse").name;
+  }
 
   if(questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {
     questionOuverte = new QRCodeQuestionOuverte(questionText, reponseText, messageBonneReponse, messageMauvaiseReponse);
@@ -142,9 +165,6 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
                             <span class="row">
                               <input type="text" class="form-control col-sm-6" id="question` + question_id + `Reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
                                     placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');">
-                              <i class="fas fa-info-circle mt-2 ml-2" 
-                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                    data-toggle="tooltip" data-placement="right"></i>
                             </span>
                           </div>
                           <div class="form-group col-md-2">
@@ -181,10 +201,13 @@ function ajouterNouvelleQuestion(){
                             <div class="row"> 
                               <div class="col">
                                 <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion`+compteurQuestion+`" style="color:#28a745;padding-right:25px;">Question `+compteurQuestion+` : </label>
-                                <input type="text" class="input-lg question-intro-input" style="width:400px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
+                                <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
                                   placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');" />
                               </div>
-                              <div class="btn-question col-2">
+                              <div class="btn-question col-4">
+                                <button type="button" id="audioQuestion`+compteurQuestion+`" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion`+compteurQuestion+`')"> 
+                                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                                </button>
                                 <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="#collapseQuestion`+compteurQuestion+`" id="btnCollapseQuestion`+compteurQuestion+`">
                                   <i class="fa fa-chevron-up pull-right"></i>
                                   <i class="fa fa-chevron-down pull-right"></i>
@@ -211,9 +234,6 @@ function ajouterNouvelleQuestion(){
                                 <span class="row">
                                   <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
                                     placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');">
-                                  <i class="fas fa-info-circle mt-2 ml-2" 
-                                    title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                    data-toggle="tooltip" data-placement="right"></i>
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
@@ -305,11 +325,13 @@ function supprimerQuestion(question_id, element) {
           div[2].getElementsByTagName("label")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("input")[0].id="textQuestion"+cpt;
           div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');");
-          div[3].getElementsByTagName("button")[0].setAttribute("data-target","#collapseQuestion"+cpt);
-          div[3].getElementsByTagName("button")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
-          div[3].getElementsByTagName("button")[0].id="btnCollapseQuestion"+cpt;
-          div[3].getElementsByTagName("button")[1].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
-          div[3].getElementsByTagName("button")[1].id="deleteQuestion"+cpt;
+          div[3].getElementsByTagName("button")[0].setAttribute("onclick","chamgementAudioSource('textQuestion"+cpt+"');");
+          div[3].getElementsByTagName("button")[0].id="audioQuestion"+cpt;
+          div[3].getElementsByTagName("button")[1].setAttribute("data-target","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[1].setAttribute("aria-controls","#collapseQuestion"+cpt);
+          div[3].getElementsByTagName("button")[1].id="btnCollapseQuestion"+cpt;
+          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
+          div[3].getElementsByTagName("button")[2].id="deleteQuestion"+cpt;
           div[4].id="collapseQuestion"+cpt;
           div[7].id="reponseContainerQuestion"+cpt;
           let last_div=7;
@@ -373,40 +395,54 @@ $("#emptyFields").on('click',function(){
 
 
 function viderChamps(){
-  $('#Question').val('');
-  $('#Bonnereponse').val('');
-  $('#MessageBonnereponse').val('');
-  $('#MessageMauvaisereponse').val('');
-  $('#reponseinitiale').val('');
-  $('#QuestionQCM').val('');
-  $('#reponseParIdentifiant').prop('checked', false);
-  $('#gridCheck1').prop('checked', false);
-  $('#MessageMauvaisereponseQCM').val('');
-  $('#MessageBonnereponseQCM').val('');
-  $("#repContainer").empty();
+  if(document.getElementById('questionOuverteOnglet').classList.contains('active')){
+    $('#Question').val('');
+    document.getElementById('Question').disabled=false;
+    $('#Bonnereponse').val('');
+    $('#MessageBonnereponse').val('');
+    document.getElementById('MessageBonnereponse').disabled=false;
+    $('#MessageMauvaisereponse').val('');
+    document.getElementById('MessageMauvaisereponse').disabled=false;
 
-  deleteStore(`Question`);
-  deleteStore(`Bonnereponse`);
-  deleteStore('MessageBonnereponse');
-  deleteStore('MessageMauvaisereponse');
-  deleteStore(`reponseinitiale`);
-  deleteStore(`QuestionQCM`);
-  deleteStore(`MessageMauvaisereponseQCM`);
-  deleteStore('MessageBonnereponseQCM');
-  deleteStore('reponseParIdentifiant');
-  deleteStore('gridCheck1');
-  /*
-  A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
-  for(var i = 2; i<=compteurReponse; i++) {
-    deleteStore(`reponse${i}`);
-    deleteStore(`gridCheck${i}`);
-  }*/
+    deleteStore(`Question`);
+    deleteStore(`Bonnereponse`);
+    deleteStore('MessageBonnereponse');
+    deleteStore('MessageMauvaisereponse');
 
-  reinitialisationQuestions();
+    logger.info('Réinitialisation de l\'exercice à reconnaissance vocale question ouverte');
+  }
+  else{
+    $('#reponseinitiale').val('');
+    $('#QuestionQCM').val('');
+    $('#reponseParIdentifiant').prop('checked', false);
+    $('#gridCheck1').prop('checked', false);
+    $('#MessageMauvaisereponseQCM').val('');
+    document.getElementById('MessageMauvaisereponseQCM').disabled=false;
+    $('#MessageBonnereponseQCM').val('');
+    document.getElementById('MessageBonnereponseQCM').disabled=false;
+    $("#repContainer").empty();
+    
+    deleteStore(`reponseinitiale`);
+    deleteStore(`QuestionQCM`);
+    deleteStore(`MessageMauvaisereponseQCM`);
+    deleteStore('MessageBonnereponseQCM');
+    deleteStore('reponseParIdentifiant');
+    deleteStore('gridCheck1');
+    /*
+    A METTRE A JOUR : pour gérer la nouvelle représentation des questions / reponses
+    for(var i = 2; i<=compteurReponse; i++) {
+      deleteStore(`reponse${i}`);
+      deleteStore(`gridCheck${i}`);
+    }*/
 
-  store.set("nbReponse", compteurReponse);
+    reinitialisationQuestions();
 
-  logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
+    store.set("nbReponse", compteurReponse);
+    logger.info('Réinitialisation de l\'exercice à reconnaissance vocale QCM');
+  }
+  //logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
+  $('#qrView').hide();
+  $('#saveQRCode').attr('disabled', true);
 }
 
 // save image qr code
@@ -534,3 +570,145 @@ $("#questionQCMOnglet").on('click',function() {
   initMessages();
 });
 
+//Partie audio
+
+var audioSource="";
+
+function chamgementAudioSource(source) {
+  audioSource=source;
+}
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
+
+    const {
+      clipboard
+    } = require('electron');
+
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
+
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        return
+      }
+
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
+        showError(modal, errorMsg);
+      }
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
+
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
+          console.log(contentType);
+
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
+
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            ajouterChampSon(filename, link);
+          } else {
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        console.log('load start');
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+    let textArea = document.getElementById(audioSource);
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+  console.log('error ');
+  $(modal).find('.loader').remove();
+  $(errorMsg).text(message);
+  $(errorMsg).css('color', '#f35b6a');
+  $(errorMsg).addClass('errorLoader');
+  $(modal).prepend(errorMsg); // add error message
+}
+
+$(document).ready(function () {
+  //Use to implement information on the audio import
+  var info = document.createElement('div'); // balise div : contain html information
+  var info_activ = false; // boolean : give the etat of info (up/off)
+
+  /** Show the information about the audio file import (help) */
+ $('button#showInfo').on('click', e => {
+    e.preventDefault();
+    if (info_activ == false) {
+      info.innerHTML = ``;
+      fetch(root + '/rendererProcess/components/audioinfo.html').then(function (response) {
+        return response.text();
+      }).then(function (string) {
+        // console.log(string);
+        info.innerHTML = string;
+      }).catch(function (err) {
+        console.log(info.innerHTML);
+        info.innerHTML = `Erreur`;
+      });
+      document.getElementById('elementsAudio').appendChild(info);
+      info_activ = true;
+    }
+    else {
+      document.getElementById('elementsAudio').removeChild(info);
+      info_activ = false;
+    }
+  });
+
+  $('#closeModalListeMusic').on('click', e => {
+    $('#musicUrl').val('');
+    $('#listeMusic').find('.errorLoader').remove();
+  });
+
+  $("#play-sound-div").hide();
+});

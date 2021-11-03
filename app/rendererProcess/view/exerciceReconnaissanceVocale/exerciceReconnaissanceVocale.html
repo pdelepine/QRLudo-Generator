@@ -36,11 +36,13 @@
                             <div class="col">
                               <!--Label et champ texte de la question 1-->
                               <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion1" aria-expanded="false" aria-controls="#collapseQuestion1" style="color:#28a745;padding-right:25px;">Question 1 : </label>
-                              <input type="text" class="input-lg question-intro-input" style="width:400px;"  id="textQuestion1" cols="10" name="nomprojet"
+                              <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion1" cols="10" name="nomprojet"
                                             placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion1');" />
                             </div>
                             <!--div pour le bouton de collapse et suppression-->
-                            <div class="btn-question col-2">
+                            <div class="btn-question col-4">
+                              <button type="button" id="audioQuestion1" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion1')"> 
+                                <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                               <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion1" aria-expanded="false" aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
                                 <i class="fa fa-chevron-up pull-right"></i>
                                   <i class="fa fa-chevron-down pull-right"></i>
@@ -69,9 +71,6 @@
                               <span class="row">
                                 <input type="text" class="form-control col-sm-6" id="question1Reponse1" rows="2" name="nomprojet"
                                                   placeholder="Réponse" onkeyup="activerSave('question1Reponse1');" />
-                                <i class="fas fa-info-circle mt-2 ml-2" 
-                                              title="Nous vous conseillons de cocher la case 'Utiliser le numéro de la réponse comme réponse vocale' si votre réponse est longue ou difficilement prononçable" 
-                                              data-toggle="tooltip" data-placement="right"></i>
                               </span>
                             </div>
                             <!--Bouton radio pour la réponse 1-->
@@ -112,15 +111,19 @@
                     <br>
                     <div class="form-group row">
                       <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de bonne réponse :</label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-6">
                           <input type="text" class="form-control" id="MessageBonnereponseQCM" placeholder="Bravo !" onkeyup="activerSave('MessageBonnereponseQCM');">
                       </div>
+                      <button type="button" id="bonneReponseAudioQCM" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('MessageBonnereponseQCM')"> 
+                        <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                     </div>
                     <div class="form-group row">
                       <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de mauvaise réponse :</label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-6">
                         <input type="text" class="form-control" id="MessageMauvaisereponseQCM" placeholder="Dommage !" onkeyup="activerSave('MessageMauvaisereponseQCM');">
                       </div>
+                      <button type="button" id="mauvaiseReponseAudioQCM" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('MessageMauvaisereponseQCM')"> 
+                        <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                     </div>
                   </div>
                 </div>         
@@ -132,9 +135,11 @@
                 <br>
                 <div class="form-group row">
                   <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Question :</label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-6">
                     <input type="text" class="form-control" id="Question" style="height: 70px;" onkeyup="activerSave('Question');">
                   </div>
+                  <button type="button" id="QuestionAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('Question')"> 
+                    <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                 </div>
                 <br>
                 <div class="form-group row">
@@ -151,15 +156,19 @@
                 <br>
                 <div class="form-group row">
                   <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de bonne réponse :</label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-6">
                     <input type="text" class="form-control" id="MessageBonnereponse" placeholder="Bravo !" onkeyup="activerSave('MessageBonnereponse');">
                   </div>
+                  <button type="button" id="bonneReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('MessageBonnereponse')"> 
+                    <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                 </div>
                 <div class="form-group row">
                   <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message de mauvaise réponse :</label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-6">
                     <input type="text" class="form-control" id="MessageMauvaisereponse" placeholder="Dommage !" onkeyup="activerSave('MessageMauvaisereponse');">
                   </div>
+                  <button type="button" id="mauvaiseReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('MessageMauvaisereponse')"> 
+                    <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
                 </div> 
               </div>
               <!--fin onglet Question-->
@@ -168,7 +177,7 @@
 
      <div class="card-footer form-inline">
         <div class="card col-md-auto">
-          <button style="margin-top:10px" type="reset" class="btn btn-outline-success btn-unique-xl" data-toggle="modal" id="emptyZones" data-target="#confirmation">
+          <button style="margin-top:10px" class="btn btn-outline-success btn-unique-xl" data-toggle="modal" id="emptyZones" data-target="#confirmation">
             <i class="fa fa-undo"></i>&nbsp;&nbsp;Réinitialiser
           </button>
         </div>
@@ -209,4 +218,38 @@
     </script>
 </div>
 
+<!-- Modal Popup Fichier audio -->
+<div class="modal fade" id="listeMusic" tabindex="-1" role="dialog" data-backdrop="static"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Ajouter un fichier audio</h5>
+                <button type="button" class="close" id="closeModalListeMusic" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
+            <div class="modal-body scrollbar-success">
+                <div class="list-group" id="elementsAudio">
+                    <div class="form-group">
+
+                        <label class="col-sm-12 control-label" style="color:#28a745;padding-top:10px;">Veuillez copier
+                            et coller le
+                            lien téléchargeable du fichier audio</label>
+                        <div class="col-sm-12">
+                            <input type="text" id="musicUrl" name="musicUrl" class="form-control"
+                                onpaste="getMusicFromUrl()">
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-outline-success" id="showInfo" title="Afficher aide">
+                            <i class="fa fa-info-circle"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Popup Fichier Audio -->

@@ -8,24 +8,24 @@ class ReponseQCM {
    * @param {} reponse valeur de la réponse
    * @param {} isGoodAnswer true si c'est la bonne réponse à la question; false sinon
    */
-  constructor(id, reponse = "", isGoodAnswer = false){
+  constructor(id, reponseText = "", isGoodAnswer = false){
     this.reponse = {
       id: id,
-      reponse: reponse,
+      reponseText: reponseText,
       isGoodAnswer: isGoodAnswer
     };
   }
 
   getId(){
-    return this.id;
+    return this.reponse.id;
   }
 
   getReponse(){
-    return this.reponse;
+    return this.reponse.reponseText;
   }
 
   getIsGoodAnswer(){
-    return this.isGoodAnswer;
+    return this.reponse.isGoodAnswer;
   }
  }
 /**
