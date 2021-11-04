@@ -87,6 +87,9 @@ var sketch = function (p) {
 		p.pop();
 		p.displayCreateNode();
 		p.drawPalette();
+		
+		p.noFill();
+		p.rect(0,0,p.parentDiv.width,p.parentDiv.height);
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */
