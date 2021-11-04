@@ -141,9 +141,14 @@ $(document).ready(function () {
     $('#newNbMinimalBonneReponse').val('');
 
     $('#newQuestionText').attr('disabled', false);
+    $("#newQuestionAudio").attr('disabled', false);
     $("#newBonneReponseText").attr('disabled', false);
+    $("#newBonneReponseAudio").attr('disabled', false);
     $("#newMauvaiseReponseText").attr('disabled', false);
+    $('#newMauvaiseReponseAudio').attr('disabled', false);
     $('#newNbMinimalBonneReponse').attr('disabled', false);
+
+
 
     deleteStore(`newQuestionText`);
 
@@ -192,25 +197,29 @@ $("#genererQestion").on('click', function () {
   if (question.substring(question.length - 3, question.length) == "mp3") {
     question = document.getElementById("newQuestionText").name;
   }
-  document.getElementById("newQuestionText").disabled = true;
   let bonneReponse = $('#newBonneReponseText').val();
   if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
     bonneReponse = document.getElementById("newBonneReponseText").name;
   }
-  document.getElementById("newBonneReponseText").disabled = true;
   let mauvaiseReponse = $('#newMauvaiseReponseText').val();
   if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
     mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
   }
-  document.getElementById("newMauvaiseReponseText").disabled = true;
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
-  document.getElementById("newNbMinimalBonneReponse").disabled = true;
   let qrColor = $('#qrColor').val();
 
   
   //On verifie si le texte de la question n'est pas vide
   if (question !== "" && bonneReponse !== "" && mauvaiseReponse !== "" && nbMinBoneReponse !== "") {
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
+    document.getElementById("newMauvaiseReponseText").disabled = true;
+    document.getElementById("newQuestionText").disabled = true;
+    document.getElementById("newBonneReponseText").disabled = true;
+    document.getElementById("newNbMinimalBonneReponse").disabled = true;
+    document.getElementById("newQuestionAudio").disabled = true;
+    document.getElementById("newBonneReponseAudio").disabled = true;
+    document.getElementById("newMauvaiseReponseAudio").disabled = true;
+
     projet.setQuestion(nouvQuestion);
     logger.info('Création du QR Code Exercice');
 
@@ -783,7 +792,7 @@ function calculNombreCaractereQRCode(){
   char += document.getElementById("newBonneReponseText").value.length;
   char += document.getElementById("newMauvaiseReponseText").value.length;
   char += document.getElementById("newNbMinimalBonneReponse").value.length;
-  char += 133 ;   // la taille de {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
+  char += 133 ;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
   return char;
 }
 
