@@ -1,4 +1,3 @@
-
 function genererJson() {
   if(store.get(`sousOnglet`) == "qcm") {
     genererJsonQCM();
@@ -65,7 +64,6 @@ function genererJsonQCM(){
     questionQCM=projet;
 
     initMessages();
-
     // On génére le QrCode a afficher
     previewQRCodeQCM();
     // On affiche le qrCode
@@ -164,7 +162,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
                           <div class="form-group col-md-6">
                             <span class="row">
                               <input type="text" class="form-control col-sm-6" id="question` + question_id + `Reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');">
+                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');verifNombreCaractere('QCM');">
                             </span>
                           </div>
                           <div class="form-group col-md-2">
@@ -202,7 +200,7 @@ function ajouterNouvelleQuestion(){
                               <div class="col">
                                 <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion`+compteurQuestion+`" style="color:#28a745;padding-right:25px;">Question `+compteurQuestion+` : </label>
                                 <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
-                                  placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');" />
+                                  placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');verifNombreCaractere('QCM');" />
                               </div>
                               <div class="btn-question col-4">
                                 <button type="button" id="audioQuestion`+compteurQuestion+`" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion`+compteurQuestion+`')"> 
@@ -212,7 +210,7 @@ function ajouterNouvelleQuestion(){
                                   <i class="fa fa-chevron-up pull-right"></i>
                                   <i class="fa fa-chevron-down pull-right"></i>
                                 </button>
-                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestion`+compteurQuestion+`" onclick="supprimerQuestion(`+compteurQuestion+`,'Question');">
+                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestion`+compteurQuestion+`" onclick="supprimerQuestion(`+compteurQuestion+`,'Question');verifNombreCaractere('QCM');">
                                   <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
                               </div>
@@ -233,7 +231,7 @@ function ajouterNouvelleQuestion(){
                               <div class="form-group col-md-6">
                                 <span class="row">
                                   <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');">
+                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');verifNombreCaractere('QCM');">
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
@@ -251,7 +249,7 @@ function ajouterNouvelleQuestion(){
                             <div class="form-group col-md-6">
                               <label style="color:#a5b2af;">Ajouter une réponse</label>
                               <button id="ajouterReponseQuestion`+compteurQuestion+`" type="button"
-                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);" style="color:#a5b2af;" name="ajouterReponse">
+                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);verifNombreCaractere('QCM');" style="color:#a5b2af;" name="ajouterReponse">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                               </button>
                             </div>
@@ -291,11 +289,13 @@ function supprLigne(question_id,idLigne, element) {
             store.set(`gridCheck${cpt}`, store.get(`gridCheck${id}`));
           }
         }
+        verifNombreCaractere('QCM');
       });
       deleteStore("reponse"+compteurReponse+1);
       deleteStore("gridCheck"+compteurReponse+1)
     }
   }
+  
 }
 
 function reinitialisationQuestions(){
@@ -318,19 +318,19 @@ function supprimerQuestion(question_id, element) {
         for(let cpt = question_id; cpt <= compteurQuestion; cpt++) {
           let id = cpt+1;
           compteurReponse[cpt]=compteurReponse[id];
-          
+
           let div = $("#question"+id)[0].getElementsByTagName("div");
           div[2].getElementsByTagName("label")[0].setAttribute("data-target","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("label")[0].innerHTML = "Question "+cpt+" :";
           div[2].getElementsByTagName("label")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("input")[0].id="textQuestion"+cpt;
-          div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');");
+          div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');verifNombreCaractere('QCM');");
           div[3].getElementsByTagName("button")[0].setAttribute("onclick","chamgementAudioSource('textQuestion"+cpt+"');");
           div[3].getElementsByTagName("button")[0].id="audioQuestion"+cpt;
           div[3].getElementsByTagName("button")[1].setAttribute("data-target","#collapseQuestion"+cpt);
           div[3].getElementsByTagName("button")[1].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[3].getElementsByTagName("button")[1].id="btnCollapseQuestion"+cpt;
-          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
+          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');verifNombreCaractere('QCM')");
           div[3].getElementsByTagName("button")[2].id="deleteQuestion"+cpt;
           div[4].id="collapseQuestion"+cpt;
           div[7].id="reponseContainerQuestion"+cpt;
@@ -339,7 +339,7 @@ function supprimerQuestion(question_id, element) {
             div[last_div+1].id="divQuestion"+cpt+"Reponse"+cpt_rep;
             div[last_div+2].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt_rep + " :";
             div[last_div+3].getElementsByTagName("input")[0].id = "question"+cpt+"Reponse" + cpt_rep;
-            div[last_div+3].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('question"+cpt+"Reponse"+cpt_rep+"');");
+            div[last_div+3].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('question"+cpt+"Reponse"+cpt_rep+"');verifNombreCaractere('QCM')");
             div[last_div+4].getElementsByTagName("input")[0].id = "gridCheckQuestion"+cpt+"Reponse" + cpt_rep;
             div[last_div+4].getElementsByTagName("input")[0].setAttribute("onclick","activerSaveCheckbox('gridCheckQuestion"+cpt+"Reponse"+cpt_rep+"');");
             div[last_div+4].getElementsByTagName("label")[0].setAttribute("for","gridCheckQuestion"+cpt+"Reponse" + cpt_rep);
@@ -348,7 +348,7 @@ function supprimerQuestion(question_id, element) {
             last_div+=5;
           }
           div[last_div+1].getElementsByTagName("button")[0].id="ajouterReponseQuestion"+cpt;
-          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");");
+          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");verifNombreCaractere('QCM');");
           $("#question"+id)[0].id="question"+cpt;
         }
         compteurReponse[compteurQuestion+1]=0;
@@ -408,10 +408,10 @@ function viderChamps(){
     deleteStore(`Bonnereponse`);
     deleteStore('MessageBonnereponse');
     deleteStore('MessageMauvaisereponse');
-
+    verifNombreCaractere('QO');
     logger.info('Réinitialisation de l\'exercice à reconnaissance vocale question ouverte');
   }
-  else{
+  else {
     $('#reponseinitiale').val('');
     $('#QuestionQCM').val('');
     $('#reponseParIdentifiant').prop('checked', false);
@@ -436,9 +436,9 @@ function viderChamps(){
     }*/
 
     reinitialisationQuestions();
-
     store.set("nbReponse", compteurReponse);
     logger.info('Réinitialisation de l\'exercice à reconnaissance vocale QCM');
+    verifNombreCaractere('QCM');
   }
   //logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
   $('#qrView').hide();
@@ -562,11 +562,13 @@ function deleteStore(del){
 //On stocke dans le store, le sous onglet "question_ouverte"
 $("#questionOuverteOnglet").on('click',function() {
   store.set("sousOnglet", "question_ouverte");
+  verifNombreCaractere('QO');
   initMessages();
 });
 //On stocke dans le store, le sous onglet "qcm"
 $("#questionQCMOnglet").on('click',function() {
   store.set("sousOnglet", "qcm");
+  verifNombreCaractere("QCM");
   initMessages();
 });
 
@@ -712,3 +714,131 @@ $(document).ready(function () {
 
   $("#play-sound-div").hide();
 });
+
+
+
+/**  une fonction pour calculer le nombre de car de QRcode */
+function calculNombreCaractereQRCode(type){
+  let char = 0;
+  if (type=="QO"){
+    char += 190; // nombre de caractère dans {"qrcode":{"id":xxxxxxxxxxxxx,"name":"","type":"ExerciceReconnaissanceVocaleQuestionOuverte","data":[""],"color":"#xxxxxx","text_bonne_reponse":"","text_mauvaise_reponse":"","version":"x"}} 
+    char += document.getElementById("Question").value.length;
+    char += document.getElementById("Bonnereponse").value.length;
+    char += document.getElementById("MessageBonnereponse").value.length;
+    char += document.getElementById("MessageMauvaisereponse").value.length;
+  } if (type=="QCM") {
+    char +=158;  // nombre de caractère dans {"id":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","type":"ExerciceReconnaissanceVocaleQCM","questions":[],"textBonneReponse":"","textMauvaiseReponse":"","version":"x"}
+    char += document.getElementById("MessageBonnereponseQCM").value.length;
+    char += document.getElementById("MessageMauvaisereponseQCM").value.length;
+    for (i = 1 ; i<=compteurQuestion ; ++i) { 
+      char +=59; // nombre de caractère dans [{"question":{"id":"","textQuestion":"","reponses":[] } }]
+      char += ("question"+i.toString()).length; 
+      char += document.getElementById("textQuestion"+i).value.length;
+      let numberOfReopnses = document.getElementById("reponseContainerQuestion"+i).childElementCount;
+      for (j = 1 ; j <=numberOfReopnses ; ++j){
+        char += 7; // pour les "" + []  
+        char += ("réponse numéro "+j.toString()).length;
+        char += document.getElementById("question"+i+"Reponse"+j).value.length;  
+        char +=5;     // pour true || false
+      }
+    }
+  } 
+  return char;
+}
+
+/** une fonction pour Gérer l'attribut maxLength de chaque Réponses de chaque Question */ 
+function GererChampsDeReponses(nombreCaractere){  
+  let numberOfReopnses;
+  let currentLength;
+  for (i = 1 ; i<=compteurQuestion ; ++i) { 
+    numberOfReopnses = document.getElementById("reponseContainerQuestion"+i).childElementCount;
+    for (j = 1 ; j <=numberOfReopnses ; ++j){
+        if (nombreCaractere==0){ // on ferme le champs avec son length courant quand le nombreCaractere est 0 
+          currentLength = document.getElementById("question"+i+"Reponse"+j).value.length;
+          document.getElementById("question"+i+"Reponse"+j).setAttribute("maxLength",currentLength); 
+        } else {
+          document.getElementById("question"+i+"Reponse"+j).setAttribute("maxLength",nombreCaractere);  
+        } 
+      }
+  }
+}
+
+/**une function pour gerer les button d'ajout de questions et d'ajout de reponses 
+ *@param {boolean} mode  */
+function GererButonsDajout(mode){  
+  document.getElementById("ajouterQuestion").disabled = mode;  //  activer/disactiver le buton d'ajouter question dans le QCM
+  for (i = 1 ; i<=compteurQuestion ; ++i) {                    //  activer/disactiver chaque buton d'ajouter de reponses
+    document.getElementById("ajouterReponseQuestion"+i).disabled = mode;
+  }
+}
+
+/** une fonction qui fait la mis à jour de Progress Bar */
+function SetProgressBar(type) {
+  //progress bar gestion
+  let total = 0;
+  let nombreCaratereMAX = 1240;
+  total += calculNombreCaractereQRCode(type);   
+  let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
+
+/**
+ * une fonction pour verifier le nombre de caractere 
+ * @param {string} type */
+function verifNombreCaractere(type) {
+  let nombreCaratereMAX = 1240;
+  $('#messages').empty();
+  let total = SetProgressBar(type);
+  if(type=="QO")
+  {
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs  
+      document.getElementById("Question").setAttribute("maxLength",document.getElementById("Question").value.length);
+      document.getElementById("Bonnereponse").setAttribute("maxLength",document.getElementById("Bonnereponse").value.length);
+      document.getElementById("MessageMauvaisereponse").setAttribute("maxLength",document.getElementById("MessageMauvaisereponse").value.length);
+      document.getElementById("MessageBonnereponse").setAttribute("maxLength",document.getElementById("MessageBonnereponse").value.length);
+    }
+    else {          
+      document.getElementById("Question").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("Bonnereponse").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageMauvaisereponse").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageBonnereponse").setAttribute("maxLength",nombreCaratereMAX);
+    }
+    if (document.getElementById("Question").value.length==0 && document.getElementById("Bonnereponse").value.length==0 &&
+        document.getElementById("MessageMauvaisereponse").value.length==0 && document.getElementById("MessageBonnereponse").value.length==0)
+      {   // si les champs sont vides on met la progess bar a 0
+        document.getElementById("progressbarId").style.width = 0;
+      }
+
+  } 
+  if (type=="QCM") 
+  { 
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs 
+     document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength",document.getElementById("MessageBonnereponseQCM").value.length);
+     document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",document.getElementById("MessageMauvaisereponseQCM").value.length);
+     GererChampsDeReponses(0);
+     GererButonsDajout(true);
+    }
+    else {
+      document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",nombreCaratereMAX);
+      GererChampsDeReponses(nombreCaratereMAX);
+      GererButonsDajout(false);
+    }    
+    if (document.getElementById("MessageBonnereponseQCM").value.length==0 && document.getElementById("MessageMauvaisereponseQCM").value.length==0 && document.getElementById("textQuestion1").value.length==0){ 
+      document.getElementById("progressbarId").style.width = 0; // si les champs sont vides on met la progess bar a 0
+    }
+  }
+  // si on dépasse 100% on ferme le buton de génération de QRCode
+  if (Math.trunc((total / nombreCaratereMAX) * 10000) / 100 > 100){  
+    document.getElementById("preview").disabled = true;
+  } else { 
+    document.getElementById("preview").disabled = false;
+  }
+
+}
+
