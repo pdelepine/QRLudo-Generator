@@ -8,6 +8,12 @@ var sketch = function (p) {
 	p.nodeArray = [];
 	/** Liste des liens du diagramme */
 	p.linkArray = [];
+	/** Variable pour savoir si la palette est afficher ou chacher */
+	p.palette = true;
+	/** Le bouton pour cacher la palette */
+	p.buttonHidePalette;
+	/** Le bouton pour afficher la palette */
+	p.buttonShowPalette;
 	/** Le bouton de création de question */
 	p.buttonCreateQuestion;
 	/** Le bouton de création de champ de texte */
@@ -53,6 +59,19 @@ var sketch = function (p) {
 		link1.type = 'static';
 		p.linkArray.push(link1);
 
+		/** Declaration of Button to hide the palette */
+		p.buttonHidePalette = p.createButton('<');
+ 		p.buttonHidePalette.position(155, 115);
+  		p.buttonHidePalette.mousePressed(p.hidePalette);
+		p.buttonHidePalette.parent("seriousGameDiagram");
+
+		/** Declaration of Button to show the palette */
+		p.buttonShowPalette = p.createButton('>');
+ 		p.buttonShowPalette.position(5, 115);
+  		p.buttonShowPalette.mousePressed(p.hidePalette);
+		p.buttonShowPalette.parent("seriousGameDiagram");
+		p.buttonShowPalette.hide();
+
 		/** Declaration of Button to create Node */
 		p.buttonCreateQuestion = p.createButton('Créer une question');
 		p.buttonCreateQuestion.position(20, 150);
@@ -86,7 +105,9 @@ var sketch = function (p) {
 
 		p.pop();
 		p.displayCreateNode();
-		p.drawPalette();
+    if(p.palette){
+			p.drawPalette();
+		}
 
 		// Drawing the canvas borders
 		p.push();
@@ -94,6 +115,7 @@ var sketch = function (p) {
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
+		
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */
@@ -267,11 +289,30 @@ var sketch = function (p) {
 		}
 	}
 
+	/** Fonction appelée lorsque le bouton buttonHidePalette ou le bouton buttonShowPalette est appuyé */
+	p.hidePalette = function () {
+		if (p.palette) {
+			p.palette = false;
+			p.buttonHidePalette.hide();
+			p.buttonShowPalette.show();
+			p.buttonCreateQuestion.hide();
+			p.buttonCreateTextNode.hide();
+		}
+		else {
+			p.palette = true;
+			p.buttonHidePalette.show();
+			p.buttonShowPalette.hide();
+			p.buttonCreateQuestion.show();
+			p.buttonCreateTextNode.show();
+		}
+	}
+
 	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 	}
+
 }
 
 if (typeof myP5 === 'undefined') {
