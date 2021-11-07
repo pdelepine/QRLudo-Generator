@@ -96,6 +96,7 @@ $(document).ready(function () {
     console.log("--------------------");
     console.log(projet.getQuestion().getReponses());
 
+    verifNombreCaractere();
     return true;
 
   });
@@ -112,6 +113,8 @@ $(document).ready(function () {
   $("#emptyFields").on('click', function () {
     viderZone();
     logger.info('Réinitialisation du QR Code Exercice');
+    verifNombreCaractere();
+    $("#cible").empty();                       //  pour vider les Bonnes Reponses!
   })
 
   function viderZone() {
@@ -138,9 +141,14 @@ $(document).ready(function () {
     $('#newNbMinimalBonneReponse').val('');
 
     $('#newQuestionText').attr('disabled', false);
+    $("#newQuestionAudio").attr('disabled', false);
     $("#newBonneReponseText").attr('disabled', false);
+    $("#newBonneReponseAudio").attr('disabled', false);
     $("#newMauvaiseReponseText").attr('disabled', false);
+    $('#newMauvaiseReponseAudio').attr('disabled', false);
     $('#newNbMinimalBonneReponse').attr('disabled', false);
+
+
 
     deleteStore(`newQuestionText`);
 
@@ -160,6 +168,7 @@ $(document).ready(function () {
     deleteStore('numReponse');
     numReponse = 0;
   }
+  verifNombreCaractere();
 });
 
 // fonction qui ajoute la ligne de la reponse sur la zone prévu a cet effet
@@ -174,7 +183,7 @@ function addReponseLine(reponse) {
     "<li style='color:black;font-size:14px;'>" +
     "<label>" + reponse.getName() + "&nbsp&nbsp</label>" +
     "<em style='color:gray'>" + reponse.getDataAll() + "</em>" +
-    "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='deleteReponse(this);'><i class='fa fa-trash-alt'></i></button>" +
+    "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='deleteReponse(this);verifNombreCaractere();'><i class='fa fa-trash-alt'></i></button>" +
     "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='lireReponse(this);'><i class='fa fa-play'></i></button>" +
     "</li>" +
     "</div>";
@@ -188,34 +197,39 @@ $("#genererQestion").on('click', function () {
   if (question.substring(question.length - 3, question.length) == "mp3") {
     question = document.getElementById("newQuestionText").name;
   }
-  document.getElementById("newQuestionText").disabled = true;
   let bonneReponse = $('#newBonneReponseText').val();
   if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
     bonneReponse = document.getElementById("newBonneReponseText").name;
   }
-  document.getElementById("newBonneReponseText").disabled = true;
   let mauvaiseReponse = $('#newMauvaiseReponseText').val();
   if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
     mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
   }
-  document.getElementById("newMauvaiseReponseText").disabled = true;
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
-  document.getElementById("newNbMinimalBonneReponse").disabled = true;
   let qrColor = $('#qrColor').val();
 
+  
   //On verifie si le texte de la question n'est pas vide
   if (question !== "" && bonneReponse !== "" && mauvaiseReponse !== "" && nbMinBoneReponse !== "") {
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
+    document.getElementById("newMauvaiseReponseText").disabled = true;
+    document.getElementById("newQuestionText").disabled = true;
+    document.getElementById("newBonneReponseText").disabled = true;
+    document.getElementById("newNbMinimalBonneReponse").disabled = true;
+    document.getElementById("newQuestionAudio").disabled = true;
+    document.getElementById("newBonneReponseAudio").disabled = true;
+    document.getElementById("newMauvaiseReponseAudio").disabled = true;
+
     projet.setQuestion(nouvQuestion);
     logger.info('Création du QR Code Exercice');
 
     initMessages();
-
     //affichage de la zone de question
     $("#dropZone").show();
 
     //on cache le bouton question
     $("#genererQestion").hide();
+    verifNombreCaractere();
   } else {
     messageInfos("Veuillez renseigner tous les champs", "danger");
     logger.error("Des champs sont vides! ")
@@ -556,7 +570,6 @@ function previewQRCodeReponse(button) {
 // generate and print qr code
 function previewQRCode(qrcode, div) {
   let facade = new FacadeController();
-
   facade.genererQRCode(div, qrcode);
 }
 
@@ -754,3 +767,76 @@ $(document).ready(function () {
 
   $("#play-sound-div").hide();
 });
+
+
+
+/**  une fonction pour calculer le nombre de car de QRcode + les id des qrcodes */
+function calculNombreCaractereQRCode(){
+  let char = 0;
+  let qrQuestion = projet.getQuestion();
+  let qrcodes    = projet.getReponses();
+  if (qrcodes.length!=0){
+    for (const element of qrcodes) {
+        char += element.getId().toString().length; 
+        char += 2;  // pour les  "" autour de chaque QR
+    }
+    char += qrcodes.length-1;  // pour compter la virgule qui se trouve entre chaque deux QRcodes
+  }
+  if (qrQuestion!=null) {
+    char += qrQuestion.getColor().length
+    char += qrQuestion.getId().toString().length;
+    char += qrQuestion.getType().length;
+    char ++;        // pour la version 
+  }
+  char += document.getElementById("newQuestionText").value.length;
+  char += document.getElementById("newBonneReponseText").value.length;
+  char += document.getElementById("newMauvaiseReponseText").value.length;
+  char += document.getElementById("newNbMinimalBonneReponse").value.length;
+  char += 133 ;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
+  return char;
+}
+
+
+
+function verifNombreCaractere() {
+  let nombreCaratereMAX = 1240;
+  //progress bar gestion
+  let total = SetProgressBar();
+  $('#messages').empty();
+  if (total >= nombreCaratereMAX) {
+    if($("#genererQestion").is(":visible")){
+      messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
+    } else {
+      messageInfos("La taille maximale est atteinte, il faut supprimer des Questions", "warning");
+    }
+    document.getElementById("newQuestionText").setAttribute("maxLength",0);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength",0);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength",0);
+  }
+  else {
+    document.getElementById("newQuestionText").setAttribute("maxLength",nombreCaratereMAX);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength",nombreCaratereMAX);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength",nombreCaratereMAX);
+  }
+  if (document.getElementById("newQuestionText").value.length==0 && document.getElementById("newBonneReponseText").value.length==0 &&
+      document.getElementById("newMauvaiseReponseText").value.length==0)
+  {
+    document.getElementById("progressbarId").style.width=0;
+  }
+}
+
+
+/** fonction qui fait la mis à jour de Progress Bar */
+function SetProgressBar() {
+  //progress bar gestion
+  let total = 0;
+  let nombreCaratereMAX = 1240;
+  total += calculNombreCaractereQRCode();   
+  let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
