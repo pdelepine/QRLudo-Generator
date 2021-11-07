@@ -105,9 +105,17 @@ var sketch = function (p) {
 
 		p.pop();
 		p.displayCreateNode();
-		if(p.palette){
+    if(p.palette){
 			p.drawPalette();
 		}
+
+		// Drawing the canvas borders
+		p.push();
+		p.noFill();
+		p.strokeWeight(4);
+		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
+		p.pop();
+		
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */

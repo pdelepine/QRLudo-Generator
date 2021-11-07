@@ -15,8 +15,8 @@ class SGNode {
 		this.h = h;
 		this.offsetX = 0;
 		this.offsetY = 0;
-		this.entryDot = new SGDot(this, this.w / 2, 0, [154, 231, 197]);
-		this.exitDots = [ new SGDot(this, this.w / 2, this.h, [86, 101, 90])];
+		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71]);
+		this.exitDots = [ new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
 	}
 
 	setName(name) { this.name = name }
@@ -52,7 +52,7 @@ class SGNode {
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else
-			myP5.fill(175);
+			myP5.fill(235);
 		myP5.rect(this.x, this.y, this.w, this.h, 5, 5);
 		myP5.fill(0);
 		myP5.noStroke();
