@@ -18,6 +18,8 @@ var sketch = function (p) {
 	p.buttonCreateQuestion;
 	/** Le bouton de création de champ de texte */
 	p.buttonCreateTextNode;
+	/** Le slider qui permet de zoomer et de dézoomer */
+	p.sliderZoom;
 	/** Paramètre gérant la translation du canvas sur l'axe des x */
 	p.translateX = 0;
 	/** Paramètre gérant la translation du canvas sur l'axe des y */
@@ -85,6 +87,10 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.mousePressed(p.createTextNode);
 		p.buttonCreateTextNode.size(115);
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
+
+		/** Declaration of slider Zoom */
+		p.sliderZoom = p.createSlider(1,200,(p.zoom)*100);
+		p.sliderZoom.parent("seriousGameDiagram");
 	}
 
 	/** Event loop */
@@ -115,7 +121,14 @@ var sketch = function (p) {
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
-		
+
+		p.sliderZoom.position((p.width)-140,(p.height)+85);
+		p.sliderZoom.input(() => {
+			p.zoom = (p.sliderZoom.value()/100);
+			console.log(`Zoom ${p.zoom}`);
+		});
+		p.sliderZoom.value((p.zoom)*100);
+
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */
