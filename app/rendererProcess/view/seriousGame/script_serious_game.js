@@ -124,7 +124,7 @@ var sketch = function (p) {
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
 
-		p.sliderZoom.position((p.width)-170,(p.height)+90); //positionnemnt du slider en bas à droite 
+		p.sliderZoom.position((p.width)-170, (p.height)+90); //positionnemnt du slider en bas à droite 
 		p.sliderZoom.input(() => {
 			p.sliderNotPressed=false; //met à faux quand on utilise le slider
 			p.zoom = (p.sliderZoom.value()/100); //change la valeur de p.zoom en fonction de la valeur du slider
@@ -135,7 +135,7 @@ var sketch = function (p) {
 		p.push();
 		p.fill(28,62,180);
 		p.textAlign(p.RIGHT);
-		p.text(p.sliderZoom.value() + "%",(p.width)-8,(p.height)-8); //affiche le pourcentage de zoom auquel on est actuellement
+		p.text(p.sliderZoom.value() + "%", (p.width)-8, (p.height)-8); //affiche le pourcentage de zoom auquel on est actuellement
 		p.pop();
 	}
 
