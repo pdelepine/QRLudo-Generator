@@ -11,20 +11,41 @@ var questionQCM =null;
 
 function genererJsonQCM(){
   questionOuverte = null;
-  var messageBonneReponse = $("#MessageBonnereponseQCM").val();
-  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
-    messageBonneReponse = document.getElementById("MessageBonnereponseQCM").name;
+  var messageBonneReponse = document.getElementById("MessageBonnereponseQCM");
+  if (messageBonneReponse.value.substring(messageBonneReponse.value.length - 3, messageBonneReponse.value.length) == "mp3") {
+    messageBonneReponse = {
+      type: 'music',
+      name: messageBonneReponse.value,
+      url: messageBonneReponse.name
+    }
   }
-  var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
-  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
-    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM").name;
+  else{
+    messageBonneReponse = messageBonneReponse.value;
+  }
+  var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM");
+  if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
+    messageMauvaiseReponse = {
+      type: 'music',
+      name: messageMauvaiseReponse.value,
+      url: messageMauvaiseReponse.name
+    }
+  }
+  else{
+    messageMauvaiseReponse = messageMauvaiseReponse.value;
   }
   var questions = [];
   var tousLesChampsSontRemplis=true;
   for(let i = 1;i <= compteurQuestion;++i){
-    var questionText = $("#textQuestion"+i.toString()).val();
-    if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
-      questionText = document.getElementById("textQuestion"+i.toString()).name;
+    var questionText = document.getElementById("textQuestion"+i.toString());
+    if (questionText.value.substring(questionText.value.length - 3, questionText.value.length) == "mp3") {
+      questionText = {
+        type: 'music',
+        name: questionText.value,
+        url: questionText.name
+      }
+    }
+    else{
+      questionText = questionText.value;
     }
     var reponses = [];
     // Ajout des réponss
@@ -87,18 +108,39 @@ var questionOuverte=null;
 
 function genererJsonQuestionOuverte(){
   questionQCM = null;
-  var questionText = $("#Question").val();
-  if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
-    questionText = document.getElementById("Question").name;
+  var questionText = document.getElementById("Question");
+  if (questionText.value.substring(questionText.value.length - 3, questionText.value.length) == "mp3") {
+    questionText = {
+      type: 'music',
+      name: questionText.value,
+      url: questionText.name
+    }
+  }
+  else{
+    questionText = questionText.value;
   }
   var reponseText = $("#Bonnereponse").val();
-  var messageBonneReponse = $("#MessageBonnereponse").val();
-  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
-    messageBonneReponse = document.getElementById("MessageBonnereponse").name;
+  var messageBonneReponse = document.getElementById("MessageBonnereponse");
+  if (messageBonneReponse.value.substring(messageBonneReponse.value.length - 3, messageBonneReponse.value.length) == "mp3") {
+    messageBonneReponse = {
+      type: 'music',
+      name: messageBonneReponse.value,
+      url: messageBonneReponse.name
+    }
   }
-  var messageMauvaiseReponse = $("#MessageMauvaisereponse").val();
-  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
-    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse").name;
+  else{
+    messageBonneReponse = messageBonneReponse.value;
+  }
+  var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse");
+  if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
+    messageMauvaiseReponse = {
+      type: 'music',
+      name: messageMauvaiseReponse.value,
+      url: messageMauvaiseReponse.name
+    }
+  }
+  else{
+    messageMauvaiseReponse = messageMauvaiseReponse.value;
   }
 
   if(questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {

@@ -193,17 +193,38 @@ function addReponseLine(reponse) {
 
 $("#genererQestion").on('click', function () {
   $("#ajoutNewReponse").attr('disabled', false);
-  let question = $('#newQuestionText').val();
-  if (question.substring(question.length - 3, question.length) == "mp3") {
-    question = document.getElementById("newQuestionText").name;
+  let question = document.getElementById('newQuestionText');
+  if (question.value.substring(question.value.length - 3, question.value.length) == "mp3") {
+    question = {
+      type: 'music',
+      name: question.value,
+      url: question.name
+    }
   }
-  let bonneReponse = $('#newBonneReponseText').val();
-  if (bonneReponse.substring(bonneReponse.length - 3, bonneReponse.length) == "mp3") {
-    bonneReponse = document.getElementById("newBonneReponseText").name;
+  else{
+    question = question.value;
   }
-  let mauvaiseReponse = $('#newMauvaiseReponseText').val();
-  if (mauvaiseReponse.substring(mauvaiseReponse.length - 3, mauvaiseReponse.length) == "mp3") {
-    mauvaiseReponse = document.getElementById("newMauvaiseReponseText").name;
+  let bonneReponse = document.getElementById('newBonneReponseText');
+  if (bonneReponse.value.substring(bonneReponse.value.length - 3, bonneReponse.value.length) == "mp3") {
+    bonneReponse = {
+      type: 'music',
+      name: bonneReponse.value,
+      url: bonneReponse.name
+    }
+  }
+  else{
+    bonneReponse = bonneReponse.value;
+  }  
+  let mauvaiseReponse = document.getElementById('newMauvaiseReponseText');
+  if (mauvaiseReponse.value.substring(mauvaiseReponse.value.length - 3, mauvaiseReponse.value.length) == "mp3") {
+    mauvaiseReponse = {
+      type: 'music',
+      name: mauvaiseReponse.value,
+      url: mauvaiseReponse.name
+    }
+  }
+  else{
+    mauvaiseReponse = mauvaiseReponse.value;
   }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();

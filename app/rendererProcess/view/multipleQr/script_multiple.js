@@ -131,12 +131,21 @@ function ajoutQrCcode() {
 
   let qrColor = $('#qrColor').val();
   var qrName = $("#nomQR").val();
-  var donnee = $("#ContenuQR").val();
-  if (donnee.substring(donnee.length - 3, donnee.length) == "mp3") {
-    donnee = document.getElementById("ContenuQR").name;
-  }
+  var donnee = document.getElementById("ContenuQR");
   var qrData = [];
-  qrData.push(donnee);
+  if (donnee.value.substring(donnee.value.length - 3, donnee.value.length) == "mp3") {
+    donnee = {
+      type: 'music',
+      name: donnee.value,
+      url: donnee.name
+    }
+
+    let jsonAudio = JSON.stringify(donnee);
+    qrData.push(JSON.parse(jsonAudio));
+  }
+  else{
+    qrData.push(donnee.value);
+  }
 
   /** Reset de la boite de dialogue */
   document.getElementById("nomQR").value = "";
