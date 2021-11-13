@@ -173,8 +173,15 @@ $('#preview').on('click',e => {
 
       let jsonAudio = JSON.stringify(dataAudio);
       qrData.push(JSON.parse(jsonAudio));
-    } else
-      qrData.push(data.value);
+    } else{
+      let dataText = {
+        type: 'text',
+        text: data.value
+      }
+
+      let jsonText = JSON.stringify(dataText);
+      qrData.push(JSON.parse(jsonText));
+    }
   }
 
   qrType = $('#typeQRCode').val();

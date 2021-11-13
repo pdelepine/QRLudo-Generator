@@ -202,7 +202,10 @@ $("#genererQestion").on('click', function () {
     }
   }
   else{
-    question = question.value;
+    question = {
+      type: 'text',
+      text: question.value
+    }
   }
   let bonneReponse = document.getElementById('newBonneReponseText');
   if (bonneReponse.value.substring(bonneReponse.value.length - 3, bonneReponse.value.length) == "mp3") {
@@ -213,7 +216,10 @@ $("#genererQestion").on('click', function () {
     }
   }
   else{
-    bonneReponse = bonneReponse.value;
+    bonneReponse = {
+      type: 'text',
+      text: bonneReponse.value
+    }
   }  
   let mauvaiseReponse = document.getElementById('newMauvaiseReponseText');
   if (mauvaiseReponse.value.substring(mauvaiseReponse.value.length - 3, mauvaiseReponse.value.length) == "mp3") {
@@ -224,7 +230,10 @@ $("#genererQestion").on('click', function () {
     }
   }
   else{
-    mauvaiseReponse = mauvaiseReponse.value;
+    mauvaiseReponse = {
+      type: 'text',
+      text: mauvaiseReponse.value
+    }
   }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();

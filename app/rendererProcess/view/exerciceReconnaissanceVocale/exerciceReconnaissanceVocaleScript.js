@@ -20,7 +20,10 @@ function genererJsonQCM(){
     }
   }
   else{
-    messageBonneReponse = messageBonneReponse.value;
+    messageBonneReponse = {
+      type: 'text',
+      text: messageBonneReponse.value
+    }
   }
   var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM");
   if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
@@ -31,7 +34,10 @@ function genererJsonQCM(){
     }
   }
   else{
-    messageMauvaiseReponse = messageMauvaiseReponse.value;
+    messageMauvaiseReponse = {
+      type: 'text',
+      text: messageMauvaiseReponse.value
+    }
   }
   var questions = [];
   var tousLesChampsSontRemplis=true;
@@ -45,7 +51,10 @@ function genererJsonQCM(){
       }
     }
     else{
-      questionText = questionText.value;
+      questionText = {
+        type: 'text',
+        text: questionText.value
+      }
     }
     var reponses = [];
     // Ajout des réponss
@@ -117,7 +126,10 @@ function genererJsonQuestionOuverte(){
     }
   }
   else{
-    questionText = questionText.value;
+    questionText = {
+      type: 'text',
+      text: questionText.value
+    }
   }
   var reponseText = $("#Bonnereponse").val();
   var messageBonneReponse = document.getElementById("MessageBonnereponse");
@@ -129,7 +141,10 @@ function genererJsonQuestionOuverte(){
     }
   }
   else{
-    messageBonneReponse = messageBonneReponse.value;
+    messageBonneReponse = {
+      type: 'text',
+      text: messageBonneReponse.value
+    }
   }
   var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse");
   if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
@@ -140,7 +155,10 @@ function genererJsonQuestionOuverte(){
     }
   }
   else{
-    messageMauvaiseReponse = messageMauvaiseReponse.value;
+    messageMauvaiseReponse = {
+      type: 'text',
+      text: messageMauvaiseReponse.value
+    }
   }
 
   if(questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {

@@ -144,7 +144,13 @@ function ajoutQrCcode() {
     qrData.push(JSON.parse(jsonAudio));
   }
   else{
-    qrData.push(donnee.value);
+    donnee = {
+      type: 'text',
+      text: donnee.value
+    }
+
+    let jsonText = JSON.stringify(donnee);
+    qrData.push(JSON.parse(jsonText));
   }
 
   /** Reset de la boite de dialogue */
