@@ -18,6 +18,10 @@ var sketch = function (p) {
 	p.buttonCreateQuestion;
 	/** Le bouton de création de champ de texte */
 	p.buttonCreateTextNode;
+	/** Le slider qui permet de zoomer et de dézoomer */
+	p.sliderZoom;
+	/** Variable pour savoir si on utilise le slider ou non */
+	p.sliderNotPressed = true;
 	/** Paramètre gérant la translation du canvas sur l'axe des x */
 	p.translateX = 0;
 	/** Paramètre gérant la translation du canvas sur l'axe des y */
@@ -85,6 +89,10 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.mousePressed(p.createTextNode);
 		p.buttonCreateTextNode.size(115);
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
+
+		/** Declaration of slider Zoom */
+		p.sliderZoom = p.createSlider(1,200,(p.zoom)*100);
+		p.sliderZoom.parent("seriousGameDiagram");
 	}
 
 	/** Event loop */
@@ -115,7 +123,20 @@ var sketch = function (p) {
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
-		
+
+		p.sliderZoom.position((p.width)-170, (p.height)+90); //positionnemnt du slider en bas à droite 
+		p.sliderZoom.input(() => {
+			p.sliderNotPressed=false; //met à faux quand on utilise le slider
+			p.zoom = (p.sliderZoom.value()/100); //change la valeur de p.zoom en fonction de la valeur du slider
+			console.log(`Zoom ${p.zoom}`);
+		});
+		p.sliderZoom.mouseReleased(() => {p.sliderNotPressed=true;}); //remet à vrai quand on arrête d'utiliser le slider
+		p.sliderZoom.value((p.zoom)*100); //change la valeur du slider si on zoome ou dézoome avec la molette de la souris
+		p.push();
+		p.fill(28,62,180);
+		p.textAlign(p.RIGHT);
+		p.text(p.sliderZoom.value() + "%", (p.width)-8, (p.height)-8); //affiche le pourcentage de zoom auquel on est actuellement
+		p.pop();
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */
@@ -169,7 +190,7 @@ var sketch = function (p) {
 
 	/** Fonction qui gère le déplacement du dessin avec un clic gauche */
 	p.moveDiagram = function () {
-		if (p.mouseIsPressed && p.mouseButton === p.LEFT) {
+		if (p.mouseIsPressed && p.mouseButton === p.LEFT && p.sliderNotPressed) {
 			if (p.mouseX < p.width && p.mouseX > 0 && p.mouseY < p.height && p.mouseY > 0) {
 				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
