@@ -1,4 +1,3 @@
-
 function genererJson() {
   if(store.get(`sousOnglet`) == "qcm") {
     genererJsonQCM();
@@ -130,10 +129,15 @@ function previewQRCode(qrcode, div) {
   facade.genererQRCode(div, qrcode);
 }
 
+
 $(document).ready(function() {
 
   if(!store.get("sousOnglet"))
     store.set("sousOnglet", "question_ouverte");
+  
+  if(!store.get("compteurQuestion")){
+    store.set("compteurQuestion",1);
+  }
 
   if(!isImportationExerciceRecoVocaleQCM) {
     //méthode gérant la continuité
@@ -141,8 +145,6 @@ $(document).ready(function() {
   }
 
   initMessages();
-
-
 
   // Aucun champs audio à lire dans cet onglet
   $("#play-sound-div").hide();
@@ -191,8 +193,9 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
   }
 }
 
-function ajouterNouvelleQuestion(){
-  compteurQuestion++;
+function ajouterNouvelleQuestion(incrementerDansStore=true){
+  compteurQuestion++;  
+  if (incrementerDansStore) store.set("compteurQuestion",store.get('compteurQuestion')+1);
   compteurReponse[compteurQuestion]=1;
   type = "Reponse";
   logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
@@ -291,12 +294,33 @@ function supprLigne(question_id,idLigne, element) {
             store.set(`gridCheck${cpt}`, store.get(`gridCheck${id}`));
           }
         }
+        deleteStore("question"+question_id+"Reponse"+idLigne);
+        updateReponses(question_id);
       });
       deleteStore("reponse"+compteurReponse+1);
-      deleteStore("gridCheck"+compteurReponse+1)
+      deleteStore("gridCheck"+compteurReponse+1);
+    }
+    
+  }
+}
+
+
+/** une fonction pour mettre a jour les reponses d'une question dans le store*/  
+function updateReponses(question_id){
+  for (i = 1 ; i < 30 ; ++i ){                       // supprimer toutes les reponses et les grids de la question dans le store 
+    deleteStore("question"+question_id.toString()+"Reponse"+i.toString());
+    deleteStore("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString());
+  }
+  for (i = 1 ; i < 30 ; ++i ){                      // mettre a jour les reponses et les grids de la question 
+    if (document.getElementById("question"+question_id.toString()+"Reponse"+i.toString())!=null){
+      store.set("question"+question_id.toString()+"Reponse"+i.toString(),document.getElementById("question"+question_id.toString()+"Reponse"+i.toString()).value);
+      if (document.getElementById("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString()).checked){
+        store.set("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString(),true);
+      }
     }
   }
 }
+
 
 function reinitialisationQuestions(){
   nb_questions=compteurQuestion;
@@ -311,6 +335,7 @@ function supprimerQuestion(question_id, element) {
   if (element == "Question") {
     if(compteurQuestion>1){
       compteurQuestion--;
+      store.set("compteurQuestion",store.get('compteurQuestion')-1);
       logger.info('Suppression d\'une question dans le QCM de l\'exercice à reconnaissance vocale');
       // A METTRE A JOUR : store.set("nbReponse",compteurReponse[question_id]);
       $("#question" +question_id).on('click', function() {
@@ -318,7 +343,6 @@ function supprimerQuestion(question_id, element) {
         for(let cpt = question_id; cpt <= compteurQuestion; cpt++) {
           let id = cpt+1;
           compteurReponse[cpt]=compteurReponse[id];
-          
           let div = $("#question"+id)[0].getElementsByTagName("div");
           div[2].getElementsByTagName("label")[0].setAttribute("data-target","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("label")[0].innerHTML = "Question "+cpt+" :";
@@ -352,11 +376,53 @@ function supprimerQuestion(question_id, element) {
           $("#question"+id)[0].id="question"+cpt;
         }
         compteurReponse[compteurQuestion+1]=0;
+        updateStore(question_id);
       });
-      
     }
   }
 }
+
+
+/** une function pour mettre a jour le store */
+function updateStore(question_id){    
+// supprimer toutes les reponses + les grids dans le store
+  for (i =  1 ; i <=compteurQuestion+1 ; ++i){           
+    for (j = 1 ; j <30 ; ++j){
+        deleteStore ("question"+i.toString()+"Reponse"+j.toString());
+        deleteStore ("gridCheckQuestion"+i.toString()+"Reponse"+j.toString());
+    }
+  }
+// mettre a jour le store avec les reponses des champs
+  for (i = 1 ; i <=compteurQuestion ; ++i){          
+    for (j = 1 ; j <30 ; ++j){
+      if (document.getElementById("question"+i+"Reponse"+j)!=null && document.getElementById("question"+i+"Reponse"+j)!=""){
+        store.set("question"+i+"Reponse"+j,document.getElementById("question"+i+"Reponse"+j).value);
+      }
+      if (document.getElementById("gridCheckQuestion"+i+"Reponse"+j)!=null && document.getElementById("gridCheckQuestion"+i+"Reponse"+j).checked){
+        store.set("gridCheckQuestion"+i+"Reponse"+j,true);
+      }
+    }
+  }
+  // mettre a jour le text de chaque question
+  for (i = 1 ; i <= compteurQuestion ; ++i){             
+    ques ='textQuestion'+i.toString();
+    champ = document.getElementById(ques).value;
+    store.set('textQuestion'+i.toString(), document.getElementById(ques).value);
+  }  
+
+  deleteStore ("question"+question_id+"Url");   // supprimer le url de l'audio de la question dans le store
+
+  for (i = question_id ; i <=compteurQuestion+1 ; ++i ){ // mettre a jour les URL 
+    if (store.get("question"+i.toString()+"Url")){
+      store.set("question"+(i-1).toString()+"Url",store.get("question"+i.toString()+"Url"));
+      deleteStore("question"+i.toString()+"Url");
+    }
+  }
+
+}
+
+
+
 
 $(document).ready(function() {
   $('div.info-content').css('display', 'none');
@@ -514,17 +580,8 @@ function enregistrement() {
   if(store.get('MessageMauvaisereponse'))
     $("#MessageMauvaisereponse").val(store.get('MessageMauvaisereponse'));
 
-  if(store.get('QuestionQCM'))
-    $("#QuestionQCM").val(store.get('QuestionQCM'));
-
   if(store.get('reponseParIdentifiant'))
     $("#reponseParIdentifiant").prop('checked', store.get('reponseParIdentifiant'));
-
-  if(store.get('MessageMauvaisereponseQCM'))
-    $("#MessageMauvaisereponseQCM").val(store.get('MessageMauvaisereponseQCM'));
-
-  if(store.get('MessageBonnereponseQCM'))
-    $("#MessageBonnereponseQCM").val(store.get('MessageBonnereponseQCM'));
 
   if(store.get('reponseinitiale'))
     $("#reponseinitiale").val(store.get('reponseinitiale'));
@@ -532,14 +589,63 @@ function enregistrement() {
   if(store.get('gridCheck1'))
     $("#gridCheck1").prop('checked', store.get('gridCheck1'));
 
-  var nbRep = 0;
-  if(store.get('nbReponse'))
-    nbRep = store.get('nbReponse');
+  chargementOngletQcm();
 
-  for(var i=2; i<=nbRep; i++) {
-    ajouterNouvelleReponse(store.get(`reponse${i}`), store.get(`gridCheck${i}`));
-  }
 }
+
+
+
+
+/** une fonction pour le cahrgement des question et leurs reponses de store et les bonne + mauvais reponses de QCM */
+function chargementOngletQcm(){
+  // le chargement des question
+  for (i = 1 ; i <= store.get("compteurQuestion") ; ++i) {  
+    if (i!=1){
+      ajouterNouvelleQuestion(false);
+    }    
+    if (store.get("textQuestion"+i)) {
+      document.getElementById("textQuestion"+i).value = store.get("textQuestion"+i); // l'ajoute des texts de chaque question
+      if (store.get("textQuestion"+i).substring(store.get("textQuestion"+i).length - 3, store.get("textQuestion"+i).length) == "mp3"){ // changement de name si c'est un mp3
+        document.getElementById("textQuestion"+i).name = store.get("question"+i+"Url");
+        document.getElementById("textQuestion"+i).disabled = true;
+      }
+    }
+  }
+  // le chargement des reponses 
+  for (i = 1 ; i <= store.get("compteurQuestion") ; ++i) {  
+    for (j = 1 ; j <30 ; ++j){
+      if (store.get("question"+i+"Reponse"+j)){ 
+          if (j!=1)  {
+            ajouterNouvelleReponse("",false,i);
+          }
+          document.getElementById("question"+i+"Reponse"+j).value = store.get("question"+i+"Reponse"+j);  
+          if (store.get("gridCheckQuestion"+i+"Reponse"+j)==true) {         // check le grid
+            document.getElementById("gridCheckQuestion"+i+"Reponse"+j).click();
+          }
+      }
+    }
+  }
+  //le chargement de message de bonne reponse 
+  if(store.get('MessageBonnereponseQCM')){
+    let bonReponse = store.get('MessageBonnereponseQCM');
+    document.getElementById("MessageBonnereponseQCM").value = bonReponse;
+    if (bonReponse.substring(bonReponse.length - 3, bonReponse.length) == "mp3"){
+      document.getElementById("MessageBonnereponseQCM").disabled = true;
+      document.getElementById("MessageBonnereponseQCM").name = store.get('MessageBonnereponseQCMUrl');
+    }
+ }
+ //le chargement de message de mauvais reponse 
+ if(store.get('MessageMauvaisereponseQCM')){
+  let mauvaisReponse = store.get('MessageMauvaisereponseQCM');
+  document.getElementById("MessageMauvaisereponseQCM").value = mauvaisReponse;
+  if (mauvaisReponse.substring(mauvaisReponse.length - 3, mauvaisReponse.length) == "mp3"){
+    document.getElementById("MessageMauvaisereponseQCM").disabled = true;
+    document.getElementById("MessageMauvaisereponseQCM").name = store.get('MessageMauvaisereponseQCMUrl');
+  }
+ }
+ 
+}
+
 
 
 //méthode gérant la continuité sur les zones de texte Question, Bonne Reponse, Mauvaise Reponse et nb reponse
@@ -666,6 +772,14 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set(audioSource,nom);
+    if (document.getElementById('questionQCMOnglet').classList.contains('active')){
+      if (audioSource!="MessageBonnereponseQCM" && audioSource!="MessageMauvaisereponseQCM"){
+        store.set("question"+audioSource.match(/\d+$/)[0]+"Url",url);
+      } else {
+        store.set(audioSource+"Url",url);
+      }
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
