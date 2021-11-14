@@ -763,7 +763,7 @@ function GererChampsDeReponses(nombreCaractere){
   }
 }
 
-/**une function pour gerer les button d'ajout de questions et d'ajout de reponses 
+/**une fonction pour gerer les button d'ajout de questions et d'ajout de reponses 
  *@param {boolean} mode  */
 function GererButonsDajout(mode){  
   document.getElementById("ajouterQuestion").disabled = mode;  //  activer/disactiver le buton d'ajouter question dans le QCM
@@ -771,6 +771,20 @@ function GererButonsDajout(mode){
     document.getElementById("ajouterReponseQuestion"+i).disabled = mode;
   }
 }
+
+/** une fonction pour ourvir/fermer les champs text de chaque question */
+function GererChampsQuestions(mode){  
+  if (mode=="closeFields"){
+    for (i = 1 ; i<=compteurQuestion ; ++i) {
+      document.getElementById("textQuestion"+i).maxLength = document.getElementById("textQuestion"+i).value.length;
+      }
+  } else {
+    for (i = 1 ; i<=compteurQuestion ; ++i) {
+      document.getElementById("textQuestion"+i).maxLength = 1240;
+      }
+  }
+}
+
 
 /** une fonction qui fait la mis à jour de Progress Bar */
 function SetProgressBar(type) {
@@ -797,6 +811,7 @@ function verifNombreCaractere(type) {
   if(type=="QO")
   {
     if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs  
+      messageInfos("La limite de caractère est atteinte ","warning");
       document.getElementById("Question").setAttribute("maxLength",document.getElementById("Question").value.length);
       document.getElementById("Bonnereponse").setAttribute("maxLength",document.getElementById("Bonnereponse").value.length);
       document.getElementById("MessageMauvaisereponse").setAttribute("maxLength",document.getElementById("MessageMauvaisereponse").value.length);
@@ -813,11 +828,12 @@ function verifNombreCaractere(type) {
       {   // si les champs sont vides on met la progess bar a 0
         document.getElementById("progressbarId").style.width = 0;
       }
-
   } 
   if (type=="QCM") 
   { 
     if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs 
+     messageInfos("La limite de caractère est atteinte ","warning");
+     GererChampsQuestions("closeFields");
      document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength",document.getElementById("MessageBonnereponseQCM").value.length);
      document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",document.getElementById("MessageMauvaisereponseQCM").value.length);
      GererChampsDeReponses(0);
@@ -828,6 +844,7 @@ function verifNombreCaractere(type) {
       document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",nombreCaratereMAX);
       GererChampsDeReponses(nombreCaratereMAX);
       GererButonsDajout(false);
+      GererChampsQuestions("openFields");
     }    
     if (document.getElementById("MessageBonnereponseQCM").value.length==0 && document.getElementById("MessageMauvaisereponseQCM").value.length==0 && document.getElementById("textQuestion1").value.length==0){ 
       document.getElementById("progressbarId").style.width = 0; // si les champs sont vides on met la progess bar a 0
@@ -836,6 +853,7 @@ function verifNombreCaractere(type) {
   // si on dépasse 100% on ferme le buton de génération de QRCode
   if (Math.trunc((total / nombreCaratereMAX) * 10000) / 100 > 100){  
     document.getElementById("preview").disabled = true;
+    messageInfos("Veuillez Régler la barre de progression à maximum 100% pour pouvoir générer le QR code ","danger");
   } else { 
     document.getElementById("preview").disabled = false;
   }
