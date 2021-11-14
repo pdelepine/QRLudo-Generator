@@ -11,7 +11,7 @@ class QRCodeQuestionOuverte {
   constructor(title, reponse, text_bonne_reponse, text_mauvaise_reponse, color = '#000000') {
     this.qrcode = {
       id: new Date().getTime(),
-      name: title,
+      text_question: title,
       type: "ExerciceReconnaissanceVocaleQuestionOuverte",
       data: [reponse],
       color: color,
@@ -29,11 +29,11 @@ class QRCodeQuestionOuverte {
   }
 
   getName() {
-    return this.qrcode.name;
+    return this.qrcode.text_question;
   }
 
   setName(name) {
-    this.qrcode.name = name;
+    this.qrcode.text_question = name;
   }
   getGoodAnswer() {
     return this.qrcode.text_bonne_reponse;
@@ -47,7 +47,7 @@ class QRCodeQuestionOuverte {
   }
 
   setText() {
-    this.qrcode.text = this.qrcode.name;
+    this.qrcode.text = this.qrcode.text_question;
     for (let i = 0; i < this.qrcode.data.length; ++i) {
       this.qrcode.text += " réponse " + (i + 1) + " " + this.qrcode.data[i].message + " ";
     }
