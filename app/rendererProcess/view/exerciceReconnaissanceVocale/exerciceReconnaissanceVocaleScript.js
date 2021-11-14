@@ -853,7 +853,7 @@ function verifNombreCaractere(type) {
   // si on dépasse 100% on ferme le buton de génération de QRCode
   if (Math.trunc((total / nombreCaratereMAX) * 10000) / 100 > 100){  
     document.getElementById("preview").disabled = true;
-    messageInfos("Veuillez Régler la barre de progression à maximum 100% pour pouvoir générer le QR code ","danger");
+    messageInfos("Dépassement de la limite de caractères autorisés, veuillez modifier l'exercice pour ne pas dépasser 100% et ainsi générer le QR Code","danger");
   } else { 
     document.getElementById("preview").disabled = false;
   }
