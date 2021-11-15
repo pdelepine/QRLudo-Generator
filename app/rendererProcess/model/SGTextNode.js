@@ -15,8 +15,10 @@ class SGTextNode extends SGNode {
 		myP5.push();
 		myP5.stroke('#91abe1');
 		myP5.strokeWeight(4);
-		if (this.dragging)
+		if (this.dragging||this.clicked)
 			myP5.fill(80);
+			if (this.clicked)
+				myP5.strokeWeight(6);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else

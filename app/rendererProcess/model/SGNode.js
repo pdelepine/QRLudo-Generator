@@ -9,6 +9,7 @@ class SGNode {
 	constructor(x, y, w, h) {
 		this.dragging = false;
 		this.rollover = false;
+		this.clicked = false;
 		this.x = x;
 		this.y = y;
 		this.w = w;
@@ -47,8 +48,10 @@ class SGNode {
 	display() {
 		myP5.push();
 		myP5.stroke(0);
-		if (this.dragging)
+		if (this.dragging||this.clicked)
 			myP5.fill(80);
+			if (this.clicked)
+				myP5.strokeWeight(6);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else
@@ -71,10 +74,24 @@ class SGNode {
 	pressed() {
 		if (this.isMouseHover()) {
 			this.dragging = true;
+			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
 			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
-			return true;
+			this.displayQuestionZone();
 		}
+		else {
+			this.clicked = false;
+			this.emptyQuestionZone();
+		}
+		
+	}
+
+	displayQuestionZone() {
+		var test=myP5.createP("Coucou");
+		test.parent("seriousGameZoneQuestions");
+	}
+	emptyQuestionZone(){
+		//myP5.removeElements();
 	}
 
 	/** When SGNode released, stop dragging */
