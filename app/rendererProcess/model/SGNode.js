@@ -87,7 +87,7 @@ class SGNode {
 	}
 
 	displayQuestionZone() {
-		var test=myP5.createP("Coucou");
+		var test=myP5.createDiv('Coucou');
 		test.parent("seriousGameZoneQuestions");
 	}
 	emptyQuestionZone(){
