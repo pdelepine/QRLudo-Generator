@@ -65,14 +65,14 @@ var sketch = function (p) {
 
 		/** Declaration of Button to hide the palette */
 		p.buttonHidePalette = p.createButton('<');
- 		p.buttonHidePalette.position(155, 115);
-  		p.buttonHidePalette.mousePressed(p.hidePalette);
+		p.buttonHidePalette.position(155, 115);
+		p.buttonHidePalette.mousePressed(p.hidePalette);
 		p.buttonHidePalette.parent("seriousGameDiagram");
 
 		/** Declaration of Button to show the palette */
 		p.buttonShowPalette = p.createButton('>');
- 		p.buttonShowPalette.position(5, 115);
-  		p.buttonShowPalette.mousePressed(p.hidePalette);
+		p.buttonShowPalette.position(5, 115);
+		p.buttonShowPalette.mousePressed(p.hidePalette);
 		p.buttonShowPalette.parent("seriousGameDiagram");
 		p.buttonShowPalette.hide();
 
@@ -91,7 +91,7 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
 		/** Declaration of slider Zoom */
-		p.sliderZoom = p.createSlider(1,200,(p.zoom)*100);
+		p.sliderZoom = p.createSlider(1, 200, (p.zoom) * 100);
 		p.sliderZoom.parent("seriousGameDiagram");
 	}
 
@@ -113,7 +113,7 @@ var sketch = function (p) {
 
 		p.pop();
 		p.displayCreateNode();
-    if(p.palette){
+		if (p.palette) {
 			p.drawPalette();
 		}
 
@@ -124,18 +124,18 @@ var sketch = function (p) {
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
 
-		p.sliderZoom.position((p.width)-170, (p.height)+90); //positionnemnt du slider en bas à droite 
+		p.sliderZoom.position((p.width) - 170, (p.height) + 90); //positionnemnt du slider en bas à droite 
 		p.sliderZoom.input(() => {
-			p.sliderNotPressed=false; //met à faux quand on utilise le slider
-			p.zoom = (p.sliderZoom.value()/100); //change la valeur de p.zoom en fonction de la valeur du slider
+			p.sliderNotPressed = false; //met à faux quand on utilise le slider
+			p.zoom = (p.sliderZoom.value() / 100); //change la valeur de p.zoom en fonction de la valeur du slider
 			console.log(`Zoom ${p.zoom}`);
 		});
-		p.sliderZoom.mouseReleased(() => {p.sliderNotPressed=true;}); //remet à vrai quand on arrête d'utiliser le slider
-		p.sliderZoom.value((p.zoom)*100); //change la valeur du slider si on zoome ou dézoome avec la molette de la souris
+		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); //remet à vrai quand on arrête d'utiliser le slider
+		p.sliderZoom.value((p.zoom) * 100); //change la valeur du slider si on zoome ou dézoome avec la molette de la souris
 		p.push();
-		p.fill(28,62,180);
+		p.fill(28, 62, 180);
 		p.textAlign(p.RIGHT);
-		p.text(p.sliderZoom.value() + "%", (p.width)-8, (p.height)-8); //affiche le pourcentage de zoom auquel on est actuellement
+		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8); //affiche le pourcentage de zoom auquel on est actuellement
 		p.pop();
 	}
 
@@ -272,7 +272,7 @@ var sketch = function (p) {
 			p.linkArray.forEach(function (l) {
 				if (l.type === 'dynamic') {
 					p.nodeArray.forEach(function (n) {
-						if (n.isMouseHoveringDots()) {
+						if (n.isMouseHoveringDots() && !n.isMouseHoveringExitDots()) {
 							l.node2 = n;
 							l.node2Dot = n.getDotHovering();
 							l.type = 'static';

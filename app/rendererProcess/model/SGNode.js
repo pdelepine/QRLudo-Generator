@@ -16,7 +16,7 @@ class SGNode {
 		this.offsetX = 0;
 		this.offsetY = 0;
 		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71]);
-		this.exitDots = [ new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
+		this.exitDots = [new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
 	}
 
 	setName(name) { this.name = name }
@@ -36,7 +36,7 @@ class SGNode {
 		if (this.dragging) {
 			//console.log(`x * zoom ${this.x * myP5.zoom}`);
 			//console.log(`Deplacement X ${myP5.mouseX - myP5.translateX + this.offsetX}`);
-			this.x = ((myP5.mouseX - myP5.translateX)  + this.offsetX ) / myP5.zoom;
+			this.x = ((myP5.mouseX - myP5.translateX) + this.offsetX) / myP5.zoom;
 			this.y = ((myP5.mouseY - myP5.translateY) + this.offsetY) / myP5.zoom;
 			//console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
 			//console.log(`-- Node x ${this.x} y ${this.y}`);
@@ -62,7 +62,7 @@ class SGNode {
 
 	displayDot() {
 		this.entryDot.display();
-		for(let n of this.exitDots) {
+		for (let n of this.exitDots) {
 			n.display();
 		}
 	}
@@ -93,23 +93,33 @@ class SGNode {
 
 	/** Return true if the mouse is hovering one of the node's dot */
 	isMouseHoveringDots() {
-		if(this.entryDot.isMouseHover()) {
+		if (this.entryDot.isMouseHover()) {
 			return true;
 		}
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	isMouseHoveringExitDots() {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** Return the dot of the node which the mouse is hovering */
 	getDotHovering() {
-		if(this.entryDot.isMouseHover()) {
+		if (this.entryDot.isMouseHover()) {
 			return this.entryDot;
 		}
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
 				return dot;
 			}
 		}
