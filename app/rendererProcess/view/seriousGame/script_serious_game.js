@@ -272,7 +272,7 @@ var sketch = function (p) {
 			p.linkArray.forEach(function (l) {
 				if (l.type === 'dynamic') {
 					p.nodeArray.forEach(function (n) {
-						if (n.isMouseHoveringDots()) {
+						if (n.isMouseHoveringDots() && !n.isMouseHoveringExitDots()) {
 							l.node2 = n;
 							l.node2Dot = n.getDotHovering();
 							l.type = 'static';
