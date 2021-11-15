@@ -15,10 +15,19 @@ class QRCodeUnique {
     /** Génération de l'id unique */
     var dataString = name + "unique" + color;
     for (var i = 0; i < data.length; i++) {
-      dataString += data[i];
+      if(data[i] instanceof Object) {
+        if(data[i].type = 'text'){
+          dataString += data[i].text;
+        }
+        else {
+          dataString += data[i].name;
+        }
+      }
     }
 
+    console.log(dataString);
     var md5Value = MDFiveConverter.convert(dataString);
+    console.log(md5Value);
 
     this.qrcode = {
       /** ajout de id pour les QR unique &&*/
@@ -58,19 +67,12 @@ class QRCodeUnique {
   }
   
   getData(index = null) {
-    if (index === 0) {
-      // console.log("le zero");
-      /** return data at index */
-      return this.qrcode.data[0];
+    if(this.qrcode.data[index].type = 'text'){
+      return this.qrcode.data[index].text;
     }
-    if (index) {
-      // console.log("reste");
-      /** return data at index */
-      return this.qrcode.data[index];
+    else {
+      return this.qrcode.data[index].name;
     }
-    // console.log("tous");
-    /** return all data */
-    return this.qrcode.data;
   }
 
   getDataAll() {

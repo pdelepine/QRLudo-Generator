@@ -43,7 +43,11 @@ $(document).ready(function () {
       return false; // si le champ est vide on sort
     }
 
-    qrData.push(reponseVocale);
+    let reponse = {
+      type: 'text',
+      text: reponseVocale
+    };
+    qrData.push(reponse);
     var new_rep = new QRCodeUnique(identifiant, qrData, qrColor);
     var new_rep_vocal = reponseVocale;
 
@@ -182,7 +186,7 @@ function addReponseLine(reponse) {
   var newRepLine = "<div style='height:35px;' id='" + reponse.getId() + "'>" +
     "<li style='color:black;font-size:14px;'>" +
     "<label>" + reponse.getName() + "&nbsp&nbsp</label>" +
-    "<em style='color:gray'>" + reponse.getDataAll() + "</em>" +
+    "<em style='color:gray'>" + reponse.getData(0) + "</em>" +
     "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='deleteReponse(this);verifNombreCaractere();'><i class='fa fa-trash-alt'></i></button>" +
     "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='lireReponse(this);'><i class='fa fa-play'></i></button>" +
     "</li>" +

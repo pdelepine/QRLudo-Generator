@@ -193,8 +193,6 @@ $('#preview').on('click',e => {
 
   newQrUnique.setId(store.get("newQrID"));
 
-  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(newQrUnique) }`);
-
   previewQRCode(qrName, qrData, qrColor, div);
   $('#emptyZones').attr('disabled', false);
 });
@@ -331,7 +329,7 @@ function previewQRCode(name, data, color, div) {
   // instanciate a qrcode unique object
   qrcode = new QRCodeUnique(name, data, color);
   let facade = new FacadeController();
-  
+  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(qrcode) }`);
   facade.genererQRCode(div, qrcode);
 }
 
