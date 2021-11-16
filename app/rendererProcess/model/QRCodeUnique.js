@@ -16,7 +16,7 @@ class QRCodeUnique {
     var dataString = name + "unique" + color;
     for (var i = 0; i < data.length; i++) {
       if(data[i] instanceof Object) {
-        if(data[i].type = 'text'){
+        if(data[i].type == 'text'){
           dataString += data[i].text;
         }
         else {
@@ -25,9 +25,7 @@ class QRCodeUnique {
       }
     }
 
-    console.log(dataString);
     var md5Value = MDFiveConverter.convert(dataString);
-    console.log(md5Value);
 
     this.qrcode = {
       /** ajout de id pour les QR unique &&*/
