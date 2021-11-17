@@ -13,8 +13,8 @@ class SGDot {
 		this.d = 20;
 		this.color = new Array(color);
 	}
-	setPositionX(newX){
-		this.x=newX;
+	setPositionX(newX) {
+		this.x = newX;
 	}
 
 	getPositionX() {
@@ -27,7 +27,7 @@ class SGDot {
 
 	display() {
 		myP5.push();
-		if(this.isMouseHover()) {
+		if (this.isMouseHover()) {
 			myP5.fill(150, 150, 250);
 		} else {
 			myP5.fill(this.color[0], this.color[1], this.color[2]);

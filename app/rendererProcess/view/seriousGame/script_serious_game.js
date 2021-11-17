@@ -41,6 +41,20 @@ var sketch = function (p) {
 
 	p.hoveringCanvas = false;
 
+	p.previousNodeErased = true;
+
+	p.lastClickX = 0;
+	p.lastClickY = 0;
+
+	p.setLastClick = function (x, y) {
+		p.lastClickX = x;
+		p.lastClickY = y;
+	}
+
+	p.setPreviousNodeErased = function (boolean) {
+		p.previousNodeErased = boolean;
+	}
+
 	/* P5Js part */
 	/** Setup of the canvas */
 	p.setup = function () {
@@ -48,8 +62,8 @@ var sketch = function (p) {
 		p.seriousGameCanvas.parent("seriousGameDiagram");
 		p.frameRate(30);
 
-		p.seriousGameCanvas.mouseOver(()=>{p.hoveringCanvas=true;});
-		p.seriousGameCanvas.mouseOut(()=>{p.hoveringCanvas=false;});
+		p.seriousGameCanvas.mouseOver(() => { p.hoveringCanvas = true; });
+		p.seriousGameCanvas.mouseOut(() => { p.hoveringCanvas = false; });
 
 		p.translateX = p.initX;
 		p.translateY = p.initY;
@@ -66,14 +80,14 @@ var sketch = function (p) {
 
 		/** Declaration of Button to hide the palette */
 		p.buttonHidePalette = p.createButton('<');
- 		p.buttonHidePalette.position(155, 115);
-  		p.buttonHidePalette.mousePressed(p.hidePalette);
+		p.buttonHidePalette.position(155, 115);
+		p.buttonHidePalette.mousePressed(p.hidePalette);
 		p.buttonHidePalette.parent("seriousGameDiagram");
 
 		/** Declaration of Button to show the palette */
 		p.buttonShowPalette = p.createButton('>');
- 		p.buttonShowPalette.position(5, 115);
-  		p.buttonShowPalette.mousePressed(p.hidePalette);
+		p.buttonShowPalette.position(5, 115);
+		p.buttonShowPalette.mousePressed(p.hidePalette);
 		p.buttonShowPalette.parent("seriousGameDiagram");
 		p.buttonShowPalette.hide();
 
@@ -110,7 +124,7 @@ var sketch = function (p) {
 
 		p.pop();
 		p.displayCreateNode();
-    if(p.palette){
+		if (p.palette) {
 			p.drawPalette();
 		}
 
@@ -120,7 +134,7 @@ var sketch = function (p) {
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
-		
+
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */

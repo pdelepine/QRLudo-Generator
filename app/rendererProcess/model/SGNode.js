@@ -18,7 +18,7 @@ class SGNode {
 		this.offsetX = 0;
 		this.offsetY = 0;
 		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71]);
-		this.exitDots = [ new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
+		this.exitDots = [new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
 	}
 
 	setName(name) { this.name = name }
@@ -38,7 +38,7 @@ class SGNode {
 		if (this.dragging) {
 			//console.log(`x * zoom ${this.x * myP5.zoom}`);
 			//console.log(`Deplacement X ${myP5.mouseX - myP5.translateX + this.offsetX}`);
-			this.x = ((myP5.mouseX - myP5.translateX)  + this.offsetX ) / myP5.zoom;
+			this.x = ((myP5.mouseX - myP5.translateX) + this.offsetX) / myP5.zoom;
 			this.y = ((myP5.mouseY - myP5.translateY) + this.offsetY) / myP5.zoom;
 			//console.log(`-- Offset x ${this.offsetX} y ${this.offsetY}`);
 			//console.log(`-- Node x ${this.x} y ${this.y}`);
@@ -49,10 +49,10 @@ class SGNode {
 	display() {
 		myP5.push();
 		myP5.stroke(0);
-		if (this.dragging||this.clicked)
+		if (this.dragging || this.clicked)
 			myP5.fill(80);
-			if (this.clicked)
-				myP5.strokeWeight(6);
+		if (this.clicked)
+			myP5.strokeWeight(6);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else
@@ -66,41 +66,48 @@ class SGNode {
 
 	displayDot() {
 		this.entryDot.display();
-		for(let n of this.exitDots) {
+		for (let n of this.exitDots) {
 			n.display();
 		}
 	}
 
 	/** When SGNode pressed, begin dragging */
 	pressed() {
+		if (myP5.mouseX != myP5.lastClickX || myP5.mouseY != myP5.lastClickY) {
+			myP5.setPreviousNodeErased(false);
+			myP5.setLastClick(myP5.mouseX, myP5.mouseY);
+		}
 		if (this.isMouseHover()) {
 			this.dragging = true;
 			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
 			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
-			this.emptyQuestionZone();
+			if (!myP5.previousNodeErased) {
+				this.emptyQuestionZone();
+			}
 			this.displayQuestionZone();
 		}
 		else {
-			if(myP5.hoveringCanvas){
-				if(this.clicked){
+
+			if (myP5.hoveringCanvas) {
+				if (this.clicked) {
 					this.clicked = false;
-					this.emptyQuestionZone();
+					if (!myP5.previousNodeErased) {
+						this.emptyQuestionZone();
+					}
 				}
 			}
-			
 		}
-		
+
 	}
 
 	displayQuestionZone() {
-		this.questionZone=myP5.createDiv('NOT YET IMPLEMENTED');
-		this.questionZone.id('displayQuestionZone')
-		this.questionZone.parent("seriousGameZoneQuestions");
 	}
-	emptyQuestionZone(){
+	
+	emptyQuestionZone() {
+		myP5.setPreviousNodeErased(true);
 		let displayQZone = document.getElementById('displayQuestionZone');
-        if (null != displayQZone) displayQZone.remove();
+		if (null != displayQZone) displayQZone.remove();
 	}
 
 	/** When SGNode released, stop dragging */
@@ -119,11 +126,11 @@ class SGNode {
 
 	/** Return true if the mouse is hovering one of the node's dot */
 	isMouseHoveringDots() {
-		if(this.entryDot.isMouseHover()) {
+		if (this.entryDot.isMouseHover()) {
 			return true;
 		}
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
 				return true;
 			}
 		}
@@ -131,11 +138,11 @@ class SGNode {
 	}
 	/** Return the dot of the node which the mouse is hovering */
 	getDotHovering() {
-		if(this.entryDot.isMouseHover()) {
+		if (this.entryDot.isMouseHover()) {
 			return this.entryDot;
 		}
-		for(let dot of this.exitDots) {
-			if(dot.isMouseHover()) {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
 				return dot;
 			}
 		}
