@@ -13,6 +13,9 @@ class SGDot {
 		this.d = 20;
 		this.color = new Array(color);
 	}
+	setPositionX(newX){
+		this.x=newX;
+	}
 
 	getPositionX() {
 		return this.nodeToAttach.x + this.x;

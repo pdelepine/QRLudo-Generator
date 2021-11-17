@@ -39,12 +39,17 @@ var sketch = function (p) {
 
 	p.creatingLink = false;
 
+	p.hoveringCanvas = false;
+
 	/* P5Js part */
 	/** Setup of the canvas */
 	p.setup = function () {
 		p.seriousGameCanvas = p.createCanvas(p.parentDiv.width, p.parentDiv.height);
 		p.seriousGameCanvas.parent("seriousGameDiagram");
 		p.frameRate(30);
+
+		p.seriousGameCanvas.mouseOver(()=>{p.hoveringCanvas=true;});
+		p.seriousGameCanvas.mouseOut(()=>{p.hoveringCanvas=false;});
 
 		p.translateX = p.initX;
 		p.translateY = p.initY;

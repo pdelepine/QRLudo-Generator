@@ -10,6 +10,7 @@ class SGNode {
 		this.dragging = false;
 		this.rollover = false;
 		this.clicked = false;
+		this.questionZone = null;
 		this.x = x;
 		this.y = y;
 		this.w = w;
@@ -77,21 +78,29 @@ class SGNode {
 			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
 			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
+			this.emptyQuestionZone();
 			this.displayQuestionZone();
 		}
 		else {
-			this.clicked = false;
-			this.emptyQuestionZone();
+			if(myP5.hoveringCanvas){
+				if(this.clicked){
+					this.clicked = false;
+					this.emptyQuestionZone();
+				}
+			}
+			
 		}
 		
 	}
 
 	displayQuestionZone() {
-		var test=myP5.createDiv('Coucou');
-		test.parent("seriousGameZoneQuestions");
+		this.questionZone=myP5.createDiv('NOT YET IMPLEMENTED');
+		this.questionZone.id('displayQuestionZone')
+		this.questionZone.parent("seriousGameZoneQuestions");
 	}
 	emptyQuestionZone(){
-		//myP5.removeElements();
+		let displayQZone = document.getElementById('displayQuestionZone');
+        if (null != displayQZone) displayQZone.remove();
 	}
 
 	/** When SGNode released, stop dragging */
