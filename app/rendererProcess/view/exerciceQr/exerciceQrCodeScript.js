@@ -108,11 +108,13 @@ $(document).ready(function () {
 
 
 
-
   $("#emptyFields").on('click', function () {
     viderZone();
     logger.info('Réinitialisation du QR Code Exercice');
     store.set("excerciceEstCree",false);
+    deleteStore('QuestionUrl');
+    deleteStore("BonneReponseUrl");
+    deleteStore("MauvaiseReponseUrl");
     document.getElementById("genererQestion").disabled = false;
     verifNombreCaractere();
     $("#cible").empty();                       //  pour vider les Bonnes Reponses!
@@ -501,14 +503,28 @@ function enregistrement() {
   else
     store.set(`numReponse`, numReponse);
 
-  if (store.get(`newQuestionText`))
+  if (store.get(`newQuestionText`)){  
     $("#newQuestionText").val(store.get(`newQuestionText`));
-
-  if (store.get(`newBonneReponseText`))
+    if  (store.get("newQuestionText").substring(store.get("newQuestionText").length - 3, store.get("newQuestionText").length) == "mp3"){
+      document.getElementById("newQuestionText").name = store.get("QuestionUrl");
+      document.getElementById("newQuestionText").disabled = true;
+    }
+  }
+  if (store.get(`newBonneReponseText`)){  
     $("#newBonneReponseText").val(store.get(`newBonneReponseText`));
+    if  (store.get("newBonneReponseText").substring(store.get("newBonneReponseText").length - 3, store.get("newBonneReponseText").length) == "mp3"){
+      document.getElementById("newBonneReponseText").name = store.get("BonneReponseUrl");
+      document.getElementById("newBonneReponseText").disabled = true;
+    }
+  }
 
-  if (store.get('newMauvaiseReponseText'))
-    $("#newMauvaiseReponseText").val(store.get('newMauvaiseReponseText'));
+  if (store.get(`newMauvaiseReponseText`)){  
+    $("#newMauvaiseReponseText").val(store.get(`newMauvaiseReponseText`));
+    if  (store.get("newMauvaiseReponseText").substring(store.get("newMauvaiseReponseText").length - 3, store.get("newMauvaiseReponseText").length) == "mp3"){
+      document.getElementById("newMauvaiseReponseText").name = store.get("MauvaiseReponseUrl");
+      document.getElementById("newMauvaiseReponseText").disabled = true;
+    }
+  }
 
   if (store.get('newNbMinimalBonneReponse'))
     $('#newNbMinimalBonneReponse').val(store.get('newNbMinimalBonneReponse'));
@@ -534,10 +550,7 @@ function enregistrement() {
       var new_rep = new QRCodeUnique(store.get('reponse' + i), store.get('data' + i), store.get('reponseColor' + i)); // creation d'une nouvelle reponse
       new_rep.setId(store.get('reponseId' + i));
       projet.addReponse(new_rep);
-
-      projet.getQuestion().addReponse(new_rep.getId(), new_rep.getData());
       addReponseLine(new_rep);
-
     }
   }
 
@@ -552,6 +565,12 @@ function enregistrement() {
     document.getElementById("ajoutNewReponse").disabled = false;
     document.getElementById("genererQestion").click();
   }
+  //ajouter des reponses dans l'objet projet de la question 
+  for (i= 0 ; i <  numReponse + 1 ; ++i){          
+    if (store.get('reponse' + i))
+      projet.getQuestion().addReponse(store.get('reponseId' + i),store.get('data' + i)[0]);
+    }
+
 }
 
 
@@ -754,18 +773,23 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("QuestionUrl",url);
+    store.set("newQuestionText",nom);
   } else if (audioSource == "BonneReponse") {
     let textArea = document.getElementById("newBonneReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("BonneReponseUrl",url);
+    store.set("newBonneReponseText",nom);
   } else if (audioSource == "MauvaiseReponse") {
     let textArea = document.getElementById("newMauvaiseReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("MauvaiseReponseUrl",url);
+    store.set("newMauvaiseReponseText",nom);
   }
-  
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
