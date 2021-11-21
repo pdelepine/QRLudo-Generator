@@ -82,9 +82,7 @@ class SGNode {
 			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
 			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
-			if (!myP5.previousNodeErased) {
-				this.emptyQuestionZone();
-			}
+			this.emptyQuestionZone();
 			this.displayQuestionZone();
 		}
 		else {
@@ -103,7 +101,7 @@ class SGNode {
 
 	displayQuestionZone() {
 	}
-	
+
 	emptyQuestionZone() {
 		myP5.setPreviousNodeErased(true);
 		let displayQZone = document.getElementById('displayQuestionZone');

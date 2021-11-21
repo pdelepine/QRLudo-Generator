@@ -1,3 +1,5 @@
+const { toLinuxArchString } = require("builder-util");
+
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
 class SGQuestionNode extends SGNode {
 	/**
@@ -10,12 +12,18 @@ class SGQuestionNode extends SGNode {
 		super(x, y, w, h);
 		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71]);
 		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2])];
+		this.name = "";
 		this.question = "";
 		this.answers = [""];
 		this.btn_add_answer = null;
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
 		this.btn_discard_modification = null;
+		this.btn_delete_answer1 = null;
+		this.btn_delete_answer2 = null;
+		this.btn_delete_answer3 = null;
+		this.btn_delete_answer4 = null;
+		this.btn_delete_answer5 = null;
 	}
 
 	isMouseHover() {
@@ -43,30 +51,92 @@ class SGQuestionNode extends SGNode {
 
 	displayQuestionZone() {
 		const self = this;
+
 		this.questionZone = myP5.createDiv();
 		this.questionZone.id('displayQuestionZone')
+		this.questionZone.class('question');
 		this.questionZone.parent("seriousGameZoneQuestions");
 
-		let txt_question = myP5.createP("Question :");
+		let txt_Title = myP5.createElement('label', "Nom de la question :");
+		txt_Title.class('question-intro-label');
+		txt_Title.parent('displayQuestionZone');
+		let input_name = myP5.createInput(this.name);
+		input_name.id('input_node_name');
+		input_name.parent('displayQuestionZone');
+
+		let txt_question = myP5.createElement('label', "Question :");
+		txt_question.class('control-label');
 		txt_question.parent('displayQuestionZone');
 		let input_question = myP5.createInput(this.question);
 		input_question.id('input_node_question');
 		input_question.parent('displayQuestionZone');
 
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
+		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
+		this.btn_add_audio.id('btn_add_audio');
 		this.btn_add_audio.mousePressed(() => { SGQuestionNode.addAudio(self); });
 		this.btn_add_audio.parent('displayQuestionZone');
 
-
-		let txt_answers = myP5.createP("Réponses :");
+		let txt_answers = myP5.createElement('label', "Réponses :");
+		txt_answers.class('control-label');
 		txt_answers.parent('displayQuestionZone');
+
+		let nb_answers = this.answers.length;
+		let input_answer = myP5.createInput(this.answers[0]);
+		input_answer.id('input_node_answer1');
+		input_answer.parent('displayQuestionZone');
+		this.btn_delete_answer1 = myP5.createButton("Supprimer Reponse " + 1);
+		this.btn_delete_answer1.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 0); });
+		this.btn_delete_answer1.parent('displayQuestionZone');
+		if (nb_answers >= 2) {
+			let input_answer = myP5.createInput(this.answers[1]);
+			input_answer.id('input_node_answer2');
+			input_answer.parent('displayQuestionZone');
+			this.btn_delete_answer2 = myP5.createButton("Supprimer Reponse " + 2);
+			this.btn_delete_answer2.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 1); });
+			this.btn_delete_answer2.parent('displayQuestionZone');
+			if (nb_answers >= 3) {
+				let input_answer = myP5.createInput(this.answers[2]);
+				input_answer.id('input_node_answer3');
+				input_answer.parent('displayQuestionZone');
+				this.btn_delete_answer3 = myP5.createButton("Supprimer Reponse " + 3);
+				this.btn_delete_answer3.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 2); });
+				this.btn_delete_answer3.parent('displayQuestionZone');
+				if (nb_answers >= 4) {
+					let input_answer = myP5.createInput(this.answers[3]);
+					input_answer.id('input_node_answer4');
+					input_answer.parent('displayQuestionZone');
+					this.btn_delete_answer4 = myP5.createButton("Supprimer Reponse " + 4);
+					this.btn_delete_answer4.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 3); });
+					this.btn_delete_answer4.parent('displayQuestionZone');
+					if (nb_answers >= 5) {
+						let input_answer = myP5.createInput(this.answers[4]);
+						input_answer.id('input_node_answer5');
+						input_answer.parent('displayQuestionZone');
+						this.btn_delete_answer5 = myP5.createButton("Supprimer Reponse " + 5);
+						this.btn_delete_answer5.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 4); });
+						this.btn_delete_answer5.parent('displayQuestionZone');
+					}
+				}
+			}
+		}
+
+
+		/*
 		let id_answer = 0;
 		for (let answer of this.answers) {
 			id_answer += 1;
 			let input_answer = myP5.createInput(answer);
 			input_answer.id('input_node_answer' + id_answer);
 			input_answer.parent('displayQuestionZone');
+
+			//let btn_delete_answer = myP5.createButton("Supprimer Reponse " + id_answer);
+			//btn_delete_answer.mousePressed(() => { SGQuestionNode.deleteAnswer(self, id_answer - 1); });
+			//btn_delete_answer.parent('displayQuestionZone');
+			//this.btn_delete_answer_array.push(btn_delete_answer);
+			//ATTENTION l'array n'existe plus 
 		}
+		*/
 
 		this.btn_add_answer = myP5.createButton("Ajouter une réponse");
 		this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
@@ -99,6 +169,24 @@ class SGQuestionNode extends SGNode {
 
 	}
 
+	static deleteAnswer(self, indice) {
+		console.log(indice);
+		SGQuestionNode.saveModification(self);
+		let nb_answers = self.answers.length - 1;
+		if (nb_answers >= 1) {
+			console.log(self.answers);
+			self.answers.splice(indice, 1);
+			console.log(self.answers);
+			self.exitDots.splice(indice, 1);
+			self.emptyQuestionZone();
+			self.displayQuestionZone();
+			for (var id_answer = 0; id_answer < nb_answers; id_answer++) {
+				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (nb_answers + 1));
+			}
+			self.displayDot();
+		}
+	}
+
 	static discardModification(self) {
 		self.emptyQuestionZone();
 		self.displayQuestionZone();
@@ -109,6 +197,7 @@ class SGQuestionNode extends SGNode {
 	}
 
 	static saveModification(self) {
+		self.name = document.getElementById('input_node_name').value;
 		self.question = document.getElementById('input_node_question').value;
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 			self.answers[id_answer] = document.getElementById('input_node_answer' + (id_answer + 1)).value;
@@ -131,6 +220,9 @@ class SGQuestionNode extends SGNode {
 		myP5.triangle(this.x, this.y, this.x + this.w, this.y, this.x + this.w / 2, this.y - this.h);
 		myP5.fill(0);
 		myP5.noStroke();
+		myP5.textSize(20);
+		myP5.textFont('Helvetica');
+		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y - this.h / 3);
 		myP5.pop();
 	}
 

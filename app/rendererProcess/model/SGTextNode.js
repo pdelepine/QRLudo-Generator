@@ -81,7 +81,7 @@ class SGTextNode extends SGNode {
 		myP5.noStroke();
 		myP5.textSize(20);
 		myP5.textFont('Helvetica');
-		myP5.text(this.name, this.x + this.w / 2 - 5 * this.name.length, this.y + this.h / 2);
+		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y + this.h / 1.8);
 		myP5.pop();
 	}
 
