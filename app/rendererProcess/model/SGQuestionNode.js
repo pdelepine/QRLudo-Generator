@@ -52,11 +52,13 @@ class SGQuestionNode extends SGNode {
 	displayQuestionZone() {
 		const self = this;
 
+		/** Create a zone where the user can define the settings of a Question Node */
 		this.questionZone = myP5.createDiv();
 		this.questionZone.id('displayQuestionZone')
 		this.questionZone.class('question');
 		this.questionZone.parent("seriousGameZoneQuestions");
 
+		/** Create an input related to the question title */
 		let txt_Title = myP5.createElement('label', "Nom de la question :");
 		txt_Title.class('question-intro-label');
 		txt_Title.parent('displayQuestionZone');
@@ -64,6 +66,7 @@ class SGQuestionNode extends SGNode {
 		input_name.id('input_node_name');
 		input_name.parent('displayQuestionZone');
 
+		/** Create an input related to the question itself */
 		let txt_question = myP5.createElement('label', "Question :");
 		txt_question.class('control-label');
 		txt_question.parent('displayQuestionZone');
@@ -71,6 +74,7 @@ class SGQuestionNode extends SGNode {
 		input_question.id('input_node_question');
 		input_question.parent('displayQuestionZone');
 
+		/** Create the button to add an audio file */
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
 		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
 		this.btn_add_audio.id('btn_add_audio');
@@ -81,12 +85,14 @@ class SGQuestionNode extends SGNode {
 		txt_answers.class('control-label');
 		txt_answers.parent('displayQuestionZone');
 
+		/** Create the different answers of the question */
 		let nb_answers = this.answers.length;
 		let input_answer = myP5.createInput(this.answers[0]);
 		input_answer.id('input_node_answer1');
 		input_answer.parent('displayQuestionZone');
 		this.btn_delete_answer1 = myP5.createButton("Supprimer Reponse " + 1);
 		this.btn_delete_answer1.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 0); });
+		this.btn_delete_answer1.class('btn btn-outline-success btn-unique-xl');
 		this.btn_delete_answer1.parent('displayQuestionZone');
 		if (nb_answers >= 2) {
 			let input_answer = myP5.createInput(this.answers[1]);
@@ -94,6 +100,7 @@ class SGQuestionNode extends SGNode {
 			input_answer.parent('displayQuestionZone');
 			this.btn_delete_answer2 = myP5.createButton("Supprimer Reponse " + 2);
 			this.btn_delete_answer2.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 1); });
+			this.btn_delete_answer2.class('btn btn-outline-success btn-unique-xl');
 			this.btn_delete_answer2.parent('displayQuestionZone');
 			if (nb_answers >= 3) {
 				let input_answer = myP5.createInput(this.answers[2]);
@@ -101,6 +108,7 @@ class SGQuestionNode extends SGNode {
 				input_answer.parent('displayQuestionZone');
 				this.btn_delete_answer3 = myP5.createButton("Supprimer Reponse " + 3);
 				this.btn_delete_answer3.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 2); });
+				this.btn_delete_answer3.class('btn btn-outline-success btn-unique-xl');
 				this.btn_delete_answer3.parent('displayQuestionZone');
 				if (nb_answers >= 4) {
 					let input_answer = myP5.createInput(this.answers[3]);
@@ -108,6 +116,7 @@ class SGQuestionNode extends SGNode {
 					input_answer.parent('displayQuestionZone');
 					this.btn_delete_answer4 = myP5.createButton("Supprimer Reponse " + 4);
 					this.btn_delete_answer4.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 3); });
+					this.btn_delete_answer4.class('btn btn-outline-success btn-unique-xl');
 					this.btn_delete_answer4.parent('displayQuestionZone');
 					if (nb_answers >= 5) {
 						let input_answer = myP5.createInput(this.answers[4]);
@@ -115,14 +124,16 @@ class SGQuestionNode extends SGNode {
 						input_answer.parent('displayQuestionZone');
 						this.btn_delete_answer5 = myP5.createButton("Supprimer Reponse " + 5);
 						this.btn_delete_answer5.mousePressed(() => { SGQuestionNode.deleteAnswer(self, 4); });
+						this.btn_delete_answer5.class('btn btn-outline-success btn-unique-xl');
 						this.btn_delete_answer5.parent('displayQuestionZone');
 					}
 				}
 			}
 		}
 
-
 		/*
+		// FIRST IMPLEMENTATION not working : the mousePressed seems to affect all the buttons and when we press any of them, the last answer is deleted
+		// Code to remove after Pierre Yves finish the review
 		let id_answer = 0;
 		for (let answer of this.answers) {
 			id_answer += 1;
@@ -130,36 +141,44 @@ class SGQuestionNode extends SGNode {
 			input_answer.id('input_node_answer' + id_answer);
 			input_answer.parent('displayQuestionZone');
 
-			//let btn_delete_answer = myP5.createButton("Supprimer Reponse " + id_answer);
-			//btn_delete_answer.mousePressed(() => { SGQuestionNode.deleteAnswer(self, id_answer - 1); });
-			//btn_delete_answer.parent('displayQuestionZone');
-			//this.btn_delete_answer_array.push(btn_delete_answer);
-			//ATTENTION l'array n'existe plus 
+			let btn_delete_answer = myP5.createButton("Supprimer Reponse " + id_answer);
+			btn_delete_answer.mousePressed(() => { SGQuestionNode.deleteAnswer(self, id_answer - 1); });
+			btn_delete_answer.parent('displayQuestionZone');
+			this.btn_delete_answer_array.push(btn_delete_answer);
 		}
 		*/
 
+		/** Create a button to add an answer */
 		this.btn_add_answer = myP5.createButton("Ajouter une réponse");
 		this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
+		this.btn_add_answer.class('btn btn-outline-success btn-unique-xl');
 		this.btn_add_answer.parent('displayQuestionZone');
 
+		/** Create a button to discard all modifications */
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.mousePressed(() => { SGQuestionNode.discardModification(self); });
+		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_discard_modification.parent('displayQuestionZone');
 
+		/** Create a button to save all the modifications */
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
 		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
+		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.parent('displayQuestionZone');
 
 	}
 
 	static addAnswer(self) {
+		/** Add an answer to the question Node */
 		SGQuestionNode.saveModification(self);
 		let nb_answers = self.answers.length;
+		/** A Question Node can't have more than 5 answers */
 		if (nb_answers < 5) {
 			self.answers.push("");
 			nb_answers = self.answers.length;
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
+			/** Update the exit nodes positions */
 			for (var id_answer = 0; id_answer < nb_answers - 1; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (nb_answers + 1));
 			}
@@ -170,16 +189,15 @@ class SGQuestionNode extends SGNode {
 	}
 
 	static deleteAnswer(self, indice) {
-		console.log(indice);
+		/** Delete an answer */
 		SGQuestionNode.saveModification(self);
 		let nb_answers = self.answers.length - 1;
 		if (nb_answers >= 1) {
-			console.log(self.answers);
 			self.answers.splice(indice, 1);
-			console.log(self.answers);
 			self.exitDots.splice(indice, 1);
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
+			/** Update the positions of the exit nodes */
 			for (var id_answer = 0; id_answer < nb_answers; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (nb_answers + 1));
 			}
@@ -188,15 +206,17 @@ class SGQuestionNode extends SGNode {
 	}
 
 	static discardModification(self) {
+		/** Discard all modifications : delete the div and create it again with previous values */
 		self.emptyQuestionZone();
 		self.displayQuestionZone();
 	}
 
 	static addAudio(self) {
-
+		/** Add an audio file */
 	}
 
 	static saveModification(self) {
+		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.question = document.getElementById('input_node_question').value;
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {

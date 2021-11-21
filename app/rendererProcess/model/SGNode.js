@@ -73,7 +73,9 @@ class SGNode {
 
 	/** When SGNode pressed, begin dragging */
 	pressed() {
+
 		if (myP5.mouseX != myP5.lastClickX || myP5.mouseY != myP5.lastClickY) {
+			/** Vérifie si notre clic correspond aux coordonnées du dernier clic et indique que la zone Question n'a pas été réinitialisée si c'est un nouveau clic */
 			myP5.setPreviousNodeErased(false);
 			myP5.setLastClick(myP5.mouseX, myP5.mouseY);
 		}
@@ -82,12 +84,14 @@ class SGNode {
 			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
 			this.offsetY = this.y * myP5.zoom - (myP5.mouseY - myP5.translateY);
+			/** On réinitialise la zone Question et affiche les valeurs de notre Node actuellement cliqué */
 			this.emptyQuestionZone();
 			this.displayQuestionZone();
 		}
 		else {
 
 			if (myP5.hoveringCanvas) {
+				/** Vérifie si on clique sur le Canvas mais en dehors de notre Node et réinitialise la zone QUestion si celle ci ne l'est pas */
 				if (this.clicked) {
 					this.clicked = false;
 					if (!myP5.previousNodeErased) {
@@ -103,6 +107,7 @@ class SGNode {
 	}
 
 	emptyQuestionZone() {
+		/** Efface la zone Question */
 		myP5.setPreviousNodeErased(true);
 		let displayQZone = document.getElementById('displayQuestionZone');
 		if (null != displayQZone) displayQZone.remove();
