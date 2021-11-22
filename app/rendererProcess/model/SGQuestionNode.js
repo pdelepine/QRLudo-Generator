@@ -1,5 +1,3 @@
-const { toLinuxArchString } = require("builder-util");
-
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
 class SGQuestionNode extends SGNode {
 	/**
@@ -95,10 +93,13 @@ class SGQuestionNode extends SGNode {
 
 		}
 
-		this.btn_add_answer = myP5.createButton("Ajouter une réponse");
-		this.btn_add_answer.class('btn btn-outline-success btn-unique-xl');
-		this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
-		this.btn_add_answer.parent('displayQuestionZone');
+		if (this.answers.length < 5) {
+			this.btn_add_answer = myP5.createButton("Ajouter une réponse");
+			this.btn_add_answer.class('btn btn-outline-success btn-unique-xl');
+			this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
+			this.btn_add_answer.parent('displayQuestionZone');
+		}
+
 
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
@@ -155,8 +156,11 @@ class SGQuestionNode extends SGNode {
 
 	static discardModification(self) {
 		/** Discard all modifications : delete the div and create it again with previous values */
-		self.emptyQuestionZone();
-		self.displayQuestionZone();
+		document.getElementById('input_node_name').value = self.name;
+		document.getElementById('input_node_question').value = self.question;
+		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
+			document.getElementById('input_node_answer_' + (id_answer + 1)).value = self.answers[id_answer];
+		}
 	}
 
 	static addAudio(self) {
@@ -180,7 +184,7 @@ class SGQuestionNode extends SGNode {
 		if (this.dragging || this.clicked)
 			myP5.fill(80);
 		if (this.clicked)
-			myP5.strokeWeight(6);
+			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else

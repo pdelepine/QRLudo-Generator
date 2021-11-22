@@ -87,7 +87,7 @@ class SGTextNode extends SGNode {
 		if (this.dragging || this.clicked)
 			myP5.fill(80);
 		if (this.clicked)
-			myP5.strokeWeight(6);
+			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
 		else
