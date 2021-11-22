@@ -42,6 +42,24 @@ var sketch = function (p) {
 	p.creatingNodeType = null;
 
 	p.creatingLink = false;
+	/** Etat pour le passage au dessus du Canvas */
+	p.hoveringCanvas = false;
+	/** Permet de vérifier si la zone Question du précédent Node cliqué a été effacée */
+	p.previousNodeErased = true;
+	/** Coordonnées du dernier clic pour gérer la réinitialisation de la zone Question */
+	p.lastClickX = 0;
+	p.lastClickY = 0;
+
+	p.setLastClick = function (x, y) {
+		/** Modifie les coordonnées du dernier clic */
+		p.lastClickX = x;
+		p.lastClickY = y;
+	}
+
+	p.setPreviousNodeErased = function (boolean) {
+		/** Modifie l'état du booléen previousNodeErased */
+		p.previousNodeErased = boolean;
+	}
 
 	/* P5Js part */
 	/** Setup of the canvas */
@@ -49,6 +67,10 @@ var sketch = function (p) {
 		p.seriousGameCanvas = p.createCanvas(p.parentDiv.width, p.parentDiv.height);
 		p.seriousGameCanvas.parent("seriousGameDiagram");
 		p.frameRate(30);
+
+		/** Modifie l'état de hoveringCanvas pour savoir si oui ou non le curseur de la souris survole le Canvas du Serious Game */
+		p.seriousGameCanvas.mouseOver(() => { p.hoveringCanvas = true; });
+		p.seriousGameCanvas.mouseOut(() => { p.hoveringCanvas = false; });
 
 		p.translateX = p.initX;
 		p.translateY = p.initY;
@@ -123,6 +145,7 @@ var sketch = function (p) {
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
+
 
 		p.sliderZoom.position((p.width) - 170, (p.height) + 90); //positionnemnt du slider en bas à droite 
 		p.sliderZoom.input(() => {
