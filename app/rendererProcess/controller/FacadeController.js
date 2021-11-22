@@ -51,19 +51,35 @@ class FacadeController {
         case "SeriousGameScenario":
           qrcode.qrcode.version = '4';
           break;
+        default:
+          logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
       }
 
-      /** Génération du QRcode dans la div en paramètre */
-      QRCodeGenerator.toDataURL(qrcode.getDataString(), { errorCorrectionLevel: 'L', margin: 0 }, function (err, url) {
-        if (err) logger.error('Erreur lors de la prévisualisation du QRCode');
-        let image = new Image();
-        image.src = url;
-        $(divImg).prepend(image);
-        logger.info(`Prévisualisation du QR code ${ qrcode.qrcode.type } réussi`);
+      // Création d'un objet qrcode, mime => type d'image a générer, size => taille de l'image, value => le text à transformer
+      let qr = new QRious({
+        mime: "image/jpeg",
+        size: 400,
+        value: qrcode.getDataString()
       });
 
+      // Transformation de l'objet qrcode en dataURL
+      let qrdata = qr.toDataURL();
+      console.log('Data JPEG ' + qrdata);
+
+      // Création de l'exif
+      let exif = {};
+      exif[piexif.ExifIFD.UserComment] = qrcode.getDataString().toString(); // UserComment est un tag spécifique au Exif du JPEG et permet de mettre un string en valeur
+      let exifObj = { "Exif": exif };
+      let exifBytes = piexif.dump(exifObj);                                 // Tranformation de l'obj exif en string
+      let exifModified = piexif.insert(exifBytes, qrdata);                  // Insertion de l'exif string dans le dataURL du Jpeg
+
+      let image = new Image();
+      image.src = exifModified;
+      $(divImg).prepend(image);
+
+
       $('#saveQRCode, #listenField').attr('disabled', false);
-    } catch(e) {
+    } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');
       logger.error(e);
     }
@@ -88,35 +104,35 @@ class FacadeController {
     //   callback(qrcode); // faire le view du qrcode
     // });
 
-   // QRCodeLoader.loadImage(file, callback);
-  
+    // QRCodeLoader.loadImage(file, callback);
+
     var buffer = fs.readFileSync(file);
 
-    Jimp.read(buffer, function(err, image) {
+    Jimp.read(buffer, function (err, image) {
 
-        if (err) {
-            console.error(err);
-            logger.error('Impossible de lire l\'Image de QR Code');
-        }
-       
-          const code = jsQR(image.bitmap.data, image.bitmap.width, image.bitmap.height);
+      if (err) {
+        console.error(err);
+        logger.error('Impossible de lire l\'Image de QR Code');
+      }
 
-          if (code) {
-           // console.log("Found QR code", code);
-            QRCodeLoaderJson.loadImage(code.data,callback);
-          } else {
-            logger.error('Impossible de Décoder le QR Code');
-          }
-         
+      const code = jsQR(image.bitmap.data, image.bitmap.width, image.bitmap.height);
+
+      if (code) {
+        // console.log("Found QR code", code);
+        QRCodeLoaderJson.loadImage(code.data, callback);
+      } else {
+        logger.error('Impossible de Décoder le QR Code');
+      }
+
     });
 
   }
-
 
   /** Renvoie la taille réelle du qrcode après compression */
   getTailleReelleQRCode(qrcode) {
     return this.compresseurXml.compresser(qrcode.getDonneesUtilisateur()).length;
   }
+
 }
 
 module.exports = {
