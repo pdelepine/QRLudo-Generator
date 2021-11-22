@@ -173,8 +173,15 @@ $('#preview').on('click',e => {
 
       let jsonAudio = JSON.stringify(dataAudio);
       qrData.push(JSON.parse(jsonAudio));
-    } else
-      qrData.push(data.value);
+    } else{
+      let dataText = {
+        type: 'text',
+        text: data.value
+      }
+
+      let jsonText = JSON.stringify(dataText);
+      qrData.push(JSON.parse(jsonText));
+    }
   }
 
   qrType = $('#typeQRCode').val();
@@ -185,8 +192,6 @@ $('#preview').on('click',e => {
   newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
 
   newQrUnique.setId(store.get("newQrID"));
-
-  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(newQrUnique) }`);
 
   previewQRCode(qrName, qrData, qrColor, div);
   $('#emptyZones').attr('disabled', false);
@@ -324,7 +329,7 @@ function previewQRCode(name, data, color, div) {
   // instanciate a qrcode unique object
   qrcode = new QRCodeUnique(name, data, color);
   let facade = new FacadeController();
-  
+  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(qrcode) }`);
   facade.genererQRCode(div, qrcode);
 }
 

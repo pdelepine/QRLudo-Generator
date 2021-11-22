@@ -139,6 +139,16 @@ class SGNode {
 		}
 		return false;
 	}
+
+	isMouseHoveringExitDots() {
+		for (let dot of this.exitDots) {
+			if (dot.isMouseHover()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** Return the dot of the node which the mouse is hovering */
 	getDotHovering() {
 		if (this.entryDot.isMouseHover()) {

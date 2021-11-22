@@ -31,7 +31,6 @@ const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
 logger.info('Le chemin est ' + require.resolve('qrcode'));
-const QRCodeGenerator = require('qrcode');
 const { setTimeout } = require('timers');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
@@ -174,3 +173,4 @@ let controllerMultiple = new ControllerMultiple();
 
 const jsQR = require("jsqr");
 const Jimp = require('jimp');
+const QRious = require('qrious');

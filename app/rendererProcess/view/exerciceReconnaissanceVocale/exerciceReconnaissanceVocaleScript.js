@@ -1,4 +1,3 @@
-
 function genererJson() {
   if(store.get(`sousOnglet`) == "qcm") {
     genererJsonQCM();
@@ -11,20 +10,50 @@ var questionQCM =null;
 
 function genererJsonQCM(){
   questionOuverte = null;
-  var messageBonneReponse = $("#MessageBonnereponseQCM").val();
-  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
-    messageBonneReponse = document.getElementById("MessageBonnereponseQCM").name;
+  var messageBonneReponse = document.getElementById("MessageBonnereponseQCM");
+  if (messageBonneReponse.value.substring(messageBonneReponse.value.length - 3, messageBonneReponse.value.length) == "mp3") {
+    messageBonneReponse = {
+      type: 'music',
+      name: messageBonneReponse.value,
+      url: messageBonneReponse.name
+    }
   }
-  var messageMauvaiseReponse = $("#MessageMauvaisereponseQCM").val();
-  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
-    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM").name;
+  else{
+    messageBonneReponse = {
+      type: 'text',
+      text: messageBonneReponse.value
+    }
+  }
+  var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponseQCM");
+  if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
+    messageMauvaiseReponse = {
+      type: 'music',
+      name: messageMauvaiseReponse.value,
+      url: messageMauvaiseReponse.name
+    }
+  }
+  else{
+    messageMauvaiseReponse = {
+      type: 'text',
+      text: messageMauvaiseReponse.value
+    }
   }
   var questions = [];
   var tousLesChampsSontRemplis=true;
   for(let i = 1;i <= compteurQuestion;++i){
-    var questionText = $("#textQuestion"+i.toString()).val();
-    if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
-      questionText = document.getElementById("textQuestion"+i.toString()).name;
+    var questionText = document.getElementById("textQuestion"+i.toString());
+    if (questionText.value.substring(questionText.value.length - 3, questionText.value.length) == "mp3") {
+      questionText = {
+        type: 'music',
+        name: questionText.value,
+        url: questionText.name
+      }
+    }
+    else{
+      questionText = {
+        type: 'text',
+        text: questionText.value
+      }
     }
     var reponses = [];
     // Ajout des réponss
@@ -65,7 +94,6 @@ function genererJsonQCM(){
     questionQCM=projet;
 
     initMessages();
-
     // On génére le QrCode a afficher
     previewQRCodeQCM();
     // On affiche le qrCode
@@ -87,18 +115,48 @@ var questionOuverte=null;
 
 function genererJsonQuestionOuverte(){
   questionQCM = null;
-  var questionText = $("#Question").val();
-  if (questionText.substring(questionText.length - 3, questionText.length) == "mp3") {
-    questionText = document.getElementById("Question").name;
+  var questionText = document.getElementById("Question");
+  if (questionText.value.substring(questionText.value.length - 3, questionText.value.length) == "mp3") {
+    questionText = {
+      type: 'music',
+      name: questionText.value,
+      url: questionText.name
+    }
+  }
+  else{
+    questionText = {
+      type: 'text',
+      text: questionText.value
+    }
   }
   var reponseText = $("#Bonnereponse").val();
-  var messageBonneReponse = $("#MessageBonnereponse").val();
-  if (messageBonneReponse.substring(messageBonneReponse.length - 3, messageBonneReponse.length) == "mp3") {
-    messageBonneReponse = document.getElementById("MessageBonnereponse").name;
+  var messageBonneReponse = document.getElementById("MessageBonnereponse");
+  if (messageBonneReponse.value.substring(messageBonneReponse.value.length - 3, messageBonneReponse.value.length) == "mp3") {
+    messageBonneReponse = {
+      type: 'music',
+      name: messageBonneReponse.value,
+      url: messageBonneReponse.name
+    }
   }
-  var messageMauvaiseReponse = $("#MessageMauvaisereponse").val();
-  if (messageMauvaiseReponse.substring(messageMauvaiseReponse.length - 3, messageMauvaiseReponse.length) == "mp3") {
-    messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse").name;
+  else{
+    messageBonneReponse = {
+      type: 'text',
+      text: messageBonneReponse.value
+    }
+  }
+  var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse");
+  if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
+    messageMauvaiseReponse = {
+      type: 'music',
+      name: messageMauvaiseReponse.value,
+      url: messageMauvaiseReponse.name
+    }
+  }
+  else{
+    messageMauvaiseReponse = {
+      type: 'text',
+      text: messageMauvaiseReponse.value
+    }
   }
 
   if(questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {
@@ -130,10 +188,15 @@ function previewQRCode(qrcode, div) {
   facade.genererQRCode(div, qrcode);
 }
 
+
 $(document).ready(function() {
 
   if(!store.get("sousOnglet"))
     store.set("sousOnglet", "question_ouverte");
+  
+  if(!store.get("compteurQuestion")){
+    store.set("compteurQuestion",1);
+  }
 
   if(!isImportationExerciceRecoVocaleQCM) {
     //méthode gérant la continuité
@@ -141,8 +204,6 @@ $(document).ready(function() {
   }
 
   initMessages();
-
-
 
   // Aucun champs audio à lire dans cet onglet
   $("#play-sound-div").hide();
@@ -164,7 +225,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
                           <div class="form-group col-md-6">
                             <span class="row">
                               <input type="text" class="form-control col-sm-6" id="question` + question_id + `Reponse`+ compteurReponse[question_id] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');">
+                                    placeholder="Réponse" onkeyup="activerSave('question` + question_id + `Reponse`+compteurReponse[question_id]+`');verifNombreCaractere('QCM');">
                             </span>
                           </div>
                           <div class="form-group col-md-2">
@@ -191,8 +252,9 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id=1)
   }
 }
 
-function ajouterNouvelleQuestion(){
-  compteurQuestion++;
+function ajouterNouvelleQuestion(incrementerDansStore=true){
+  compteurQuestion++;  
+  if (incrementerDansStore) store.set("compteurQuestion",store.get('compteurQuestion')+1);
   compteurReponse[compteurQuestion]=1;
   type = "Reponse";
   logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
@@ -202,7 +264,7 @@ function ajouterNouvelleQuestion(){
                               <div class="col">
                                 <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion`+compteurQuestion+`" aria-expanded="false" aria-controls="collapseQuestion`+compteurQuestion+`" style="color:#28a745;padding-right:25px;">Question `+compteurQuestion+` : </label>
                                 <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+compteurQuestion+`" cols="10" name="nomprojet"
-                                  placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');" />
+                                  placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+compteurQuestion+`');verifNombreCaractere('QCM');" />
                               </div>
                               <div class="btn-question col-4">
                                 <button type="button" id="audioQuestion`+compteurQuestion+`" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion`+compteurQuestion+`')"> 
@@ -212,7 +274,7 @@ function ajouterNouvelleQuestion(){
                                   <i class="fa fa-chevron-up pull-right"></i>
                                   <i class="fa fa-chevron-down pull-right"></i>
                                 </button>
-                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestion`+compteurQuestion+`" onclick="supprimerQuestion(`+compteurQuestion+`,'Question');">
+                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestion`+compteurQuestion+`" onclick="supprimerQuestion(`+compteurQuestion+`,'Question');verifNombreCaractere('QCM');">
                                   <i class="fa fa-trash" aria-hidden="true"></i>
                                 </button>
                               </div>
@@ -233,7 +295,7 @@ function ajouterNouvelleQuestion(){
                               <div class="form-group col-md-6">
                                 <span class="row">
                                   <input type="text" class="form-control col-sm-6" id="question` + compteurQuestion + `Reponse`+ compteurReponse[compteurQuestion] + `" rows="2" name="nomprojet"
-                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');">
+                                    placeholder="Réponse" onkeyup="activerSave('question` + compteurQuestion + `Reponse`+compteurReponse[compteurQuestion]+`');verifNombreCaractere('QCM');">
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
@@ -251,7 +313,7 @@ function ajouterNouvelleQuestion(){
                             <div class="form-group col-md-6">
                               <label style="color:#a5b2af;">Ajouter une réponse</label>
                               <button id="ajouterReponseQuestion`+compteurQuestion+`" type="button"
-                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);" style="color:#a5b2af;" name="ajouterReponse">
+                                class="btn btn-outline-success align-self-center" onclick="ajouterNouvelleReponse('',false,`+compteurQuestion+`);verifNombreCaractere('QCM');" style="color:#a5b2af;" name="ajouterReponse">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
                               </button>
                             </div>
@@ -291,12 +353,35 @@ function supprLigne(question_id,idLigne, element) {
             store.set(`gridCheck${cpt}`, store.get(`gridCheck${id}`));
           }
         }
+        deleteStore("question"+question_id+"Reponse"+idLigne);
+        updateReponses(question_id);
+        verifNombreCaractere('QCM');
       });
       deleteStore("reponse"+compteurReponse+1);
-      deleteStore("gridCheck"+compteurReponse+1)
+      deleteStore("gridCheck"+compteurReponse+1);
+    }
+    
+  }
+  
+}
+
+
+/** une fonction pour mettre a jour les reponses d'une question dans le store*/  
+function updateReponses(question_id){
+  for (i = 1 ; i < 30 ; ++i ){                       // supprimer toutes les reponses et les grids de la question dans le store 
+    deleteStore("question"+question_id.toString()+"Reponse"+i.toString());
+    deleteStore("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString());
+  }
+  for (i = 1 ; i < 30 ; ++i ){                      // mettre a jour les reponses et les grids de la question 
+    if (document.getElementById("question"+question_id.toString()+"Reponse"+i.toString())!=null){
+      store.set("question"+question_id.toString()+"Reponse"+i.toString(),document.getElementById("question"+question_id.toString()+"Reponse"+i.toString()).value);
+      if (document.getElementById("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString()).checked){
+        store.set("gridCheckQuestion"+question_id.toString()+"Reponse"+i.toString(),true);
+      }
     }
   }
 }
+
 
 function reinitialisationQuestions(){
   nb_questions=compteurQuestion;
@@ -311,6 +396,7 @@ function supprimerQuestion(question_id, element) {
   if (element == "Question") {
     if(compteurQuestion>1){
       compteurQuestion--;
+      store.set("compteurQuestion",store.get('compteurQuestion')-1);
       logger.info('Suppression d\'une question dans le QCM de l\'exercice à reconnaissance vocale');
       // A METTRE A JOUR : store.set("nbReponse",compteurReponse[question_id]);
       $("#question" +question_id).on('click', function() {
@@ -318,19 +404,19 @@ function supprimerQuestion(question_id, element) {
         for(let cpt = question_id; cpt <= compteurQuestion; cpt++) {
           let id = cpt+1;
           compteurReponse[cpt]=compteurReponse[id];
-          
+
           let div = $("#question"+id)[0].getElementsByTagName("div");
           div[2].getElementsByTagName("label")[0].setAttribute("data-target","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("label")[0].innerHTML = "Question "+cpt+" :";
           div[2].getElementsByTagName("label")[0].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[2].getElementsByTagName("input")[0].id="textQuestion"+cpt;
-          div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');");
+          div[2].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('textQuestion"+cpt+"');verifNombreCaractere('QCM');");
           div[3].getElementsByTagName("button")[0].setAttribute("onclick","chamgementAudioSource('textQuestion"+cpt+"');");
           div[3].getElementsByTagName("button")[0].id="audioQuestion"+cpt;
           div[3].getElementsByTagName("button")[1].setAttribute("data-target","#collapseQuestion"+cpt);
           div[3].getElementsByTagName("button")[1].setAttribute("aria-controls","#collapseQuestion"+cpt);
           div[3].getElementsByTagName("button")[1].id="btnCollapseQuestion"+cpt;
-          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');");
+          div[3].getElementsByTagName("button")[2].setAttribute("onclick","supprimerQuestion("+cpt+",'Question');verifNombreCaractere('QCM')");
           div[3].getElementsByTagName("button")[2].id="deleteQuestion"+cpt;
           div[4].id="collapseQuestion"+cpt;
           div[7].id="reponseContainerQuestion"+cpt;
@@ -339,7 +425,7 @@ function supprimerQuestion(question_id, element) {
             div[last_div+1].id="divQuestion"+cpt+"Reponse"+cpt_rep;
             div[last_div+2].getElementsByTagName("label")[0].innerHTML = "Réponse " + cpt_rep + " :";
             div[last_div+3].getElementsByTagName("input")[0].id = "question"+cpt+"Reponse" + cpt_rep;
-            div[last_div+3].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('question"+cpt+"Reponse"+cpt_rep+"');");
+            div[last_div+3].getElementsByTagName("input")[0].setAttribute("onkeyup","activerSave('question"+cpt+"Reponse"+cpt_rep+"');verifNombreCaractere('QCM')");
             div[last_div+4].getElementsByTagName("input")[0].id = "gridCheckQuestion"+cpt+"Reponse" + cpt_rep;
             div[last_div+4].getElementsByTagName("input")[0].setAttribute("onclick","activerSaveCheckbox('gridCheckQuestion"+cpt+"Reponse"+cpt_rep+"');");
             div[last_div+4].getElementsByTagName("label")[0].setAttribute("for","gridCheckQuestion"+cpt+"Reponse" + cpt_rep);
@@ -348,15 +434,57 @@ function supprimerQuestion(question_id, element) {
             last_div+=5;
           }
           div[last_div+1].getElementsByTagName("button")[0].id="ajouterReponseQuestion"+cpt;
-          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");");
+          div[last_div+1].getElementsByTagName("button")[0].setAttribute("onclick","ajouterNouvelleReponse('',false,"+cpt+");verifNombreCaractere('QCM');");
           $("#question"+id)[0].id="question"+cpt;
         }
         compteurReponse[compteurQuestion+1]=0;
+        updateStore(question_id);
       });
-      
     }
   }
 }
+
+
+/** une function pour mettre a jour le store */
+function updateStore(question_id){    
+// supprimer toutes les reponses + les grids dans le store
+  for (i =  1 ; i <=compteurQuestion+1 ; ++i){           
+    for (j = 1 ; j <30 ; ++j){
+        deleteStore ("question"+i.toString()+"Reponse"+j.toString());
+        deleteStore ("gridCheckQuestion"+i.toString()+"Reponse"+j.toString());
+    }
+  }
+// mettre a jour le store avec les reponses des champs
+  for (i = 1 ; i <=compteurQuestion ; ++i){          
+    for (j = 1 ; j <30 ; ++j){
+      if (document.getElementById("question"+i+"Reponse"+j)!=null && document.getElementById("question"+i+"Reponse"+j)!=""){
+        store.set("question"+i+"Reponse"+j,document.getElementById("question"+i+"Reponse"+j).value);
+      }
+      if (document.getElementById("gridCheckQuestion"+i+"Reponse"+j)!=null && document.getElementById("gridCheckQuestion"+i+"Reponse"+j).checked){
+        store.set("gridCheckQuestion"+i+"Reponse"+j,true);
+      }
+    }
+  }
+  // mettre a jour le text de chaque question
+  for (i = 1 ; i <= compteurQuestion ; ++i){             
+    ques ='textQuestion'+i.toString();
+    champ = document.getElementById(ques).value;
+    store.set('textQuestion'+i.toString(), document.getElementById(ques).value);
+  }  
+
+  deleteStore ("question"+question_id+"Url");   // supprimer le url de l'audio de la question dans le store
+
+  for (i = question_id ; i <=compteurQuestion+1 ; ++i ){ // mettre a jour les URL 
+    if (store.get("question"+i.toString()+"Url")){
+      store.set("question"+(i-1).toString()+"Url",store.get("question"+i.toString()+"Url"));
+      deleteStore("question"+i.toString()+"Url");
+    }
+  }
+
+}
+
+
+
 
 $(document).ready(function() {
   $('div.info-content').css('display', 'none');
@@ -408,10 +536,10 @@ function viderChamps(){
     deleteStore(`Bonnereponse`);
     deleteStore('MessageBonnereponse');
     deleteStore('MessageMauvaisereponse');
-
+    verifNombreCaractere('QO');
     logger.info('Réinitialisation de l\'exercice à reconnaissance vocale question ouverte');
   }
-  else{
+  else {
     $('#reponseinitiale').val('');
     $('#QuestionQCM').val('');
     $('#reponseParIdentifiant').prop('checked', false);
@@ -436,9 +564,9 @@ function viderChamps(){
     }*/
 
     reinitialisationQuestions();
-
     store.set("nbReponse", compteurReponse);
     logger.info('Réinitialisation de l\'exercice à reconnaissance vocale QCM');
+    verifNombreCaractere('QCM');
   }
   //logger.info('Réinitialisation de l\'exercice à reconnaissance vocale');
   $('#qrView').hide();
@@ -514,17 +642,8 @@ function enregistrement() {
   if(store.get('MessageMauvaisereponse'))
     $("#MessageMauvaisereponse").val(store.get('MessageMauvaisereponse'));
 
-  if(store.get('QuestionQCM'))
-    $("#QuestionQCM").val(store.get('QuestionQCM'));
-
   if(store.get('reponseParIdentifiant'))
     $("#reponseParIdentifiant").prop('checked', store.get('reponseParIdentifiant'));
-
-  if(store.get('MessageMauvaisereponseQCM'))
-    $("#MessageMauvaisereponseQCM").val(store.get('MessageMauvaisereponseQCM'));
-
-  if(store.get('MessageBonnereponseQCM'))
-    $("#MessageBonnereponseQCM").val(store.get('MessageBonnereponseQCM'));
 
   if(store.get('reponseinitiale'))
     $("#reponseinitiale").val(store.get('reponseinitiale'));
@@ -532,14 +651,63 @@ function enregistrement() {
   if(store.get('gridCheck1'))
     $("#gridCheck1").prop('checked', store.get('gridCheck1'));
 
-  var nbRep = 0;
-  if(store.get('nbReponse'))
-    nbRep = store.get('nbReponse');
+  chargementOngletQcm();
 
-  for(var i=2; i<=nbRep; i++) {
-    ajouterNouvelleReponse(store.get(`reponse${i}`), store.get(`gridCheck${i}`));
-  }
 }
+
+
+
+
+/** une fonction pour le cahrgement des question et leurs reponses de store et les bonne + mauvais reponses de QCM */
+function chargementOngletQcm(){
+  // le chargement des question
+  for (i = 1 ; i <= store.get("compteurQuestion") ; ++i) {  
+    if (i!=1){
+      ajouterNouvelleQuestion(false);
+    }    
+    if (store.get("textQuestion"+i)) {
+      document.getElementById("textQuestion"+i).value = store.get("textQuestion"+i); // l'ajoute des texts de chaque question
+      if (store.get("textQuestion"+i).substring(store.get("textQuestion"+i).length - 3, store.get("textQuestion"+i).length) == "mp3"){ // changement de name si c'est un mp3
+        document.getElementById("textQuestion"+i).name = store.get("question"+i+"Url");
+        document.getElementById("textQuestion"+i).disabled = true;
+      }
+    }
+  }
+  // le chargement des reponses 
+  for (i = 1 ; i <= store.get("compteurQuestion") ; ++i) {  
+    for (j = 1 ; j <30 ; ++j){
+      if (store.get("question"+i+"Reponse"+j)){ 
+          if (j!=1)  {
+            ajouterNouvelleReponse("",false,i);
+          }
+          document.getElementById("question"+i+"Reponse"+j).value = store.get("question"+i+"Reponse"+j);  
+          if (store.get("gridCheckQuestion"+i+"Reponse"+j)==true) {         // check le grid
+            document.getElementById("gridCheckQuestion"+i+"Reponse"+j).click();
+          }
+      }
+    }
+  }
+  //le chargement de message de bonne reponse 
+  if(store.get('MessageBonnereponseQCM')){
+    let bonReponse = store.get('MessageBonnereponseQCM');
+    document.getElementById("MessageBonnereponseQCM").value = bonReponse;
+    if (bonReponse.substring(bonReponse.length - 3, bonReponse.length) == "mp3"){
+      document.getElementById("MessageBonnereponseQCM").disabled = true;
+      document.getElementById("MessageBonnereponseQCM").name = store.get('MessageBonnereponseQCMUrl');
+    }
+ }
+ //le chargement de message de mauvais reponse 
+ if(store.get('MessageMauvaisereponseQCM')){
+  let mauvaisReponse = store.get('MessageMauvaisereponseQCM');
+  document.getElementById("MessageMauvaisereponseQCM").value = mauvaisReponse;
+  if (mauvaisReponse.substring(mauvaisReponse.length - 3, mauvaisReponse.length) == "mp3"){
+    document.getElementById("MessageMauvaisereponseQCM").disabled = true;
+    document.getElementById("MessageMauvaisereponseQCM").name = store.get('MessageMauvaisereponseQCMUrl');
+  }
+ }
+ 
+}
+
 
 
 //méthode gérant la continuité sur les zones de texte Question, Bonne Reponse, Mauvaise Reponse et nb reponse
@@ -562,11 +730,13 @@ function deleteStore(del){
 //On stocke dans le store, le sous onglet "question_ouverte"
 $("#questionOuverteOnglet").on('click',function() {
   store.set("sousOnglet", "question_ouverte");
+  verifNombreCaractere('QO');
   initMessages();
 });
 //On stocke dans le store, le sous onglet "qcm"
 $("#questionQCMOnglet").on('click',function() {
   store.set("sousOnglet", "qcm");
+  verifNombreCaractere("QCM");
   initMessages();
 });
 
@@ -666,6 +836,14 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set(audioSource,nom);
+    if (document.getElementById('questionQCMOnglet').classList.contains('active')){
+      if (audioSource!="MessageBonnereponseQCM" && audioSource!="MessageMauvaisereponseQCM"){
+        store.set("question"+audioSource.match(/\d+$/)[0]+"Url",url);
+      } else {
+        store.set(audioSource+"Url",url);
+      }
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
@@ -712,3 +890,149 @@ $(document).ready(function () {
 
   $("#play-sound-div").hide();
 });
+
+
+
+/**  une fonction pour calculer le nombre de car de QRcode */
+function calculNombreCaractereQRCode(type){
+  let char = 0;
+  if (type=="QO"){
+    char += 190; // nombre de caractère dans {"qrcode":{"id":xxxxxxxxxxxxx,"name":"","type":"ExerciceReconnaissanceVocaleQuestionOuverte","data":[""],"color":"#xxxxxx","text_bonne_reponse":"","text_mauvaise_reponse":"","version":"x"}} 
+    char += document.getElementById("Question").value.length;
+    char += document.getElementById("Bonnereponse").value.length;
+    char += document.getElementById("MessageBonnereponse").value.length;
+    char += document.getElementById("MessageMauvaisereponse").value.length;
+  } if (type=="QCM") {
+    char +=158;  // nombre de caractère dans {"id":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","type":"ExerciceReconnaissanceVocaleQCM","questions":[],"textBonneReponse":"","textMauvaiseReponse":"","version":"x"}
+    char += document.getElementById("MessageBonnereponseQCM").value.length;
+    char += document.getElementById("MessageMauvaisereponseQCM").value.length;
+    for (i = 1 ; i<=compteurQuestion ; ++i) { 
+      char +=59; // nombre de caractère dans [{"question":{"id":"","textQuestion":"","reponses":[] } }]
+      char += ("question"+i.toString()).length; 
+      char += document.getElementById("textQuestion"+i).value.length;
+      let numberOfReopnses = document.getElementById("reponseContainerQuestion"+i).childElementCount;
+      for (j = 1 ; j <=numberOfReopnses ; ++j){
+        char += 7; // pour les "" + []  
+        char += ("réponse numéro "+j.toString()).length;
+        char += document.getElementById("question"+i+"Reponse"+j).value.length;  
+        char +=5;     // pour true || false
+      }
+    }
+  } 
+  return char;
+}
+
+/** une fonction pour Gérer l'attribut maxLength de chaque Réponses de chaque Question */ 
+function GererChampsDeReponses(nombreCaractere){  
+  let numberOfReopnses;
+  let currentLength;
+  for (i = 1 ; i<=compteurQuestion ; ++i) { 
+    numberOfReopnses = document.getElementById("reponseContainerQuestion"+i).childElementCount;
+    for (j = 1 ; j <=numberOfReopnses ; ++j){
+        if (nombreCaractere==0){ // on ferme le champs avec son length courant quand le nombreCaractere est 0 
+          currentLength = document.getElementById("question"+i+"Reponse"+j).value.length;
+          document.getElementById("question"+i+"Reponse"+j).setAttribute("maxLength",currentLength); 
+        } else {
+          document.getElementById("question"+i+"Reponse"+j).setAttribute("maxLength",nombreCaractere);  
+        } 
+      }
+  }
+}
+
+/**une fonction pour gerer les button d'ajout de questions et d'ajout de reponses 
+ *@param {boolean} mode  */
+function GererButonsDajout(mode){  
+  document.getElementById("ajouterQuestion").disabled = mode;  //  activer/disactiver le buton d'ajouter question dans le QCM
+  for (i = 1 ; i<=compteurQuestion ; ++i) {                    //  activer/disactiver chaque buton d'ajouter de reponses
+    document.getElementById("ajouterReponseQuestion"+i).disabled = mode;
+  }
+}
+
+/** une fonction pour ourvir/fermer les champs text de chaque question */
+function GererChampsQuestions(mode){  
+  if (mode=="closeFields"){
+    for (i = 1 ; i<=compteurQuestion ; ++i) {
+      document.getElementById("textQuestion"+i).maxLength = document.getElementById("textQuestion"+i).value.length;
+      }
+  } else {
+    for (i = 1 ; i<=compteurQuestion ; ++i) {
+      document.getElementById("textQuestion"+i).maxLength = 1240;
+      }
+  }
+}
+
+
+/** une fonction qui fait la mis à jour de Progress Bar */
+function SetProgressBar(type) {
+  //progress bar gestion
+  let total = 0;
+  let nombreCaratereMAX = 1240;
+  total += calculNombreCaractereQRCode(type);   
+  let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
+
+/**
+ * une fonction pour verifier le nombre de caractere 
+ * @param {string} type */
+function verifNombreCaractere(type) {
+  let nombreCaratereMAX = 1240;
+  $('#messages').empty();
+  let total = SetProgressBar(type);
+  if(type=="QO")
+  {
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs  
+      messageInfos("La limite de caractère est atteinte ","warning");
+      document.getElementById("Question").setAttribute("maxLength",document.getElementById("Question").value.length);
+      document.getElementById("Bonnereponse").setAttribute("maxLength",document.getElementById("Bonnereponse").value.length);
+      document.getElementById("MessageMauvaisereponse").setAttribute("maxLength",document.getElementById("MessageMauvaisereponse").value.length);
+      document.getElementById("MessageBonnereponse").setAttribute("maxLength",document.getElementById("MessageBonnereponse").value.length);
+    }
+    else {          
+      document.getElementById("Question").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("Bonnereponse").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageMauvaisereponse").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageBonnereponse").setAttribute("maxLength",nombreCaratereMAX);
+    }
+    if (document.getElementById("Question").value.length==0 && document.getElementById("Bonnereponse").value.length==0 &&
+        document.getElementById("MessageMauvaisereponse").value.length==0 && document.getElementById("MessageBonnereponse").value.length==0)
+      {   // si les champs sont vides on met la progess bar a 0
+        document.getElementById("progressbarId").style.width = 0;
+      }
+  } 
+  if (type=="QCM") 
+  { 
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs 
+     messageInfos("La limite de caractère est atteinte ","warning");
+     GererChampsQuestions("closeFields");
+     document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength",document.getElementById("MessageBonnereponseQCM").value.length);
+     document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",document.getElementById("MessageMauvaisereponseQCM").value.length);
+     GererChampsDeReponses(0);
+     GererButonsDajout(true);
+    }
+    else {
+      document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength",nombreCaratereMAX);
+      document.getElementById("MessageMauvaisereponseQCM").setAttribute("maxLength",nombreCaratereMAX);
+      GererChampsDeReponses(nombreCaratereMAX);
+      GererButonsDajout(false);
+      GererChampsQuestions("openFields");
+    }    
+    if (document.getElementById("MessageBonnereponseQCM").value.length==0 && document.getElementById("MessageMauvaisereponseQCM").value.length==0 && document.getElementById("textQuestion1").value.length==0){ 
+      document.getElementById("progressbarId").style.width = 0; // si les champs sont vides on met la progess bar a 0
+    }
+  }
+  // si on dépasse 100% on ferme le buton de génération de QRCode
+  if (Math.trunc((total / nombreCaratereMAX) * 10000) / 100 > 100){  
+    document.getElementById("preview").disabled = true;
+    messageInfos("Dépassement de la limite de caractères autorisés, veuillez modifier l'exercice pour ne pas dépasser 100% et ainsi générer le QR Code","danger");
+  } else { 
+    document.getElementById("preview").disabled = false;
+  }
+
+}
+
