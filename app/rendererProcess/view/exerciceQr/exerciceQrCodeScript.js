@@ -51,23 +51,6 @@ $(document).ready(function () {
     var new_rep = new QRCodeUnique(identifiant, qrData, qrColor);
     var new_rep_vocal = reponseVocale;
 
-    //Récuperation des inforamtion de la question pour gérer la continuité
-    numReponse++;
-    deleteStore('numReponse');
-    store.set('numReponse', numReponse);
-
-    deleteStore("reponse" + numReponse);
-    store.set("reponse" + numReponse, new_rep.getName());
-
-    deleteStore("data" + numReponse);
-    store.set("data" + numReponse, qrData);
-
-    deleteStore("reponseId" + numReponse);
-    store.set("reponseId" + numReponse, new_rep.getId());
-
-    deleteStore("reponseColor" + numReponse);
-    store.set("reponseColor" + numReponse, qrColor);
-
     //sortir de la fonction si la reponse existe déjà pour la question
     let existe = false;
     $.each(projet.getReponses(), function (i, val) {
@@ -83,6 +66,22 @@ $(document).ready(function () {
       }, 3500);
       return false;
     }
+      //Récuperation des inforamtion de la question pour gérer la continuité
+      numReponse++;
+      deleteStore('numReponse');
+      store.set('numReponse', numReponse);
+  
+      deleteStore("reponse" + numReponse);
+      store.set("reponse" + numReponse, new_rep.getName());
+  
+      deleteStore("data" + numReponse);
+      store.set("data" + numReponse, qrData);
+  
+      deleteStore("reponseId" + numReponse);
+      store.set("reponseId" + numReponse, new_rep.getId());
+  
+      deleteStore("reponseColor" + numReponse);
+      store.set("reponseColor" + numReponse, qrColor);
 
     //Ajouter au projet et à la question la nouvelle réponse
     projet.addReponse(new_rep);
@@ -113,10 +112,14 @@ $(document).ready(function () {
 
 
 
-
   $("#emptyFields").on('click', function () {
     viderZone();
     logger.info('Réinitialisation du QR Code Exercice');
+    store.set("excerciceEstCree",false);
+    deleteStore('QuestionUrl');
+    deleteStore("BonneReponseUrl");
+    deleteStore("MauvaiseReponseUrl");
+    document.getElementById("genererQestion").disabled = false;
     verifNombreCaractere();
     $("#cible").empty();                       //  pour vider les Bonnes Reponses!
   })
@@ -196,7 +199,6 @@ function addReponseLine(reponse) {
 }
 
 $("#genererQestion").on('click', function () {
-  $("#ajoutNewReponse").attr('disabled', false);
   let question = document.getElementById('newQuestionText');
   if (question.value.substring(question.value.length - 3, question.value.length) == "mp3") {
     question = {
@@ -241,10 +243,11 @@ $("#genererQestion").on('click', function () {
   }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();
-
+  
+  // if ((question.text !== "" || question.name !== "") && (bonneReponse.text !== "" || bonneReponse.name !== "") && (mauvaiseReponse.text !=="" || mauvaiseReponse.name !== "") && nbMinBoneReponse !== "")
   
   //On verifie si le texte de la question n'est pas vide
-  if (question !== "" && bonneReponse !== "" && mauvaiseReponse !== "" && nbMinBoneReponse !== "") {
+  if (( question.text || question.name ) && ( bonneReponse.text  || bonneReponse.name ) && (mauvaiseReponse.text  || mauvaiseReponse.name ) && nbMinBoneReponse !== "" ){
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
     document.getElementById("newMauvaiseReponseText").disabled = true;
     document.getElementById("newQuestionText").disabled = true;
@@ -253,7 +256,7 @@ $("#genererQestion").on('click', function () {
     document.getElementById("newQuestionAudio").disabled = true;
     document.getElementById("newBonneReponseAudio").disabled = true;
     document.getElementById("newMauvaiseReponseAudio").disabled = true;
-
+    $("#ajoutNewReponse").attr('disabled', false);
     projet.setQuestion(nouvQuestion);
     logger.info('Création du QR Code Exercice');
 
@@ -263,6 +266,9 @@ $("#genererQestion").on('click', function () {
 
     //on cache le bouton question
     $("#genererQestion").hide();
+
+    store.set("excerciceEstCree",true);
+
     verifNombreCaractere();
   } else {
     messageInfos("Veuillez renseigner tous les champs", "danger");
@@ -456,12 +462,10 @@ function supprimeInfoBtnQrCode(button, cible) {
 function deleteReponse(button) {
   var k = $('#newNbMinimalBonneReponse').val();
   var id_reponse = $(button).attr('id');
-  console.log(k);
-  console.log(numReponse);
+
   numReponse--;
   if (k > numReponse) {
     $("#preview").attr("disabled", true);
-    console.log("test");
   }
   projet.removeReponse(id_reponse);
   $("div#" + id_reponse).remove();
@@ -470,6 +474,7 @@ function deleteReponse(button) {
   nombre_reponse--;
   console.log(nombre_reponse);
   console.log(projet.getQuestion());
+
   if (nombre_reponse == 0) {
     txtDragAndDrop.setAttribute("id", "txtDragAndDrop");
     txtDragAndDrop.setAttribute("class", "col-sm-7");
@@ -479,18 +484,17 @@ function deleteReponse(button) {
   }
 
   //Permet de gérer la conuité en suppriant la "bonne" reponse du store
-  for (var i = 1; i < numReponse + 1; i++) {
+  for (var i = 1; i <= numReponse + 1; i++) {
     if (store.get('reponseId' + i) == id_reponse) {
       deleteStore('reponse' + i);
       deleteStore('data' + i);
       deleteStore('reponseId' + i);
       deleteStore('reponseColor' + i);
     }
-
-
   }
-  logger.info('Suppression d\'une réponse');
 
+  logger.info('Suppression d\'une réponse');
+  // deleteStore("reponse"+id_reponse);    // delete la reponse du store 
 
 }
 
@@ -503,17 +507,32 @@ function enregistrement() {
   else
     store.set(`numReponse`, numReponse);
 
-  if (store.get(`newQuestionText`))
+  if (store.get(`newQuestionText`)){  
     $("#newQuestionText").val(store.get(`newQuestionText`));
-
-  if (store.get(`newBonneReponseText`))
+    if  (store.get("newQuestionText").substring(store.get("newQuestionText").length - 3, store.get("newQuestionText").length) == "mp3"){
+      document.getElementById("newQuestionText").name = store.get("QuestionUrl");
+      document.getElementById("newQuestionText").disabled = true;
+    }
+  }
+  if (store.get(`newBonneReponseText`)){  
     $("#newBonneReponseText").val(store.get(`newBonneReponseText`));
+    if  (store.get("newBonneReponseText").substring(store.get("newBonneReponseText").length - 3, store.get("newBonneReponseText").length) == "mp3"){
+      document.getElementById("newBonneReponseText").name = store.get("BonneReponseUrl");
+      document.getElementById("newBonneReponseText").disabled = true;
+    }
+  }
 
-  if (store.get('newMauvaiseReponseText'))
-    $("#newMauvaiseReponseText").val(store.get('newMauvaiseReponseText'));
+  if (store.get(`newMauvaiseReponseText`)){  
+    $("#newMauvaiseReponseText").val(store.get(`newMauvaiseReponseText`));
+    if  (store.get("newMauvaiseReponseText").substring(store.get("newMauvaiseReponseText").length - 3, store.get("newMauvaiseReponseText").length) == "mp3"){
+      document.getElementById("newMauvaiseReponseText").name = store.get("MauvaiseReponseUrl");
+      document.getElementById("newMauvaiseReponseText").disabled = true;
+    }
+  }
 
   if (store.get('newNbMinimalBonneReponse'))
     $('#newNbMinimalBonneReponse').val(store.get('newNbMinimalBonneReponse'));
+
 
   //créé une nouvelles question si le nombre de réponse est superieur à 0
   if (numReponse > 0) {
@@ -535,12 +554,27 @@ function enregistrement() {
       var new_rep = new QRCodeUnique(store.get('reponse' + i), store.get('data' + i), store.get('reponseColor' + i)); // creation d'une nouvelle reponse
       new_rep.setId(store.get('reponseId' + i));
       projet.addReponse(new_rep);
-
-      projet.getQuestion().addReponse(new_rep.getId(), new_rep.getData());
       addReponseLine(new_rep);
-
     }
   }
+
+  if (store.get('excerciceEstCree')){
+    document.getElementById("newMauvaiseReponseText").disabled = true;
+    document.getElementById("newQuestionText").disabled = true;
+    document.getElementById("newBonneReponseText").disabled = true;
+    document.getElementById("newNbMinimalBonneReponse").disabled = true;
+    document.getElementById("newQuestionAudio").disabled = true;
+    document.getElementById("newBonneReponseAudio").disabled = true;
+    document.getElementById("newMauvaiseReponseAudio").disabled = true;
+    document.getElementById("ajoutNewReponse").disabled = false;
+    document.getElementById("genererQestion").click();
+  }
+  //ajouter des reponses dans l'objet projet de la question 
+  for (i= 0 ; i <  numReponse + 1 ; ++i){          
+    if (store.get('reponse' + i))
+      projet.getQuestion().addReponse(store.get('reponseId' + i),store.get('data' + i)[0]);
+    }
+
 }
 
 
@@ -743,18 +777,23 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("QuestionUrl",url);
+    store.set("newQuestionText",nom);
   } else if (audioSource == "BonneReponse") {
     let textArea = document.getElementById("newBonneReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("BonneReponseUrl",url);
+    store.set("newBonneReponseText",nom);
   } else if (audioSource == "MauvaiseReponse") {
     let textArea = document.getElementById("newMauvaiseReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
+    store.set("MauvaiseReponseUrl",url);
+    store.set("newMauvaiseReponseText",nom);
   }
-  
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
@@ -838,7 +877,7 @@ function verifNombreCaractere() {
   let total = SetProgressBar();
   $('#messages').empty();
   if (total >= nombreCaratereMAX) {
-    if($("#genererQestion").is(":visible")){
+    if(store.get("excerciceEstCree")){
       messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
     } else {
       messageInfos("La taille maximale est atteinte, il faut supprimer des Questions", "warning");
@@ -873,4 +912,11 @@ function SetProgressBar() {
   $("#progressbarId").text(totalSeted + "%");
   //FIN progress bar gestion
   return total;
+}
+
+
+
+function deleteStore(del){
+  if(store.get(del) )
+    store.delete(del);
 }
