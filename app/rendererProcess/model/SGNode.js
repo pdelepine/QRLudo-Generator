@@ -17,8 +17,8 @@ class SGNode {
 		this.h = h;
 		this.offsetX = 0;
 		this.offsetY = 0;
-		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71]);
-		this.exitDots = [new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
+		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71],false);
+		this.exitDots = [new SGDot(this, this.w / 2, this.h, [231, 10, 2],false)];
 	}
 
 	setName(name) { this.name = name }
