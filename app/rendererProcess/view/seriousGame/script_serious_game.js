@@ -357,6 +357,81 @@ var sketch = function (p) {
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 	}
 
+	$("#generateSG").on('click', function () {
+		qr = new QRCodeSeriousGame (generateJson());
+		facade = new FacadeController();
+		facade.genererQRCode(document.getElementById("qrView"),qr);
+		logger.info("Génération de QR Code de SeriousGame");
+	})
+
+
+/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
+	function generateJson(){
+		date = new Date().getTime(); 
+		let jsonResult="{\"id\":\""+date+"\",\"type\":\"SeriousGame\",";
+		let questionNodes=[];
+		let textNodes=[];
+		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		for (i=0 ; i < p.nodeArray.length ; ++i){
+			if (p.nodeArray[i] instanceof SGTextNode) {
+				textNodes.push(p.nodeArray[i]);
+			} else {
+				questionNodes.push(p.nodeArray[i]);
+			}
+		}
+		// traitement de textNodes
+		let jsonTexts = "\"textNodes\":["
+		for (i=0 ; i < textNodes.length ; ++i){
+			text = "{\"name\":\""+textNodes[i].name+"\",\"text\":\""+textNodes[i].description+"\",\"exitLink\":";
+			found=false;
+			for (z = 0 ; z <p.linkArray.length ; ++z){
+				if (textNodes[i].exitDots[0].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+					found=true;
+					if (p.linkArray[z].node2 instanceof SGQuestionNode) text+="\""+p.linkArray[z].node2.question+"\"";
+					else text+="\""+p.linkArray[z].node2.name+"\"";
+					break;
+				}
+			}
+			if(!found){
+				text+="\"\"";
+			}
+			text+="}";
+			jsonTexts+=text;
+			if (i!=textNodes.length-1)jsonTexts+=",";
+		}
+		jsonTexts+="],";		
+		// traitement de questionNodes
+		let jsonQuestions = "\"questionNode\":["
+		for (i=0 ; i < questionNodes.length ; ++i){
+			q = "{\"name\":\""+questionNodes[i].question+"\",\"reponses\":["
+			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
+				q+="{\"text\":\""+questionNodes[i].answers[j]+"\",\"exitLink\":";
+				found=false;
+				for (z = 0 ; z <p.linkArray.length ; ++z){
+					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+						found=true;
+						if (p.linkArray[z].node2 instanceof SGQuestionNode) q+="\""+p.linkArray[z].node2.question+"\"";
+						else q+="\""+p.linkArray[z].node2.name+"\"";
+						break;
+					}
+				}
+				if(!found){
+					q+="\"\"";
+				}
+				q+="}";
+				if (j!=questionNodes[i].answers.length-1) q+=",";
+			}
+			jsonQuestions+=q;
+			jsonQuestions+="]}";
+			if (i!=questionNodes.length-1)jsonQuestions+=",";
+		}
+		jsonQuestions+="]";
+		jsonResult+=jsonTexts;
+		jsonResult+=jsonQuestions;
+		jsonResult+="}";
+		return JSON.parse(jsonResult);
+	}
+	
 }
 
 if (typeof myP5 === 'undefined') {
@@ -365,3 +440,4 @@ if (typeof myP5 === 'undefined') {
 	myP5.remove();
 	myP5 = new p5(sketch);
 }
+ 
