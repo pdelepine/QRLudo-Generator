@@ -139,7 +139,7 @@ var sketch = function (p) {
 		/** Declaration of button to create TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
 		p.buttonCreateTextNode.position(15, 125);
-		p.buttonCreateTextNode.mousePressed(p.createTextNode);
+		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.highlightButtons(); });
 		p.buttonCreateTextNode.size(40);
 		p.buttonCreateTextNode.attribute('title', 'Créer un texte');
 		p.buttonCreateTextNode.style('font-family', '"Times New Roman", Times, serif');
@@ -149,7 +149,7 @@ var sketch = function (p) {
 		/** Declaration of Button to create Node */
 		p.buttonCreateQuestion = p.createButton('?');
 		p.buttonCreateQuestion.position(15, 165);
-		p.buttonCreateQuestion.mousePressed(p.createQuestionNode);
+		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.highlightButtons(); });
 		p.buttonCreateQuestion.size(40);
 		p.buttonCreateQuestion.attribute('title', 'Créer une question');
 		p.buttonCreateQuestion.parent("seriousGameDiagram");
@@ -160,7 +160,7 @@ var sketch = function (p) {
 		p.buttonCreateLink.position(15, 205);
 		p.buttonCreateLink.size(40);
 		p.buttonCreateLink.attribute('title', 'Créer un lien');
-		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.getCursor()})
+		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.getCursor(); p.highlightButtons(); })
 		p.buttonCreateLink.parent('seriousGameDiagram');
 		/** Icon for create link button */
 		p.iconLink = p.createElement('i');
@@ -175,7 +175,7 @@ var sketch = function (p) {
 		p.buttonEraser.position(15, 245);
 		p.buttonEraser.size(40);
 		p.buttonEraser.attribute('title', 'Supprimer');
-		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.getCursor() });
+		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.getCursor(); p.highlightButtons(); });
 		p.buttonEraser.parent('seriousGameDiagram');
 		/** Icon for eraser button */
 		p.iconEraser = p.createElement('i');
@@ -190,7 +190,7 @@ var sketch = function (p) {
 		p.buttonMouseSelection.position(15, 285);
 		p.buttonMouseSelection.size(40);
 		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
-		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.getCursor() });
+		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.getCursor(); p.highlightButtons(); });
 		p.buttonMouseSelection.parent('seriousGameDiagram');
 		/** Icon for selection button */
 		p.iconMouseSelection = p.createElement('i');
@@ -205,7 +205,7 @@ var sketch = function (p) {
 		p.buttonMouseDisplacement.position(15, 325);
 		p.buttonMouseDisplacement.size(40);
 		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
-		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor() });
+		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.highlightButtons(); });
 		p.buttonMouseDisplacement.parent('seriousGameDiagram');
 		/** Icon for displacement button */
 		p.iconMouseDisplacement = p.createElement('i');
@@ -392,6 +392,7 @@ var sketch = function (p) {
 					}
 					p.getCursor();
 					p.hoveringNode = false;
+					p.highlightButtons();
 				}
 			}
 		}
@@ -424,6 +425,7 @@ var sketch = function (p) {
 							l.type = 'static';
 							p.creatingLink = false;
 							p.getCursor();
+							p.highlightButtons();
 						}
 					});
 				}
@@ -490,6 +492,45 @@ var sketch = function (p) {
 			p.cursor(p.MOVE);
 		} else {
 			p.cursor(p.ARROW);
+		}
+	}
+
+	p.highlightButtons = function () {
+
+		// Eraser button
+		if (p.isErasing) {
+			p.buttonEraser.addClass('bg-success');
+		} else {
+			p.buttonEraser.removeClass('bg-success');
+		}
+
+		// Mouse displacement & mouse selection buttons
+		if (p.isMovingDiagram) {
+			p.buttonMouseSelection.removeClass('bg-success');
+			p.buttonMouseDisplacement.addClass('bg-success');
+		} else {
+			p.buttonMouseSelection.addClass('bg-success');
+			p.buttonMouseDisplacement.removeClass('bg-success');
+		}
+
+		// Create Question & Text node buttons
+		if (p.hoveringNode) {
+			if (p.creatingNodeType === 'questionNode') {
+				p.buttonCreateQuestion.addClass('bg-success');
+				p.buttonCreateTextNode.removeClass('bg-success');
+			} else {
+				p.buttonCreateQuestion.removeClass('bg-success');
+				p.buttonCreateTextNode.addClass('bg-success');
+			}
+		} else {
+			p.buttonCreateQuestion.removeClass('bg-success');
+			p.buttonCreateTextNode.removeClass('bg-success');
+		}
+
+		if(p.creatingLink) {
+			p.buttonCreateLink.addClass('bg-success');
+		} else {
+			p.buttonCreateLink.removeClass('bg-success');
 		}
 	}
 
