@@ -108,7 +108,7 @@ var sketch = function (p) {
 	}
 
 	/* P5Js part */
-	/** Setup of the canvas */
+	/** Initialisation du diagramme */
 	p.setup = function () {
 		p.seriousGameCanvas = p.createCanvas(p.parentDiv.width, p.parentDiv.height);
 		p.seriousGameCanvas.parent("seriousGameDiagram");
@@ -122,47 +122,51 @@ var sketch = function (p) {
 		p.translateY = p.initY;
 
 		/** First & Second Node integration */
+		/*
 		let node1 = new SGTextNode(100, 100, 100, 80);
 		let node2 = new SGQuestionNode(200, 200, 100, 80);
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
+		*/
 		/** Link creation between the to Node */
+		/*
 		let link1 = new SGLink(node1, node1.exitDots[0], node2, node2.entryDot);
 		link1.type = 'static';
 		p.linkArray.push(link1);
+		*/
 
-		/** Declaration of Button to hide the palette */
+		/** Déclaration du bouton de cache de la palette */
 		p.buttonHidePalette = p.createButton('<');
 		p.buttonHidePalette.position(155, 115);
 		p.buttonHidePalette.mousePressed(p.hidePalette);
 		p.buttonHidePalette.parent("seriousGameDiagram");
 
-		/** Declaration of Button to show the palette */
+		/** Déclaration du bouton d'affichage de la palette */
 		p.buttonShowPalette = p.createButton('>');
 		p.buttonShowPalette.position(5, 115);
 		p.buttonShowPalette.mousePressed(p.hidePalette);
 		p.buttonShowPalette.parent("seriousGameDiagram");
 		p.buttonShowPalette.hide();
 
-		/** Declaration of button to create TextNode */
+		/** Déclaration du bouton de création de TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
 		p.buttonCreateTextNode.position(15, 125);
-		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.switchButtonState(p.CursorState.CREATENODE); p.highlightButtons(); });
+		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); p.highlightButtons(); });
 		p.buttonCreateTextNode.size(40);
 		p.buttonCreateTextNode.attribute('title', 'Créer un texte');
 		p.buttonCreateTextNode.style('font-family', '"Times New Roman", Times, serif');
 		p.buttonCreateTextNode.style('font-weight', 'bold');
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
-		/** Declaration of Button to create Node */
+		/** Déclaration du bouton de création de QuestionNode */
 		p.buttonCreateQuestion = p.createButton('?');
 		p.buttonCreateQuestion.position(15, 165);
-		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.highlightButtons(); });
+		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); p.highlightButtons(); });
 		p.buttonCreateQuestion.size(40);
 		p.buttonCreateQuestion.attribute('title', 'Créer une question');
 		p.buttonCreateQuestion.parent("seriousGameDiagram");
 
-		/** Declaration of button to create link */
+		/** Déclaration du bouton de création de lien */
 		p.buttonCreateLink = p.createButton('');
 		p.buttonCreateLink.id('btn-create-link');
 		p.buttonCreateLink.position(15, 205);
@@ -170,14 +174,14 @@ var sketch = function (p) {
 		p.buttonCreateLink.attribute('title', 'Créer un lien');
 		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.switchButtonState(p.CursorState.CREATELINK); p.getCursor(); p.highlightButtons(); })
 		p.buttonCreateLink.parent('seriousGameDiagram');
-		/** Icon for create link button */
+		/** L'icône pour le bouton de création de lien */
 		p.iconLink = p.createElement('i');
 		p.iconLink.class('fa fa-arrow-right');
 		p.iconLink.parent('btn-create-link');
 		p.iconLink.style('color', '#000000');
 		p.iconLink.size(20);
 
-		/** Declaration of eraser button */
+		/** Déclaration du bouton de suppression */
 		p.buttonEraser = p.createButton('');
 		p.buttonEraser.id('btn-eraser');
 		p.buttonEraser.position(15, 245);
@@ -185,14 +189,14 @@ var sketch = function (p) {
 		p.buttonEraser.attribute('title', 'Supprimer');
 		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.switchButtonState(p.CursorState.ERASING); p.getCursor(); p.highlightButtons(); });
 		p.buttonEraser.parent('seriousGameDiagram');
-		/** Icon for eraser button */
+		/** L'icône pour le bouton de suppression */
 		p.iconEraser = p.createElement('i');
 		p.iconEraser.class('fa fa-eraser');
 		p.iconEraser.parent('btn-eraser');
 		p.iconEraser.style('color', '#000000');
 		p.iconEraser.size(20);
 
-		/** Declaration of selection button */
+		/** Déclaration du bouton de sélection */
 		p.buttonMouseSelection = p.createButton('');
 		p.buttonMouseSelection.id('btn-mouse-selection');
 		p.buttonMouseSelection.position(15, 285);
@@ -200,14 +204,14 @@ var sketch = function (p) {
 		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
 		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.switchButtonState(p.CursorState.SELECTION); p.getCursor(); p.highlightButtons(); });
 		p.buttonMouseSelection.parent('seriousGameDiagram');
-		/** Icon for selection button */
+		/** L'icône pour le bouton de sélection */
 		p.iconMouseSelection = p.createElement('i');
 		p.iconMouseSelection.class('fa fa-mouse-pointer');
 		p.iconMouseSelection.parent('btn-mouse-selection');
 		p.iconMouseSelection.style('color', '#000000');
 		p.iconMouseSelection.size(20);
 
-		/** Declaration of displacement button */
+		/** Déclaration du bouton de déplacement */
 		p.buttonMouseDisplacement = p.createButton('');
 		p.buttonMouseDisplacement.id('btn-mouse-displacement');
 		p.buttonMouseDisplacement.position(15, 325);
@@ -215,41 +219,56 @@ var sketch = function (p) {
 		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
 		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.switchButtonState(p.CursorState.DISPLACEMENT); p.highlightButtons(); });
 		p.buttonMouseDisplacement.parent('seriousGameDiagram');
-		/** Icon for displacement button */
+		/** L'icône pour le bouton de déplacement */
 		p.iconMouseDisplacement = p.createElement('i');
 		p.iconMouseDisplacement.class('fa fa-arrows-alt');
 		p.iconMouseDisplacement.parent('btn-mouse-displacement');
 		p.iconMouseDisplacement.style('color', '#000000');
 		p.iconMouseDisplacement.size(20);
 
-		/** Declaration of slider Zoom */
+		/** Déclaration du slider du zoom*/
 		p.sliderZoom = p.createSlider(1, 200, (p.zoom) * 100);
 		p.sliderZoom.parent("seriousGameDiagram");
 	}
 
-	/** Event loop */
+	/** La boucle de dessin */
 	p.draw = function () {
+		// On dessine la couleur du fond
 		p.background("#e1f1ff");
 		/*console.log(`Mouse x ${mouseX} y ${mouseY}`);
 		console.log(`Zoom ${p.zoom}`);*/
 
 		p.push();
+		// Déplacement du diagramme lorsque que l'état est activé
 		if (p.isMovingDiagram) p.moveDiagram();
 		//console.log(`translate x ${p.translateX} y ${p.translateY}`);
 		p.translate(p.translateX, p.translateY);
-		p.scale(p.zoom);
-		p.nodeArray.forEach(n => n.update());
-		p.nodeArray.forEach(n => n.display());
-		p.linkArray.forEach(l => l.display());
-		p.nodeArray.forEach(n => n.displayDot());
 
+		// On gère le zoom du diagramme
+		p.scale(p.zoom);
+
+		// On update la position des nodes
+		p.nodeArray.forEach(n => n.update());
+
+		// On affiche les nodes
+		p.nodeArray.forEach(n => n.display());
+
+		// On affiche les liens
+		p.linkArray.forEach(l => l.display());
+
+		// On affiche les dot des nodes
+		p.nodeArray.forEach(n => n.displayDot());
 		p.pop();
+
+		// On dessine l'encadré lors de la création de node
 		p.displayCreateNode();
+
+		// On dessine le rectangle de la palette
 		if (p.palette) {
 			p.drawPalette();
 		}
 
-		// Drawing the canvas borders
+		// On dessine les bordures du diagram
 		p.push();
 		p.noFill();
 		p.strokeWeight(4);
@@ -257,18 +276,18 @@ var sketch = function (p) {
 		p.pop();
 
 
-		p.sliderZoom.position((p.width) - 170, (p.height) + 90); //positionnemnt du slider en bas à droite 
+		p.sliderZoom.position((p.width) - 170, (p.height) + 90); 			//positionnemnt du slider en bas à droite 
 		p.sliderZoom.input(() => {
-			p.sliderNotPressed = false; //met à faux quand on utilise le slider
-			p.zoom = (p.sliderZoom.value() / 100); //change la valeur de p.zoom en fonction de la valeur du slider
+			p.sliderNotPressed = false; 									//met à faux quand on utilise le slider
+			p.zoom = (p.sliderZoom.value() / 100); 							//change la valeur de p.zoom en fonction de la valeur du slider
 			console.log(`Zoom ${p.zoom}`);
 		});
-		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); //remet à vrai quand on arrête d'utiliser le slider
-		p.sliderZoom.value((p.zoom) * 100); //change la valeur du slider si on zoome ou dézoome avec la molette de la souris
+		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
+		p.sliderZoom.value((p.zoom) * 100); 								//change la valeur du slider si on zoome ou dézoome avec la molette de la souris
 		p.push();
 		p.fill(28, 62, 180);
 		p.textAlign(p.RIGHT);
-		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8); //affiche le pourcentage de zoom auquel on est actuellement
+		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8); 	//affiche le pourcentage de zoom auquel on est actuellement
 		p.pop();
 	}
 
@@ -284,7 +303,7 @@ var sketch = function (p) {
 		p.pop();
 	}
 
-	/** Fonction qui permet de créer un noeud */
+	/** Fonction qui déclenche la création de QuestionNode */
 	p.createQuestionNode = function () {
 		p.hoveringNode = true;
 		p.creatingNodeType = 'questionNode';
@@ -295,6 +314,7 @@ var sketch = function (p) {
 		p.nodeArray.push(newNode);*/
 	}
 
+	/** Fonction qui déclenche la création de TextNode */
 	p.createTextNode = function () {
 		p.hoveringNode = true;
 		p.creatingNodeType = 'textNode';
@@ -305,13 +325,11 @@ var sketch = function (p) {
 		p.nodeArray.push(newNode);*/
 	}
 
-	/** Fonction qui dessine le curseur pour la création des noeuds */
+	/** Fonction qui dessine l'encadré pour la création des noeuds */
 	p.displayCreateNode = function () {
 		if (p.hoveringNode) {
 			p.push();
-			p.noFill();
 			p.strokeWeight(1);
-			p.cursor(p.CROSS);
 			p.fill(255);
 			p.rect(p.mouseX + 10, p.mouseY - 10, 170, 20, 10);
 			p.fill(0);
@@ -344,7 +362,7 @@ var sketch = function (p) {
 			p.diagramOffsetY = p.mouseY;
 
 			if (p.isErasing) {
-				/** If pressed a link, delete this link */
+				/** Le premier lien survolé est supprimé */
 				for (let i = 0; i < p.linkArray.length; i++) {
 					if (p.linkArray[i].isMouseHover()) {
 						p.linkArray.splice(i, 1);
@@ -352,7 +370,7 @@ var sketch = function (p) {
 					}
 				}
 
-				/** If a node if hovered by the mouse, delete him and all the link attach to him  */
+				/** Le premier node survolé par la souris est supprimé ainsi que tous liens attachés à lui */
 				for (let i = 0; i < p.nodeArray.length; i++) {
 					if (p.nodeArray[i].isMouseHover()) {
 						p.linkArray = p.linkArray.filter(function (l) {
@@ -363,8 +381,9 @@ var sketch = function (p) {
 					}
 				}
 			} else {
-				/** Search first node of the array which hovered by the mouse and push it to last position to become the last drawn and be dragged
-				 * Will also trigger the dragging of the node
+				/** Recherche le premier node survolé par la souris et la pousse à la fin de la liste nodeArray
+				 * pour qu'il soit dessiné en dernier
+				 * Active aussi l'effet de drag sur le node
 				*/
 				for (let n of p.nodeArray) {
 					if (n.pressed()) {
@@ -375,8 +394,8 @@ var sketch = function (p) {
 				}
 			}
 
-			/** Create Link from node with Mouse Hovering 
-			 * The link will follow the mouse until the button is released on an
+			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
+			 * Ce lien sera attaché à la souris jusqu'à ce qu'on relâche le clic droit sur un entryDot où annule la création de lien
 			 */
 			if (p.creatingLink) {
 				p.nodeArray.forEach(n => n.createLink(function (link) {
@@ -388,10 +407,11 @@ var sketch = function (p) {
 					}
 				}));
 			} else {
+				// Annule la création des liens dynamiques
 				p.linkArray = p.linkArray.filter(l => (l.type !== 'dynamic'));
 			}
 
-			/** Create Node if mouse not hovering something and hoveringNode = true and not on the palette */
+			/** Crée un node si la souris ne survole rien (node, link or palette) et que le booléen de création de node `hoveringNode`= true */
 			if (p.hoveringNode && p.mouseX > p.paletteWidth) {
 				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
@@ -415,8 +435,8 @@ var sketch = function (p) {
 			}
 		}
 		if (p.mouseButton === p.RIGHT) {
-			/** Create Link from node with Mouse Hovering 
-			 * The link will follow the mouse until the button is released on an
+			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
+			 * Ce lien sera attaché à la souris jusqu'à ce qu'on relâche le clic droit sur un entryDot où annule la création de lien
 			 */
 			if (!p.creatingLink) {
 				p.nodeArray.forEach(n => n.createLink(function (link) {
@@ -433,11 +453,11 @@ var sketch = function (p) {
 
 	/** Fonction appelée lors d'un relachement d'un bouton de la souris */
 	p.mouseReleased = function () {
-		/** Release the drag effect on nodes */
+		/** Enlève l'effet de traîne sur les nodes */
 		p.nodeArray.forEach(n => n.released());
 
 		if (p.mouseButton === p.RIGHT || (p.mouseButton === p.LEFT && p.creatingLink)) {
-			/** Stop the dynamic link if the mouse is hovering a node */
+			/** Arrête les liens dynamiques si la souris survole un node lors d'un clic gauche|droit */
 			p.linkArray.forEach(function (l) {
 				if (l.type === 'dynamic') {
 					p.nodeArray.forEach(function (n) {
@@ -468,7 +488,7 @@ var sketch = function (p) {
 		/** Appuie sur la touche "Suppr" */
 		if (p.keyCode === p.DELETE) {
 
-			/** If a node if hovered by the mouse, delete him and all the link attach to him  */
+			/** Si un node est survolé par la souris, on le supprime ainsi que tous les liens auxquels il est relié */
 			for (let i = 0; i < p.nodeArray.length; i++) {
 				if (p.nodeArray[i].isMouseHover()) {
 					p.linkArray = p.linkArray.filter(function (l) {
@@ -499,17 +519,21 @@ var sketch = function (p) {
 		}
 	}
 
+	/** Fonction qui redimensionne le diagramme selon la taille de la fenêtre */
 	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 	}
 
+	/** Transforme le curseur selon l'état activé */
 	p.getCursor = function () {
 		if (p.isErasing) {
 			p.cursor("not-allowed");
 		} else if (p.creatingLink) {
 			p.cursor('e-resize');
+		} else if (p.hoveringNode) {
+			p.cursor(p.CROSS);
 		} else if (p.isMovingDiagram) {
 			p.cursor(p.MOVE);
 		} else {
@@ -517,17 +541,17 @@ var sketch = function (p) {
 		}
 	}
 
-	/** Change the color of the buttons according to their state  */
+	/** Change la couleur des boutons selon leur état associé  */
 	p.highlightButtons = function () {
 
-		// Eraser button
+		// Bouton pour effacer
 		if (p.isErasing) {
 			p.buttonEraser.addClass('bg-success');
 		} else {
 			p.buttonEraser.removeClass('bg-success');
 		}
 
-		// Mouse displacement & mouse selection buttons
+		// Boutons pour la sélection ou déplacement avec la souris
 		if (p.isMovingDiagram) {
 			p.buttonMouseSelection.removeClass('bg-success');
 			p.buttonMouseDisplacement.addClass('bg-success');
@@ -536,7 +560,7 @@ var sketch = function (p) {
 			p.buttonMouseDisplacement.removeClass('bg-success');
 		}
 
-		// Create Question & Text node buttons
+		// Boutons pour créer les questions et les textes
 		if (p.hoveringNode) {
 			if (p.creatingNodeType === 'questionNode') {
 				p.buttonCreateQuestion.addClass('bg-success');
@@ -550,6 +574,7 @@ var sketch = function (p) {
 			p.buttonCreateTextNode.removeClass('bg-success');
 		}
 
+		// Bouton pour créer les liens
 		if (p.creatingLink) {
 			p.buttonCreateLink.addClass('bg-success');
 		} else {
@@ -558,8 +583,8 @@ var sketch = function (p) {
 	}
 
 	/**
-	 * Activate / Desactivate the different action of the button
-	 * @param {p.CursorState} state that will be activate, all the other will be desactivate
+	 * Activer / désactiver les actions de la souris différentes de celle du state
+	 * @param {p.CursorState} state qui est activé, tous les autres seront désactivés
 	 */
 	p.switchButtonState = function (state) {
 		switch (state) {
