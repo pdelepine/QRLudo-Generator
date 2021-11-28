@@ -242,6 +242,12 @@ var sketch = function (p) {
 
 		/** Déclaration du slider du zoom*/
 		p.sliderZoom = p.createSlider(1, 200, (p.zoom) * 100);
+		p.sliderZoom.input(() => {
+			p.sliderNotPressed = false; 									//met à faux quand on utilise le slider
+			p.zoom = (p.sliderZoom.value() / 100); 							//change la valeur de p.zoom en fonction de la valeur du slider
+			console.log(`Zoom ${p.zoom}`);
+		});
+		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
 		p.sliderZoom.parent("seriousGameDiagram");
 
 		p.highlightButtons();
@@ -291,19 +297,16 @@ var sketch = function (p) {
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
 
+		// Positionnemnt du slider en bas à droite
+		p.sliderZoom.position((p.width) - 170, (p.height) + 90);
+		// Change la valeur du slider si on zoome ou dézoome avec la molette de la souris
+		p.sliderZoom.value((p.zoom) * 100);
 
-		p.sliderZoom.position((p.width) - 170, (p.height) + 90); 			//positionnemnt du slider en bas à droite 
-		p.sliderZoom.input(() => {
-			p.sliderNotPressed = false; 									//met à faux quand on utilise le slider
-			p.zoom = (p.sliderZoom.value() / 100); 							//change la valeur de p.zoom en fonction de la valeur du slider
-			console.log(`Zoom ${p.zoom}`);
-		});
-		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
-		p.sliderZoom.value((p.zoom) * 100); 								//change la valeur du slider si on zoome ou dézoome avec la molette de la souris
 		p.push();
 		p.fill(28, 62, 180);
 		p.textAlign(p.RIGHT);
-		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8); 	//affiche le pourcentage de zoom auquel on est actuellement
+		// Affiche le pourcentage de zoom auquel on est actuellement
+		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8);
 		p.pop();
 	}
 
@@ -323,22 +326,12 @@ var sketch = function (p) {
 	p.createQuestionNode = function () {
 		p.hoveringNode = true;
 		p.creatingNodeType = 'questionNode';
-		/*
-		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
-		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
-		let newNode = new SGNode(x1, x2, 100, 80);
-		p.nodeArray.push(newNode);*/
 	}
 
 	/** Fonction qui déclenche la création de TextNode */
 	p.createTextNode = function () {
 		p.hoveringNode = true;
 		p.creatingNodeType = 'textNode';
-		/*
-		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
-		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
-		let newNode = new SGNode(x1, x2, 100, 80);
-		p.nodeArray.push(newNode);*/
 	}
 
 	/** Fonction qui dessine l'encadré pour la création des noeuds */
