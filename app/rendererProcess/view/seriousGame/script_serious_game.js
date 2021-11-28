@@ -12,8 +12,9 @@ var sketch = function (p) {
 	/** Liste des liens du diagramme */
 	p.linkArray = [];
 
-	/** Variable pour savoir si la palette est afficher ou chacher */
+	/** Variable pour savoir si la palette est affichée ou cachée */
 	p.palette = true;
+	/** Variable sur la taille de la palette */
 	p.paletteWidth = 70;
 
 	/** Le bouton pour cacher la palette */
@@ -64,14 +65,19 @@ var sketch = function (p) {
 	/** Paramètre du translate y initial du canvas */
 	p.initY = 0;
 
-	/** Paramètre du canvas */
+	/** Paramètre du canvas, la zone qui contient tout le diagramme */
 	p.seriousGameCanvas;
 
 	/** État pour la création de noeud suivant la souris */
 	p.hoveringNode = false;
 
+	/** Type de node qui va être crée :
+	 * QuestionNode = questionNode
+	 * TextNode = textNode
+	 */
 	p.creatingNodeType = null;
 
+	/** Booléen de contrôle pour la création des liens */
 	p.creatingLink = false;
 
 	/** Etat pour le passage au dessus du Canvas */
@@ -84,10 +90,16 @@ var sketch = function (p) {
 	p.lastClickX = 0;
 	p.lastClickY = 0;
 
+	/** Booléen de contrôle de l'action de la souris
+	 * true = déplacement du diagramme
+	 * false = sélection
+	 */
 	p.isMovingDiagram = false;
 
+	/** Booléen de contrôle de l'action de suppression */
 	p.isErasing = false;
 
+	/** Un enum sur les différents états du curseur */
 	p.CursorState = Object.freeze({
 		SELECTION: Symbol("selection"),
 		DISPLACEMENT: Symbol("displacement"),
@@ -96,12 +108,14 @@ var sketch = function (p) {
 		ERASING: Symbol("erasing")
 	});
 
+	/** Mutateur des coordonnées du dernier click */
 	p.setLastClick = function (x, y) {
 		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
 		p.lastClickY = y;
 	}
 
+	/** Mutateur du booléen de contrôle pour savoir si la zone de description d'un node a été effacée */
 	p.setPreviousNodeErased = function (boolean) {
 		/** Modifie l'état du booléen previousNodeErased */
 		p.previousNodeErased = boolean;
@@ -229,6 +243,8 @@ var sketch = function (p) {
 		/** Déclaration du slider du zoom*/
 		p.sliderZoom = p.createSlider(1, 200, (p.zoom) * 100);
 		p.sliderZoom.parent("seriousGameDiagram");
+
+		p.highlightButtons();
 	}
 
 	/** La boucle de dessin */
