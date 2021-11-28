@@ -1,3 +1,4 @@
+
 var sketch = function (p) {
 	/** Déclaration de variables du dessin */
 	/** Récupération du div parent du dessin / canvas */
@@ -358,19 +359,22 @@ var sketch = function (p) {
 	}
 
 	$("#generateSG").on('click', function () {
-		qr = new QRCodeSeriousGame (generateJson());
+		qr = generateJson();
 		facade = new FacadeController();
-		facade.genererQRCode(document.getElementById("qrView"),qr);
-		logger.info("Génération de QR Code de SeriousGame");
+		if(showError()) {
+			facade.genererQRCode(document.getElementById("qrView"),qr);
+			logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+		}
 	})
 
 
-/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
+	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
 	function generateJson(){
-		date = new Date().getTime(); 
-		let jsonResult="{\"id\":\""+date+"\",\"type\":\"SeriousGame\",";
-		let questionNodes=[];
-		let textNodes=[];
+		let questionNodes = [];
+		let textNodes = [];
+		let textNodesJson = [];
+		let questionNodesJson = [];
+
 		//mettre les questionNodes dans un array et les textNodes dans un autre 
 		for (i=0 ; i < p.nodeArray.length ; ++i){
 			if (p.nodeArray[i] instanceof SGTextNode) {
@@ -379,57 +383,180 @@ var sketch = function (p) {
 				questionNodes.push(p.nodeArray[i]);
 			}
 		}
+
 		// traitement de textNodes
-		let jsonTexts = "\"textNodes\":["
 		for (i=0 ; i < textNodes.length ; ++i){
-			text = "{\"name\":\""+textNodes[i].name+"\",\"text\":\""+textNodes[i].description+"\",\"exitLink\":";
-			found=false;
+			let name = textNodes[i].name;
+			let text = textNodes[i].description;
+			let exitLink = "";
 			for (z = 0 ; z <p.linkArray.length ; ++z){
-				if (textNodes[i].exitDots[0].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
-					found=true;
-					if (p.linkArray[z].node2 instanceof SGQuestionNode) text+="\""+p.linkArray[z].node2.question+"\"";
-					else text+="\""+p.linkArray[z].node2.name+"\"";
+				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+					exitLink = p.linkArray[z].node2.name;
 					break;
 				}
 			}
-			if(!found){
-				text+="\"\"";
-			}
-			text+="}";
-			jsonTexts+=text;
-			if (i!=textNodes.length-1)jsonTexts+=",";
+			let textNode = new TextNode(name, text, exitLink);
+			textNodesJson.push(textNode);
 		}
-		jsonTexts+="],";		
+
 		// traitement de questionNodes
-		let jsonQuestions = "\"questionNode\":["
 		for (i=0 ; i < questionNodes.length ; ++i){
-			q = "{\"name\":\""+questionNodes[i].question+"\",\"reponses\":["
+			let name = questionNodes[i].name;
+			let reponses = [];
+
 			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
-				q+="{\"text\":\""+questionNodes[i].answers[j]+"\",\"exitLink\":";
-				found=false;
+				let text = questionNodes[i].answers[j];
+				let exitLink = "";
 				for (z = 0 ; z <p.linkArray.length ; ++z){
 					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
-						found=true;
-						if (p.linkArray[z].node2 instanceof SGQuestionNode) q+="\""+p.linkArray[z].node2.question+"\"";
-						else q+="\""+p.linkArray[z].node2.name+"\"";
+						exitLink = p.linkArray[z].node2.name;
 						break;
 					}
 				}
-				if(!found){
-					q+="\"\"";
+				let reponse = {
+					text: text,
+					exitLink: exitLink
 				}
-				q+="}";
-				if (j!=questionNodes[i].answers.length-1) q+=",";
+				reponses.push(reponse);
 			}
-			jsonQuestions+=q;
-			jsonQuestions+="]}";
-			if (i!=questionNodes.length-1)jsonQuestions+=",";
+			
+			let questionNode = new QuestionNode(name, reponses);
+			questionNodesJson.push(questionNode);
 		}
-		jsonQuestions+="]";
-		jsonResult+=jsonTexts;
-		jsonResult+=jsonQuestions;
-		jsonResult+="}";
-		return JSON.parse(jsonResult);
+		
+		projet = new ProjetSeriousGame(textNodesJson, questionNodesJson);
+		return projet;
+	}
+
+	/** Fonction pour vérifier que l'histoire est correcte */
+	function showError(){
+		let textNodes = [];
+		let questionNodes = [];
+
+		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		for (i=0 ; i < p.nodeArray.length ; ++i){
+			if (p.nodeArray[i] instanceof SGTextNode) {
+				textNodes.push(p.nodeArray[i]);
+			} else {
+				questionNodes.push(p.nodeArray[i]);
+			}
+		}
+
+		let nbStartNode = 0; // Nombre de noeud d'introduction
+
+		// On regarde s'il y a un noeud texte qui est un noeud de départ
+		for(i = 0; i < textNodes.length; ++i){
+			entryDot = textNodes[i].entryDot;
+			let x = entryDot.getPositionX();
+			let y = entryDot.getPositionY();
+			let found = false;
+
+			console.log("textNode X: " + x + " textNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node2Dot.getPositionX();
+				let linkY = p.linkArray[j].node2Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbStartNode;
+		}
+
+		// On regarde s'il y a un noeud question qui est un noeud de départ
+		for(i = 0; i < questionNodes.length; ++i){
+			entryDot = questionNodes[i].entryDot;
+			let x = entryDot.getPositionX();
+			let y = entryDot.getPositionY();
+			let found = false;
+
+			console.log("questionNode X: " + x + " questionNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node2Dot.getPositionX();
+				let linkY = p.linkArray[j].node2Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbStartNode;
+		}
+
+		// Il ne peut y avoir qu'un seul noeud de départ
+		if(nbStartNode > 1){
+			messageInfos("Attention plusieurs noeuds de départ sont présents", "danger");
+			logger.error("Attention plusieurs noeuds de départ sont présents");
+			return false;
+		}
+
+		let nbEndNode = 0; // Nombre de noeud d'introduction
+
+		// On regarde s'il y a un noeud texte qui est un noeud de fin
+		for(i = 0; i < textNodes.length; ++i){
+			exitDot = textNodes[i].exitDots[0];
+			let x = exitDot.getPositionX();
+			let y = exitDot.getPositionY();
+			let found = false;
+
+			console.log("textNode X: " + x + " textNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node1Dot.getPositionX();
+				let linkY = p.linkArray[j].node1Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbEndNode;
+		}
+
+		// On regarde s'il y a un noeud question qui est un noeud de fin
+		for(i = 0; i < questionNodes.length; ++i){
+			exitDot = questionNodes[i].exitDots[0];
+			let x = exitDot.getPositionX();
+			let y = exitDot.getPositionY();
+			let found = false;
+
+			console.log("questionNode X: " + x + " questionNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node1Dot.getPositionX();
+				let linkY = p.linkArray[j].node1Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbEndNode;
+		}
+
+		// Il ne peut y avoir qu'un seul noeud de fin
+		if(nbEndNode > 1){
+			messageInfos("Attention plusieurs noeuds de fin sont présents", "danger");
+			logger.error("Attention plusieurs noeuds de fin sont présents");
+			return false;
+		}
+		
+		return true;
 	}
 	
 }
