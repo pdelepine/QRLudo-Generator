@@ -38,8 +38,8 @@ console.log('Root : ' + root);
 
 function getNormalizePath(pathToNormalize) {
   if(process.platform === 'win32') {
-    logger.info('Transformation du chemin en : ' + path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\"));
-    return path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\");
+    logger.info('Transformation du chemin en : ' + encodeURIComponent(path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\")));
+    return encodeURIComponent(path.resolve(pathToNormalize).replaceAll(/\\/g, "\\\\"));
   } else {
     return pathToNormalize;
   }
