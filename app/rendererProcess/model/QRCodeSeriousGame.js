@@ -81,7 +81,7 @@
       * @param {} exitLink = Contient le nom du noeud suivant
       */
 
-     constructor(name = "No_Name", text = "", exitLink = ""){
+     constructor(name = "No_Name", text = {}, exitLink = ""){
          this.name = name;
          this.text = text;
          this.exitLink = exitLink;
@@ -117,11 +117,11 @@
   */
  class QuestionNode {
      /**
-      * @param name = "No_Name"
+      * @param {} name = "No_Name"
       * @param {} reponses = Contient la liste des réponses à la question
       */
 
-     constructor(name = "No_Name", reponses = []){
+     constructor(name = {}, reponses = []){
          this.name = name;
          this.reponses = reponses;
      }

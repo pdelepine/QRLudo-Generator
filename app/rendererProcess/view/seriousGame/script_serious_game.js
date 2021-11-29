@@ -395,13 +395,25 @@ var sketch = function (p) {
 					break;
 				}
 			}
-			let textNode = new TextNode(name, text, exitLink);
+			let textObject;
+			if(text.substring(text - 3, text.length) == "mp3")
+				textObject = {
+					type: "music",
+					url: ""
+				}
+			else {
+				textObject = {
+					type: "text",
+					text: text
+				}
+			}
+			let textNode = new TextNode(name, textObject, exitLink);
 			textNodesJson.push(textNode);
 		}
 
 		// traitement de questionNodes
 		for (i=0 ; i < questionNodes.length ; ++i){
-			let name = questionNodes[i].name;
+			let name = questionNodes[i].question;
 			let reponses = [];
 
 			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
@@ -419,8 +431,21 @@ var sketch = function (p) {
 				}
 				reponses.push(reponse);
 			}
+
+			let nameObject;
+			if(name.substring(name - 3, name.length) == "mp3")
+				nameObject = {
+					type: "music",
+					url: ""
+				}
+			else {
+				nameObject = {
+					type: "text",
+					text: name
+				}
+			}
 			
-			let questionNode = new QuestionNode(name, reponses);
+			let questionNode = new QuestionNode(nameObject, reponses);
 			questionNodesJson.push(questionNode);
 		}
 		
