@@ -391,7 +391,11 @@ var sketch = function (p) {
 			let exitLink = "";
 			for (z = 0 ; z <p.linkArray.length ; ++z){
 				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
-					exitLink = p.linkArray[z].node2.name;
+					next_node = p.linkArray[z].node2;
+					if(next_node instanceof SGQuestionNode)
+						exitLink = p.linkArray[z].node2.question;
+					else
+						exitLink = p.linkArray[z].node2.name;
 					break;
 				}
 			}
@@ -421,6 +425,10 @@ var sketch = function (p) {
 				let exitLink = "";
 				for (z = 0 ; z <p.linkArray.length ; ++z){
 					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+						next_node = p.linkArray[z].node2;
+					if(next_node instanceof SGQuestionNode)
+						exitLink = p.linkArray[z].node2.question;
+					else
 						exitLink = p.linkArray[z].node2.name;
 						break;
 					}
@@ -518,7 +526,12 @@ var sketch = function (p) {
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de départ
-		if(nbStartNode > 1){
+		if(nbStartNode == 0){
+			messageInfos("Attention aucun noeud de départ n'est présent", "danger");
+			logger.error("Attention aucun noeud de départ n'est présents");
+			return false;
+		}
+		else if(nbStartNode > 1){
 			messageInfos("Attention plusieurs noeuds de départ sont présents", "danger");
 			logger.error("Attention plusieurs noeuds de départ sont présents");
 			return false;
@@ -575,7 +588,12 @@ var sketch = function (p) {
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de fin
-		if(nbEndNode > 1){
+		if(nbEndNode == 0){
+			messageInfos("Attention aucun noeud de fin n'est présent", "danger");
+			logger.error("Attention aucun noeud de fin n'est présent");
+			return false;
+		}
+		else if(nbEndNode > 1){
 			messageInfos("Attention plusieurs noeuds de fin sont présents", "danger");
 			logger.error("Attention plusieurs noeuds de fin sont présents");
 			return false;
