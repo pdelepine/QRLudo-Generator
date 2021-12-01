@@ -89,7 +89,7 @@ class SGQuestionNode extends SGNode {
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
 			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
-			btn_delete_answer.parent('displayQuestionZone')
+			btn_delete_answer.parent('displayQuestionZone');
 
 		}
 
@@ -147,6 +147,8 @@ class SGQuestionNode extends SGNode {
 			self.displayQuestionZone();
 			for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (self.answers.length + 1));
+				// on actualise l'id des exitDots
+				self.exitDots[id_answer].setIdAnswer(id_answer);
 			}
 			self.displayDot();
 		} else {
