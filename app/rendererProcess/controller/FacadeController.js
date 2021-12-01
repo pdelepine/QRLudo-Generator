@@ -22,7 +22,11 @@ class FacadeController {
   constructor() {
   }
 
-  /** Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre */
+  /**
+   * Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre
+   * @param {*} divImg 
+   * @param {Object} qrcode, Objet contenant un attribut (Object) `qrcode` qui sera tranformé en JSon pour la génération
+   */
   genererQRCode(divImg, qrcode) {
     try {
       while (divImg.hasChildNodes()) {
@@ -99,7 +103,7 @@ class FacadeController {
       image.src = exifModified;
       $(divImg).prepend(image);
 
-      logger.info("FacadeController.genererQRCode | Génération du QR code résussi");
+      logger.info('FacadeController.genererQRCode | Génération du QR code résussi');
       $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');
@@ -114,47 +118,29 @@ class FacadeController {
     }
   }
 
-  /** Fonction appelée pour importer un qrcode json */
-  importQRCodeJson(file, callback) {
-    QRCodeLoaderJson.loadImage(file, callback);
+  /**
+   * Fonction appelée pour transformer le string de données du QR code en l'une des classes QR code disponibles
+   * @param {String} qrcodeDataString
+   * @param {Function} callback
+   */
+  importQRCodeJson(qrcodeDataString, callback) {
+    QRCodeLoaderJson.loadImage(qrcodeDataString, callback);
   }
 
-  /** Fonction appelée pour importer un qrcode */
-  importQRCode(file, callback) {
-    // QRCodeLoader.loadImage(file, function(qrcode, drawQRCode) {
-    //   console.log(qrcode);
-    //   callback(qrcode); // faire le view du qrcode
-    // });
-
-    // QRCodeLoader.loadImage(file, callback);
-
-    var buffer = fs.readFileSync(file);
-
-    Jimp.read(buffer, function (err, image) {
-
-      if (err) {
-        console.error(err);
-        logger.error('Impossible de lire l\'Image de QR Code');
-      }
-
-      const code = jsQR(image.bitmap.data, image.bitmap.width, image.bitmap.height);
-
-      if (code) {
-        // console.log("Found QR code", code);
-        QRCodeLoaderJson.loadImage(code.data, callback);
-      } else {
-        logger.error('Impossible de Décoder le QR Code');
-      }
-
-    });
-
+  /**
+   * Fonction appelée pour importer le fichier JPEG contenant le QR code.
+   * Les métadonnées du fichier sont lues et transformées en un modèle de QR code correspondant
+   * @param {String} blobFile le blob du fichier a tranformer
+   * @param {Function} callback la fonction appelée après importation du fichier
+   */
+  importQRCode(blobFile, callback) {
+    QRCodeLoaderJson.loadImage(blobFile, callback);
   }
 
   /** Renvoie la taille réelle du qrcode après compression */
   getTailleReelleQRCode(qrcode) {
     return this.compresseurXml.compresser(qrcode.getDonneesUtilisateur()).length;
   }
-
 }
 
 module.exports = {

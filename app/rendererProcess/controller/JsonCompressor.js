@@ -16,7 +16,7 @@ class JsonCompressor {
 
 
     let gzipped = zlib.gzipSync(qrcode);
-    console.log("zipped data --- : "+gzipped.toString('base64'));
+    console.log("zipped data --- : " + gzipped.toString('base64'));
     arg.push(gzipped);
     callback(arg);
 
@@ -33,9 +33,8 @@ class JsonCompressor {
 
   /** Decompressed Data into a String */
   static decompress(zippedData, callback) {
-    const zlib = require('zlib');
 
-    zlib.gunzip(zippedData, function(err, unZippedData) {
+    zlib.gunzip(zippedData, function (err, unZippedData) {
       if (err)
         console.log("error in gzip compression using zlib module", err);
 

@@ -54,14 +54,14 @@ const { exec } = require('child_process');
 switch (process.platform) {
   case 'linux':
     var temp = path.join(process.env.HOME, 'temp/QRLudo');
-    logger.info(`Création d'un dossier temporaire : ${ temp } et ses sous-dossiers Download et tts`);
+    logger.info(`Création d'un dossier temporaire : ${temp} et ses sous-dossiers Download et tts`);
     fs.access(temp, fs.constants.F_OK, (err) => {
       if (err) {
         var { ipcRenderer } = require('electron');
 
         exec(`mkdir -p ${temp}/Download`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }/Download`);
+            logger.error(`Problème de création du dossier : ${temp}/Download`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
@@ -70,7 +70,7 @@ switch (process.platform) {
 
         exec(`mkdir -p ${temp}/tts`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }/tts`);
+            logger.error(`Problème de création du dossier : ${temp}/tts`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
@@ -82,14 +82,14 @@ switch (process.platform) {
 
   case 'win32':
     var temp = path.join(process.env.temp, 'QRLudo');
-    logger.info(`Création d'un dossier temporaire : ${ temp } et ses sous-dossiers Download et tts`);
+    logger.info(`Création d'un dossier temporaire : ${temp} et ses sous-dossiers Download et tts`);
     fs.access(temp, fs.constants.F_OK, (err) => {
       if (err) {
         var { ipcRenderer } = require('electron');
 
         exec(`mkdir ${temp}\\Download`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }\\Download`);
+            logger.error(`Problème de création du dossier : ${temp}\\Download`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
@@ -98,7 +98,7 @@ switch (process.platform) {
 
         exec(`mkdir ${temp}\\tts`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }\\tts`);
+            logger.error(`Problème de création du dossier : ${temp}\\tts`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
