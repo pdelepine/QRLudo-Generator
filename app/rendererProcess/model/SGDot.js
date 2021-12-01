@@ -43,7 +43,6 @@ class SGDot {
 					myP5.text("pas de réponse", this.nodeToAttach.x + this.x + 7, this.nodeToAttach.y + this.y - 21);
 				}
 				else {
-					console.log(myP5.textWidth(this.nodeToAttach.answers[this.id_answer]));
 					myP5.rect(this.nodeToAttach.x + this.x,this.nodeToAttach.y + this.y - 40, myP5.textWidth(this.nodeToAttach.answers[this.id_answer]) + 12, 30, 10);
 					myP5.text(this.nodeToAttach.answers[this.id_answer], this.nodeToAttach.x + this.x + 7, this.nodeToAttach.y + this.y - 21);
 				}
