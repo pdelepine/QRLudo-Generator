@@ -102,14 +102,15 @@ function drawQRCodeImport(qrcode) {
 }
 
 /** recréer les input d'un qrcode unique */
-function drawQRCodeData(qrcode) {
-  let data = qrcode.getData();
+function drawQRCodeData(qrcodeObject) {
+  logger.info(`chargerqrcode.drawQRCodeData | QRcode unique à charger ${JSON.stringify(qrcodeObject)}`);
+  let data = qrcodeObject.getDataAll();
 
-  for (var i = 1; i <= store.get(`numZoneCourante`); i++) {
+  for (let i = 1; i <= store.get(`numZoneCourante`); i++) {
     store.delete(`zone${i}`);
   }
 
-  for (var i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     if (typeof data[i] === "string") {
       ajouterChampLegende(data[i]);
     } else if (typeof data[i] === "object") {
