@@ -8,8 +8,8 @@ class SGQuestionNode extends SGNode {
 	 */
 	constructor(x, y, w, h) {
 		super(x, y, w, h);
-		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71]);
-		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2])];
+		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71],false);
+		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2],true)];
 		this.name = "";
 		this.question = "";
 		this.answers = [""];
@@ -89,7 +89,7 @@ class SGQuestionNode extends SGNode {
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
 			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
-			btn_delete_answer.parent('displayQuestionZone')
+			btn_delete_answer.parent('displayQuestionZone');
 
 		}
 
@@ -127,7 +127,7 @@ class SGQuestionNode extends SGNode {
 			for (var id_answer = 0; id_answer < self.answers.length - 1; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (self.answers.length + 1));
 			}
-			self.exitDots.push(new SGDot(self, (self.answers.length) * self.w / (self.answers.length + 1), 0, [231, 10, 2]));
+			self.exitDots.push(new SGDot(self, (self.answers.length) * self.w / (self.answers.length + 1), 0, [231, 10, 2], true, self.exitDots.length));
 			self.displayDot();
 		}
 	}
@@ -147,6 +147,8 @@ class SGQuestionNode extends SGNode {
 			self.displayQuestionZone();
 			for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (self.answers.length + 1));
+				// on actualise l'id des exitDots
+				self.exitDots[id_answer].setIdAnswer(id_answer);
 			}
 			self.displayDot();
 		} else {
