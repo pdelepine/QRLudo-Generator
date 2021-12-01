@@ -365,3 +365,10 @@ if (typeof myP5 === 'undefined') {
 	myP5.remove();
 	myP5 = new p5(sketch);
 }
+
+//fonction appeler pour réinitialiser le sérious game
+function deleteGame(){
+	myP5.remove();
+	myP5 = new p5(sketch);
+	logger.info("Réinitialisation de la page Sérious Game");
+}
