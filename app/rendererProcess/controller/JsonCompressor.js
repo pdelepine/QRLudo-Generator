@@ -11,7 +11,6 @@ class JsonCompressor {
 
   /** qrcode must be a stringify json */
   static compress(qrcode, callback, arg) {
-    const zlib = require('zlib');
     console.log('qrcode to compress');
     console.log(qrcode);
 

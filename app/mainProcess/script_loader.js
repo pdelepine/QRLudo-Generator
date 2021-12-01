@@ -174,3 +174,4 @@ let controllerMultiple = new ControllerMultiple();
 const jsQR = require("jsqr");
 const Jimp = require('jimp');
 const QRious = require('qrious');
+const zlib = require('zlib');
