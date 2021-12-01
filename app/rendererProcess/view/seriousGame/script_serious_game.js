@@ -308,6 +308,7 @@ var sketch = function (p) {
 		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8);
 		p.pop();
 
+		// Ajustement de la couleur des boutons
 		p.highlightButtons();
 	}
 
