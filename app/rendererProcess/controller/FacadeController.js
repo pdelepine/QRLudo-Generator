@@ -55,12 +55,24 @@ class FacadeController {
           logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
       }
 
-      // Création d'un objet qrcode, mime => type d'image a générer, size => taille de l'image, value => le text à transformer
-      let qr = new QRious({
-        mime: "image/jpeg",
-        size: 400,
-        value: qrcode.getDataString()
-      });
+      // Création d'un objet qrcode, mime => type d'image a générer, size => taille de l'image, value => le texte à transformer
+      let qr;
+      // Si la taille du string représentant le Qrcode dépasse 120 caractères, on compresse le string avant de le tranformer
+      if (qrcode.getDataString().length > 120) {
+        logger.info("FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux");
+        qr = new QRious({
+          mime: "image/jpeg",
+          size: 400,
+          value: JsonCompressor.compress(qrcode.getDataString())
+        });
+      } else {
+        logger.info("FacadeController.genererQRCode | Génération du QR code sans compression");
+        qr = new QRious({
+          mime: "image/jpeg",
+          size: 400,
+          value: qrcode.getDataString()
+        });
+      }
 
       // Transformation de l'objet qrcode en dataURL
       let qrdata = qr.toDataURL();
