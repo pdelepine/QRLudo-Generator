@@ -46,6 +46,8 @@ class SGTextNode extends SGNode {
 		/** Create the button to add an audio file */
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
 		this.btn_add_audio.mousePressed(() => { SGTextNode.addAudio(self); });
+		this.btn_add_audio.attribute('data-target', '#listeMusic');
+		this.btn_add_audio.attribute('data-toggle', 'modal');
 		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
 		this.btn_add_audio.parent('displayQuestionZone');
 
@@ -71,12 +73,31 @@ class SGTextNode extends SGNode {
 
 	static addAudio(self) {
 		/** Add an audio file */
+		myP5.setLastNodeClickedType("text");
 	}
 
 	static saveModification(self) {
 		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.description = document.getElementById('input_node_description').value;
+		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
+		if (document.getElementById('input_node_description').name != null) {
+			if (self.description.substring(self.description.length - 3, self.description.length) == "mp3") {
+				self.audioType = "music";
+			}
+			else {
+				self.audioType = "text";
+			}
+			self.audioPath = document.getElementById('input_node_description').name;
+			//console.log(self.audioPath);
+			//console.log("Est de type "+self.audioType);
+		}
+	}
+
+	saveAudioModification() {
+		/** Fonction appelée quand un fichier audio est ajouté */
+		const self = this;
+		SGTextNode.saveModification(self);
 	}
 
 	/** Draw the node */

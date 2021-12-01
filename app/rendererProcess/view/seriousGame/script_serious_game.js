@@ -50,6 +50,12 @@ var sketch = function (p) {
 	p.lastClickX = 0;
 	p.lastClickY = 0;
 
+	p.lastNodeClickedType = "";
+
+	p.setLastNodeClickedType = function (type) {
+		p.lastNodeClickedType = type;
+	}
+
 	p.setLastClick = function (x, y) {
 		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
@@ -364,6 +370,117 @@ if (typeof myP5 === 'undefined') {
 } else {
 	myP5.remove();
 	myP5 = new p5(sketch);
+}
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+	/** Check internet connection*/
+	logger.info('Test de la connexion internet');
+	if (!navigator.onLine) {
+		logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+		alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+		setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
+	} else {
+		logger.info('L\'application est bien connectée à internet');
+		let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+		let loader = document.createElement('div');
+		let errorMsg = document.createElement('label');
+
+		const {
+			clipboard
+		} = require('electron');
+
+		let url = clipboard.readText();
+		let xhr = new XMLHttpRequest();
+
+		Music.getDownloadLink(url, link => {
+			if (link == null) {
+				showError(modal, errorMsg);
+				return
+			}
+
+			try {
+				xhr.open('GET', link, true);
+			} catch (e) {
+				showError(modal, errorMsg);
+			}
+			xhr.responseType = 'blob';
+			xhr.onload = function (e) {
+
+				if (this.status == 200) {
+					let blob = this.response; // get binary data as a response
+					let contentType = xhr.getResponseHeader("content-type");
+					console.log(contentType);
+
+					if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+						// get filename
+						let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+						filename = filename.replace('filename="', '');
+						filename = filename.replace('.mp3"', '.mp3');
+
+						// save file in folder projet/download
+						let fileReader = new FileReader();
+						fileReader.onload = function () {
+							fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+							$(loader, errorMsg).remove();
+							$('#closeModalListeMusic').on('click',); // close modal add music
+						};
+						fileReader.readAsArrayBuffer(blob);
+
+						ajouterChampSon(filename, link);
+					} else {
+						showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+					}
+				} else {
+					// request failed
+					showError(modal, errorMsg);
+				}
+			};
+
+			xhr.onloadstart = function (e) {
+				console.log('load start');
+				$(loader).addClass('loader');
+				$(modal).find('.errorLoader').remove();
+				$(modal).prepend(loader); // show loader when request progress
+			};
+
+			xhr.onerror = function (e) {
+				showError(modal, errorMsg);
+			};
+
+			xhr.send();
+		});
+	}
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+	let id_input = "";
+	if (myP5.lastNodeClickedType == "question") {
+		id_input = "input_node_question";
+	}
+	else {
+		if (myP5.lastNodeClickedType == "text") {
+			id_input = "input_node_description";
+		}
+	}
+	document.getElementById(id_input).value = nom;
+	document.getElementById(id_input).name = url;
+	for (let i = 0; i < myP5.nodeArray.length; i++) {
+		if (myP5.nodeArray[i].clicked) {
+			myP5.nodeArray[i].saveAudioModification();
+		}
+	}
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+	console.log('error ');
+	$(modal).find('.loader').remove();
+	$(errorMsg).text(message);
+	$(errorMsg).css('color', '#f35b6a');
+	$(errorMsg).addClass('errorLoader');
+	$(modal).prepend(errorMsg); // add error message
 }
 
 //fonction appeler pour réinitialiser le sérious game
