@@ -482,3 +482,10 @@ function showError(modal, errorMsg, message = "Veuillez coller un lien de fichie
 	$(errorMsg).addClass('errorLoader');
 	$(modal).prepend(errorMsg); // add error message
 }
+
+//fonction appeler pour réinitialiser le sérious game
+function deleteGame(){
+	myP5.remove();
+	myP5 = new p5(sketch);
+	logger.info("Réinitialisation de la page Sérious Game");
+}
