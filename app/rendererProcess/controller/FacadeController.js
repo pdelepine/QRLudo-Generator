@@ -57,21 +57,31 @@ class FacadeController {
 
       // Création d'un objet qrcode, mime => type d'image a générer, size => taille de l'image, value => le texte à transformer
       let qr;
-      // Si la taille du string représentant le Qrcode dépasse 120 caractères, on compresse le string avant de le tranformer
-      if (qrcode.getDataString().length > 120) {
-        logger.info("FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux");
-        qr = new QRious({
-          mime: "image/jpeg",
-          size: 400,
-          value: JsonCompressor.compress(qrcode.getDataString())
-        });
-      } else {
-        logger.info("FacadeController.genererQRCode | Génération du QR code sans compression");
-        qr = new QRious({
-          mime: "image/jpeg",
-          size: 400,
-          value: qrcode.getDataString()
-        });
+      try {
+        // Si la taille du string représentant le Qrcode dépasse 120 caractères, on compresse le string avant de le tranformer
+        if (qrcode.getDataString().length > 120) {
+          logger.info('FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux');
+
+          let gzippedQR;
+          // Compression du QR Code
+          JsonCompressor.compress(qrcode.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
+          logger.info(`FacadeController.genererQRCode | Compressed data : \n${gzippedQR}`);
+
+          qr = new QRious({
+            mime: "image/jpeg",
+            size: 400,
+            value: gzippedQR
+          });
+        } else {
+          logger.info('FacadeController.genererQRCode | Génération du QR code sans compression');
+          qr = new QRious({
+            mime: "image/jpeg",
+            size: 400,
+            value: qrcode.getDataString()
+          });
+        }
+      } catch (exception) {
+        logger.error('FacadeController.genererQRCode | Problème lors de la génération du QR code \n' + exception);
       }
 
       // Transformation de l'objet qrcode en dataURL
@@ -89,7 +99,7 @@ class FacadeController {
       image.src = exifModified;
       $(divImg).prepend(image);
 
-
+      logger.info("FacadeController.genererQRCode | Génération du QR code résussi");
       $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');
