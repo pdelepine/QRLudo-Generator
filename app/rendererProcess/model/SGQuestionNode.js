@@ -11,6 +11,7 @@ class SGQuestionNode extends SGNode {
 		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71],false);
 		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2],true)];
 		this.name = "";
+		this.url = "";
 		this.question = "";
 		this.answers = [""];
 		this.btn_add_answer = null;
@@ -176,17 +177,11 @@ class SGQuestionNode extends SGNode {
 		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.question = document.getElementById('input_node_question').value;
+		
 		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
 		if (document.getElementById('input_node_question').name != null) {
-			if (self.question.substring(self.question.length - 3, self.question.length) == "mp3") {
-				self.audioType = "music";
-			}
-			else {
-				self.audioType = "text";
-			}
-			self.audioPath = document.getElementById('input_node_question').name;
-			//console.log(self.audioPath);
-			//console.log("Est de type "+self.audioType);
+			if(self.question.substring(self.question.length - 3, self.question.length) == "mp3")
+				self.url = document.getElementById('input_node_question').name;
 		}
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 			self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;

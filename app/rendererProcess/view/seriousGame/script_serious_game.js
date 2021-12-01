@@ -399,17 +399,18 @@ var sketch = function (p) {
 				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
 					next_node = p.linkArray[z].node2;
 					if(next_node instanceof SGQuestionNode)
-						exitLink = p.linkArray[z].node2.question;
+						exitLink = p.linkArray[z].node2.name;
 					else
 						exitLink = p.linkArray[z].node2.name;
 					break;
 				}
 			}
 			let textObject;
-			if(text.substring(text - 3, text.length) == "mp3")
+			if(text.substring(text.length - 3, text.length) == "mp3")
 				textObject = {
 					type: "music",
-					url: ""
+					name: text,
+					url: textNodes[i].url
 				}
 			else {
 				textObject = {
@@ -447,10 +448,11 @@ var sketch = function (p) {
 			}
 
 			let nameObject;
-			if(name.substring(name - 3, name.length) == "mp3")
+			if(name.substring(name.length - 3, name.length) == "mp3")
 				nameObject = {
 					type: "music",
-					url: ""
+					name: name,
+					url: questionNodes[i].url
 				}
 			else {
 				nameObject = {
@@ -589,8 +591,11 @@ var sketch = function (p) {
 				}
 			}
 
-			if(!found)
-				++nbEndNode;
+			if(!found) {
+				messageInfos("Attention l'histoire se finit par une question", "danger");
+				logger.error("Attention l'histoire se finit par une question");
+				return false;
+			}
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de fin

@@ -11,6 +11,7 @@ class SGTextNode extends SGNode {
 	constructor(x, y, w, h) {
 		super(x, y, w, h);
 		this.name = "";
+		this.url = "";
 		this.description = "";
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
@@ -80,17 +81,11 @@ class SGTextNode extends SGNode {
 		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.description = document.getElementById('input_node_description').value;
+
 		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
 		if (document.getElementById('input_node_description').name != null) {
-			if (self.description.substring(self.description.length - 3, self.description.length) == "mp3") {
-				self.audioType = "music";
-			}
-			else {
-				self.audioType = "text";
-			}
-			self.audioPath = document.getElementById('input_node_description').name;
-			//console.log(self.audioPath);
-			//console.log("Est de type "+self.audioType);
+			if(self.description.substring(self.description.length - 3, self.description.length) == "mp3")
+				self.url = document.getElementById('input_node_description').name;
 		}
 	}
 
