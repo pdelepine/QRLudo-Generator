@@ -19,6 +19,8 @@ class SGNode {
 		this.offsetY = 0;
 		this.entryDot = new SGDot(this, this.w / 2, 0, [139, 186, 71]);
 		this.exitDots = [new SGDot(this, this.w / 2, this.h, [231, 10, 2])];
+		this.audioType = "";
+		this.audioPath = "";
 	}
 
 	setName(name) { this.name = name }
