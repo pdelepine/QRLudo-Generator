@@ -118,11 +118,13 @@
  class QuestionNode {
      /**
       * @param {} name = "No_Name"
+      * @param {} textQuestion = Contient le texte de la question
       * @param {} reponses = Contient la liste des réponses à la question
       */
 
-     constructor(name = {}, reponses = []){
+     constructor(name = "No_Name", textQuestion = {}, reponses = []){
          this.name = name;
+         this.textQuestion = textQuestion;
          this.reponses = reponses;
      }
 
@@ -134,12 +136,20 @@
         this.reponses = reponses;
     }
 
+    setTextQuestion(textQuestion){
+        this.textQuestion = textQuestion;
+    }
+
     getName(){
         return this.name;
     }
 
     getReponses() {
         return this.reponses;
+    }
+
+    getTextQuestion(){
+        return this.textQuestion;
     }
  }
 

@@ -424,7 +424,8 @@ var sketch = function (p) {
 
 		// traitement de questionNodes
 		for (i=0 ; i < questionNodes.length ; ++i){
-			let name = questionNodes[i].question;
+			let name = questionNodes[i].name;
+			let textQuestion = questionNodes[i].question;
 			let reponses = [];
 
 			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
@@ -447,21 +448,21 @@ var sketch = function (p) {
 				reponses.push(reponse);
 			}
 
-			let nameObject;
-			if(name.substring(name.length - 3, name.length) == "mp3")
-				nameObject = {
+			let textQuestionObject;
+			if(textQuestion.substring(textQuestion.length - 3, textQuestion.length) == "mp3")
+				textQuestionObject = {
 					type: "music",
-					name: name,
+					name: textQuestion,
 					url: questionNodes[i].url
 				}
 			else {
-				nameObject = {
+				textQuestionObject = {
 					type: "text",
-					text: name
+					text: textQuestion
 				}
 			}
 			
-			let questionNode = new QuestionNode(nameObject, reponses);
+			let questionNode = new QuestionNode(name, textQuestionObject, reponses);
 			questionNodesJson.push(questionNode);
 		}
 		
