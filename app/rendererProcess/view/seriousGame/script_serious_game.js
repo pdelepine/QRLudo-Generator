@@ -435,8 +435,10 @@ var sketch = function (p) {
 					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
 						next_node = p.linkArray[z].node2;
 					}
-					if(next_node instanceof SGNode)
-						exitLink = p.linkArray[z].node2.name;
+					if(next_node instanceof SGTextNode)
+						exitLink = next_node.name;
+					if(next_node instanceof SGQuestionNode)
+						exitLink = next_node.name;
 				}
 				let reponse = {
 					text: text,
