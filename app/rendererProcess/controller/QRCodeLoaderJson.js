@@ -1,4 +1,4 @@
- 
+
 /**
  * @Author: alassane
  * @Date:   2018-11-14T00:46:15+01:00
@@ -12,16 +12,74 @@
  * contenant les objets QRCodes obtenus à partir d'une image enregistrant une famille de QRCodes
  */
 
+class QRCodeLoaderJson {
+  /**
+   * Renvoie le QRCode crée à partir des informations du fichier image passé en paramètre
+   * @param {Blob} blobFile
+   * @param {Function} callback la fonction à qui on passe le QRCode généré
+   */
+  static loadImage(blobFile, callback) {
+    // Initialisation du lecteur de fichier
+    let fileReader = new FileReader();
 
+    // Les métadonnées lues seront stockées ici
+    let dataRead;
 
- class QRCodeLoaderJson {
-  /** Renvoie le QRCode crée à partir des informations du fichier image passé en paramètre */
-  static loadImage(qrcodeString, callback) {
+    // Paramétrage de la tranformation à faire lorsque le fichier est chargé
+    fileReader.addEventListener("load", function () {
+      let exifObj = piexif.load(fileReader.result);
+      logger.info(`QRCodeLoaderJson.loadImage | exifObj \n${JSON.stringify(exifObj)}`);
 
+      // On lit l'ancienne manière de sauvegarder les métadonnées, le champ `0th`
+      let old_dataUtf8 = exifObj["0th"][700];
+      logger.info(`QRCodeLoaderJson.loadImage | Métadonnées lues dans le champ 0th \n${old_dataUtf8}`);
+
+      // On lit la nouvelle manière de sauvegarder les métadonnées, le champ `UserComment`
+      let new_dataString = exifObj['Exif'][piexif.ExifIFD.UserComment];
+      logger.info(`QRCodeLoaderJson.loadImage | Métadonnées lues dans le champ UserComment \n${new_dataString}`);
+
+      if (!old_dataUtf8) {
+        if (new_dataString) {
+          dataRead = new_dataString;
+        }
+      } else {
+        dataRead = UTF8ArraytoString(old_dataUtf8);
+      }
+
+      QRCodeLoaderJson.convertJSONStringToQR(dataRead, callback);
+    });
+
+    // On lance la lecture du fichier
+    fileReader.readAsDataURL(blobFile);
+
+  }
+
+  /**
+   * Transforme le string du JSON du QR code et renvoie la classe du QR code construit
+   * @param {String} qrcodeString 
+   * @param {Function} callback la fonction à qui on passe le QRCode généré
+   */
+  static convertJSONStringToQR(qrcodeString, callback) {
+
+    logger.info(`QRCodeLoaderJson.loadImage | Essaie tranformation des données ${qrcodeString}`);
     let qrcode;
-    let qr = JSON.parse(qrcodeString);
-    
-    switch (JSON.parse(qrcodeString).type) {
+    let qr;
+
+    if (qrcodeString.charAt(0) === '{') {
+      logger.info(`QRCodeLoaderJson.loadImage | Données non compressée, parsing du Json`);
+
+      qr = JSON.parse(qrcodeString);
+
+    } else {
+      logger.info(`QRCodeLoaderJson.loadImage | Données compressée, décompression des données avant parsing du Json`);
+
+      let dezippedData;
+      JsonCompressor.decompress(filename, (data) => dezippedData = data);
+      logger.info(`QRCodeLoaderJson.loadImage | Données décompressée ${dezippedData}`)
+      qr = JSON.parse(dezippedData);
+    }
+
+    switch (qr.type) {
       case "unique":
         qrcode = new QRCodeUnique(qr.name, qr.data, qr.color);
         qrcode.setId(qr.id);
@@ -66,7 +124,6 @@
 
     if (callback)
       callback(qrcode);
-
   }
 
   /** from utf8 array return string */

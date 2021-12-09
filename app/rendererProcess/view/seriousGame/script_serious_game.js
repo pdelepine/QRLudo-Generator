@@ -3,73 +3,133 @@ var sketch = function (p) {
 	/** Déclaration de variables du dessin */
 	/** Récupération du div parent du dessin / canvas */
 	p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
+
 	/** Paramètre gérant le zoom du dessin */
 	p.zoom = 1;
+
 	/** Liste des noeuds du diagramme */
 	p.nodeArray = [];
+
 	/** Liste des liens du diagramme */
 	p.linkArray = [];
-	/** Variable pour savoir si la palette est afficher ou chacher */
+
+	/** Variable pour savoir si la palette est affichée ou cachée */
 	p.palette = true;
+	/** Variable sur la taille de la palette */
+	p.paletteWidth = 70;
+
 	/** Le bouton pour cacher la palette */
 	p.buttonHidePalette;
+
 	/** Le bouton pour afficher la palette */
 	p.buttonShowPalette;
+
 	/** Le bouton de création de question */
 	p.buttonCreateQuestion;
+
 	/** Le bouton de création de champ de texte */
 	p.buttonCreateTextNode;
+
+	/** Le bouton de création de liens */
+	p.buttonCreateLink;
+
+	/** Le bouton pour activer la suppression des formes et liens */
+	p.buttonEraser;
+
+	/** Le bouton pour activer sélection de formes */
+	p.buttonMouseSelection;
+
+	/** Le bouton pour activer le délacement du dessin*/
+	p.buttonMouseDisplacement;
+
 	/** Le slider qui permet de zoomer et de dézoomer */
 	p.sliderZoom;
+
 	/** Variable pour savoir si on utilise le slider ou non */
 	p.sliderNotPressed = true;
+
 	/** Paramètre gérant la translation du canvas sur l'axe des x */
 	p.translateX = 0;
+
 	/** Paramètre gérant la translation du canvas sur l'axe des y */
 	p.translateY = 0;
+
 	/** Paramètre gérant le offset de la translation du canvas sur l'axe des x */
 	p.diagramOffsetX = 0;
+
 	/** Paramètre gérant le offset de la translation du canvas sur l'axe des y */
 	p.diagramOffsetY = 0;
+
 	/** Paramètre du translate x initial du canvas */
-	p.initX = 150;
+	p.initX = p.paletteWidth;
+
 	/** Paramètre du translate y initial du canvas */
 	p.initY = 0;
-	/** Paramètre du canvas */
+
+	/** Paramètre du canvas, la zone qui contient tout le diagramme */
 	p.seriousGameCanvas;
+
 	/** État pour la création de noeud suivant la souris */
 	p.hoveringNode = false;
 
+	/** Type de node qui va être crée :
+	 * QuestionNode = questionNode
+	 * TextNode = textNode
+	 */
 	p.creatingNodeType = null;
 
+	/** Booléen de contrôle pour la création des liens */
 	p.creatingLink = false;
+
 	/** Etat pour le passage au dessus du Canvas */
 	p.hoveringCanvas = false;
+
 	/** Permet de vérifier si la zone Question du précédent Node cliqué a été effacée */
 	p.previousNodeErased = true;
+
 	/** Coordonnées du dernier clic pour gérer la réinitialisation de la zone Question */
 	p.lastClickX = 0;
 	p.lastClickY = 0;
 
+	/** Booléen de contrôle de l'action de la souris
+	 * true = déplacement du diagramme
+	 * false = sélection
+	 */
+	p.isMovingDiagram = false;
+
+	/** Booléen de contrôle de l'action de suppression */
+	p.isErasing = false;
+
+	/** Un enum sur les différents états du curseur */
+	p.CursorState = Object.freeze({
+		SELECTION: Symbol("selection"),
+		DISPLACEMENT: Symbol("displacement"),
+		CREATENODE: Symbol("createnode"),
+		CREATELINK: Symbol("createlink"),
+		ERASING: Symbol("erasing")
+	});
+
+	/** Mutateur des coordonnées du dernier click */
 	p.lastNodeClickedType = "";
 
 	p.setLastNodeClickedType = function (type) {
 		p.lastNodeClickedType = type;
 	}
-
+  
 	p.setLastClick = function (x, y) {
 		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
 		p.lastClickY = y;
 	}
 
+	/** Mutateur du booléen de contrôle pour savoir si la zone de description d'un node a été effacée */
 	p.setPreviousNodeErased = function (boolean) {
 		/** Modifie l'état du booléen previousNodeErased */
 		p.previousNodeErased = boolean;
 	}
 
 	/* P5Js part */
-	/** Setup of the canvas */
+	/** Initialisation du diagramme */
 	p.setup = function () {
 		p.seriousGameCanvas = p.createCanvas(p.parentDiv.width, p.parentDiv.height);
 		p.seriousGameCanvas.parent("seriousGameDiagram");
@@ -83,133 +143,211 @@ var sketch = function (p) {
 		p.translateY = p.initY;
 
 		/** First & Second Node integration */
+		/*
 		let node1 = new SGTextNode(100, 100, 100, 80);
 		let node2 = new SGQuestionNode(200, 200, 100, 80);
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
+		*/
 		/** Link creation between the to Node */
+		/*
 		let link1 = new SGLink(node1, node1.exitDots[0], node2, node2.entryDot);
 		link1.type = 'static';
 		p.linkArray.push(link1);
+		*/
 
-		/** Declaration of Button to hide the palette */
+		/** Déclaration du bouton de cache de la palette */
 		p.buttonHidePalette = p.createButton('<');
 		p.buttonHidePalette.position(155, 115);
 		p.buttonHidePalette.mousePressed(p.hidePalette);
 		p.buttonHidePalette.parent("seriousGameDiagram");
 
-		/** Declaration of Button to show the palette */
+		/** Déclaration du bouton d'affichage de la palette */
 		p.buttonShowPalette = p.createButton('>');
 		p.buttonShowPalette.position(5, 115);
 		p.buttonShowPalette.mousePressed(p.hidePalette);
 		p.buttonShowPalette.parent("seriousGameDiagram");
 		p.buttonShowPalette.hide();
 
-		/** Declaration of Button to create Node */
-		p.buttonCreateQuestion = p.createButton('Créer une question');
-		p.buttonCreateQuestion.position(20, 150);
-		p.buttonCreateQuestion.mousePressed(p.createQuestionNode);
-		p.buttonCreateQuestion.size(115);
-		p.buttonCreateQuestion.parent("seriousGameDiagram");
-
-		/** Declaration of button to create TextNode */
-		p.buttonCreateTextNode = p.createButton('Créer un champ texte');
-		p.buttonCreateTextNode.position(20, 220);
-		p.buttonCreateTextNode.mousePressed(p.createTextNode);
-		p.buttonCreateTextNode.size(115);
+		/** Déclaration du bouton de création de TextNode */
+		p.buttonCreateTextNode = p.createButton('T');
+		p.buttonCreateTextNode.position(15, 125);
+		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateTextNode.size(40);
+		p.buttonCreateTextNode.attribute('title', 'Créer un texte');
+		p.buttonCreateTextNode.style('font-family', '"Times New Roman", Times, serif');
+		p.buttonCreateTextNode.style('font-weight', 'bold');
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
-		/** Declaration of slider Zoom */
+		/** Déclaration du bouton de création de QuestionNode */
+		p.buttonCreateQuestion = p.createButton('?');
+		p.buttonCreateQuestion.position(15, 165);
+		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestion.size(40);
+		p.buttonCreateQuestion.attribute('title', 'Créer une question');
+		p.buttonCreateQuestion.parent("seriousGameDiagram");
+
+		/** Déclaration du bouton de création de lien */
+		p.buttonCreateLink = p.createButton('');
+		p.buttonCreateLink.id('btn-create-link');
+		p.buttonCreateLink.position(15, 205);
+		p.buttonCreateLink.size(40);
+		p.buttonCreateLink.attribute('title', 'Créer un lien');
+		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.switchButtonState(p.CursorState.CREATELINK); p.getCursor(); })
+		p.buttonCreateLink.parent('seriousGameDiagram');
+		/** L'icône pour le bouton de création de lien */
+		p.iconLink = p.createElement('i');
+		p.iconLink.class('fa fa-arrow-right');
+		p.iconLink.parent('btn-create-link');
+		p.iconLink.style('color', '#000000');
+		p.iconLink.size(20);
+
+		/** Déclaration du bouton de suppression */
+		p.buttonEraser = p.createButton('');
+		p.buttonEraser.id('btn-eraser');
+		p.buttonEraser.position(15, 245);
+		p.buttonEraser.size(40);
+		p.buttonEraser.attribute('title', 'Supprimer');
+		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.switchButtonState(p.CursorState.ERASING); p.getCursor(); });
+		p.buttonEraser.parent('seriousGameDiagram');
+		/** L'icône pour le bouton de suppression */
+		p.iconEraser = p.createElement('i');
+		p.iconEraser.class('fa fa-eraser');
+		p.iconEraser.parent('btn-eraser');
+		p.iconEraser.style('color', '#000000');
+		p.iconEraser.size(20);
+
+		/** Déclaration du bouton de sélection */
+		p.buttonMouseSelection = p.createButton('');
+		p.buttonMouseSelection.id('btn-mouse-selection');
+		p.buttonMouseSelection.position(15, 285);
+		p.buttonMouseSelection.size(40);
+		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
+		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.switchButtonState(p.CursorState.SELECTION); p.getCursor(); });
+		p.buttonMouseSelection.parent('seriousGameDiagram');
+		/** L'icône pour le bouton de sélection */
+		p.iconMouseSelection = p.createElement('i');
+		p.iconMouseSelection.class('fa fa-mouse-pointer');
+		p.iconMouseSelection.parent('btn-mouse-selection');
+		p.iconMouseSelection.style('color', '#000000');
+		p.iconMouseSelection.size(20);
+
+		/** Déclaration du bouton de déplacement */
+		p.buttonMouseDisplacement = p.createButton('');
+		p.buttonMouseDisplacement.id('btn-mouse-displacement');
+		p.buttonMouseDisplacement.position(15, 325);
+		p.buttonMouseDisplacement.size(40);
+		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
+		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.switchButtonState(p.CursorState.DISPLACEMENT); });
+		p.buttonMouseDisplacement.parent('seriousGameDiagram');
+		/** L'icône pour le bouton de déplacement */
+		p.iconMouseDisplacement = p.createElement('i');
+		p.iconMouseDisplacement.class('fa fa-arrows-alt');
+		p.iconMouseDisplacement.parent('btn-mouse-displacement');
+		p.iconMouseDisplacement.style('color', '#000000');
+		p.iconMouseDisplacement.size(20);
+
+		/** Déclaration du slider du zoom*/
 		p.sliderZoom = p.createSlider(1, 200, (p.zoom) * 100);
+		p.sliderZoom.input(() => {
+			p.sliderNotPressed = false; 									//met à faux quand on utilise le slider
+			p.zoom = (p.sliderZoom.value() / 100); 							//change la valeur de p.zoom en fonction de la valeur du slider
+			console.log(`Zoom ${p.zoom}`);
+		});
+		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
 		p.sliderZoom.parent("seriousGameDiagram");
+
 	}
 
-	/** Event loop */
+	/** La boucle de dessin */
 	p.draw = function () {
+		// On dessine la couleur du fond
 		p.background("#e1f1ff");
 		/*console.log(`Mouse x ${mouseX} y ${mouseY}`);
 		console.log(`Zoom ${p.zoom}`);*/
 
 		p.push();
-		p.moveDiagram();
+		// Déplacement du diagramme lorsque que l'état est activé
+		if (p.isMovingDiagram) p.moveDiagram();
 		//console.log(`translate x ${p.translateX} y ${p.translateY}`);
 		p.translate(p.translateX, p.translateY);
-		p.scale(p.zoom);
-		p.nodeArray.forEach(n => n.update());
-		p.nodeArray.forEach(n => n.display());
-		p.linkArray.forEach(l => l.display());
-		p.nodeArray.forEach(n => n.displayDot());
 
+		// On gère le zoom du diagramme
+		p.scale(p.zoom);
+
+		// On update la position des nodes
+		p.nodeArray.forEach(n => n.update());
+
+		// On affiche les nodes
+		p.nodeArray.forEach(n => n.display());
+
+		// On affiche les liens
+		p.linkArray.forEach(l => l.display());
+
+		// On affiche les dot des nodes
+		p.nodeArray.forEach(n => n.displayDot());
 		p.pop();
+
+		// On dessine l'encadré lors de la création de node
 		p.displayCreateNode();
+
+		// On dessine le rectangle de la palette
 		if (p.palette) {
 			p.drawPalette();
 		}
 
-		// Drawing the canvas borders
+		// On dessine les bordures du diagram
 		p.push();
 		p.noFill();
 		p.strokeWeight(4);
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
 
+		// Positionnemnt du slider en bas à droite
+		p.sliderZoom.position((p.width) - 170, (p.height) + 90);
+		// Change la valeur du slider si on zoome ou dézoome avec la molette de la souris
+		p.sliderZoom.value((p.zoom) * 100);
 
-		p.sliderZoom.position((p.width) - 170, (p.height) + 90); //positionnemnt du slider en bas à droite 
-		p.sliderZoom.input(() => {
-			p.sliderNotPressed = false; //met à faux quand on utilise le slider
-			p.zoom = (p.sliderZoom.value() / 100); //change la valeur de p.zoom en fonction de la valeur du slider
-			console.log(`Zoom ${p.zoom}`);
-		});
-		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); //remet à vrai quand on arrête d'utiliser le slider
-		p.sliderZoom.value((p.zoom) * 100); //change la valeur du slider si on zoome ou dézoome avec la molette de la souris
 		p.push();
 		p.fill(28, 62, 180);
 		p.textAlign(p.RIGHT);
-		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8); //affiche le pourcentage de zoom auquel on est actuellement
+		// Affiche le pourcentage de zoom auquel on est actuellement
+		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8);
 		p.pop();
+
+		// Ajustement de la couleur des boutons
+		p.highlightButtons();
 	}
 
 	/** Fonction de dessin de la palette de bouton de création  */
 	p.drawPalette = function () {
 		p.push();
 		p.fill('#677798');
-		p.rect(0, 0, 150, p.parentDiv.height);
+		p.rect(0, 0, p.paletteWidth, p.parentDiv.height);
 		p.fill(0);
 		p.textSize(20);
 		p.textFont('Helvetica');
-		p.text("Palette", 45, 25);
+		//p.text("Palette", 45, 25);
 		p.pop();
 	}
 
-	/** Fonction qui permet de créer un noeud */
+	/** Fonction qui déclenche la création de QuestionNode */
 	p.createQuestionNode = function () {
-		p.hoveringNode = true;
+		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'questionNode';
-		/*
-		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
-		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
-		let newNode = new SGNode(x1, x2, 100, 80);
-		p.nodeArray.push(newNode);*/
 	}
 
+	/** Fonction qui déclenche la création de TextNode */
 	p.createTextNode = function () {
-		p.hoveringNode = true;
+		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'textNode';
-		/*
-		const x1 = (p.parentDiv.width / 2) / p.zoom - p.translateX / p.zoom;
-		const x2 = (p.parentDiv.height / 2) / p.zoom - p.translateY / p.zoom;
-		let newNode = new SGNode(x1, x2, 100, 80);
-		p.nodeArray.push(newNode);*/
 	}
 
-	/** Fonction qui dessine le curseur pour la création des noeuds */
+	/** Fonction qui dessine l'encadré pour la création des noeuds */
 	p.displayCreateNode = function () {
 		if (p.hoveringNode) {
 			p.push();
-			p.noFill();
 			p.strokeWeight(1);
-			p.line(p.mouseX, p.mouseY - 5, p.mouseX, p.mouseY + 5);
-			p.line(p.mouseX - 5, p.mouseY, p.mouseX + 5, p.mouseY);
 			p.fill(255);
 			p.rect(p.mouseX + 10, p.mouseY - 10, 170, 20, 10);
 			p.fill(0);
@@ -240,26 +378,59 @@ var sketch = function (p) {
 			p.initY = p.translateY;
 			p.diagramOffsetX = p.mouseX;
 			p.diagramOffsetY = p.mouseY;
-			/** Search first node of the array which hovered by the mouse and push it to last position to become the last drawn and be dragged
-				 * Will also trigger the dragging of the node
-				*/
-			for (let n of p.nodeArray) {
-				if (n.pressed()) {
-					p.nodeArray = p.nodeArray.filter(removeNode => removeNode != n);
-					p.nodeArray.push(n);
-					return;
+
+			if (p.isErasing) {
+				/** Le premier lien survolé est supprimé */
+				for (let i = 0; i < p.linkArray.length; i++) {
+					if (p.linkArray[i].isMouseHover()) {
+						p.linkArray.splice(i, 1);
+						return;
+					}
 				}
-			}
-			/** If pressed a link, delete this link */
-			for (let i = 0; i < p.linkArray.length; i++) {
-				if (p.linkArray[i].isMouseHover()) {
-					p.linkArray.splice(i, 1);
-					return;
+
+				/** Le premier node survolé par la souris est supprimé ainsi que tous liens attachés à lui */
+				for (let i = 0; i < p.nodeArray.length; i++) {
+					if (p.nodeArray[i].isMouseHover()) {
+						p.linkArray = p.linkArray.filter(function (l) {
+							return !(l.node1 === p.nodeArray[i] || l.node2 === p.nodeArray[i]);
+						});
+						p.nodeArray.splice(i, 1);
+						return;
+					}
+				}
+			} else {
+				/** Recherche le premier node survolé par la souris et la pousse à la fin de la liste nodeArray
+				 * pour qu'il soit dessiné en dernier
+				 * Active aussi l'effet de drag sur le node
+				*/
+				for (let n of p.nodeArray) {
+					if (n.pressed()) {
+						p.nodeArray = p.nodeArray.filter(removeNode => removeNode != n);
+						p.nodeArray.push(n);
+						return;
+					}
 				}
 			}
 
-			/** Create Node if mouse not hovering something and hoveringNode = true and not on the palette */
-			if (p.hoveringNode && p.mouseX > 150) {
+			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
+			 * Ce lien sera attaché à la souris jusqu'à ce qu'on relâche le clic droit sur un entryDot où annule la création de lien
+			 */
+			if (p.creatingLink) {
+				p.nodeArray.forEach(n => n.createLink(function (link) {
+					let exitDotAlreadyLinked = false;
+					p.linkArray.forEach(l => { if (l.node1Dot === link.node1Dot) exitDotAlreadyLinked = true; });
+					if (!exitDotAlreadyLinked) {
+						p.creatingLink = true;
+						p.linkArray.push(link);
+					}
+				}));
+			} else {
+				// Annule la création des liens dynamiques
+				p.linkArray = p.linkArray.filter(l => (l.type !== 'dynamic'));
+			}
+
+			/** Crée un node si la souris ne survole rien (node, link or palette) et que le booléen de création de node `hoveringNode`= true */
+			if (p.hoveringNode && p.mouseX > p.paletteWidth) {
 				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
 				if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
@@ -274,19 +445,24 @@ var sketch = function (p) {
 							break;
 						default:
 					}
-
 					p.hoveringNode = false;
+					p.switchButtonState(p.CursorState.SELECTION);
+					p.getCursor();
 				}
 			}
 		}
 		if (p.mouseButton === p.RIGHT) {
-			/** Create Link from node with Mouse Hovering 
-			 * The link will follow the mouse until the button is released on an
+			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
+			 * Ce lien sera attaché à la souris jusqu'à ce qu'on relâche le clic droit sur un entryDot où annule la création de lien
 			 */
 			if (!p.creatingLink) {
 				p.nodeArray.forEach(n => n.createLink(function (link) {
-					p.creatingLink = true;
-					p.linkArray.push(link);
+					let exitDotAlreadyLinked = false;
+					p.linkArray.forEach(l => { if (l.node1Dot === link.node1Dot) exitDotAlreadyLinked = true; });
+					if (!exitDotAlreadyLinked) {
+						p.creatingLink = true;
+						p.linkArray.push(link);
+					}
 				}));
 			}
 		}
@@ -294,11 +470,11 @@ var sketch = function (p) {
 
 	/** Fonction appelée lors d'un relachement d'un bouton de la souris */
 	p.mouseReleased = function () {
-		/** Release the drag effect on nodes */
+		/** Enlève l'effet de traîne sur les nodes */
 		p.nodeArray.forEach(n => n.released());
 
-		if (p.mouseButton === p.RIGHT) {
-			/** Stop the dynamic link if the mouse is hovering a node */
+		if (p.mouseButton === p.RIGHT || (p.mouseButton === p.LEFT && p.creatingLink)) {
+			/** Arrête les liens dynamiques si la souris survole un node lors d'un clic gauche|droit */
 			p.linkArray.forEach(function (l) {
 				if (l.type === 'dynamic') {
 					p.nodeArray.forEach(function (n) {
@@ -306,7 +482,8 @@ var sketch = function (p) {
 							l.node2 = n;
 							l.node2Dot = n.getDotHovering();
 							l.type = 'static';
-							p.creatingLink = false;
+							//p.creatingLink = false;
+							p.getCursor();
 						}
 					});
 				}
@@ -327,7 +504,7 @@ var sketch = function (p) {
 		/** Appuie sur la touche "Suppr" */
 		if (p.keyCode === p.DELETE) {
 
-			/** If a node if hovered by the mouse, delete him and all the link attach to him  */
+			/** Si un node est survolé par la souris, on le supprime ainsi que tous les liens auxquels il est relié */
 			for (let i = 0; i < p.nodeArray.length; i++) {
 				if (p.nodeArray[i].isMouseHover()) {
 					p.linkArray = p.linkArray.filter(function (l) {
@@ -358,21 +535,104 @@ var sketch = function (p) {
 		}
 	}
 
+	/** Fonction qui redimensionne le diagramme selon la taille de la fenêtre */
 	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 	}
 
-	$("#generateSG").on('click', function () {
-		qr = generateJson();
-		facade = new FacadeController();
-		if(showError()) {
-			facade.genererQRCode(document.getElementById("qrView"),qr);
-			logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+	/** Transforme le curseur selon l'état activé */
+	p.getCursor = function () {
+		if (p.isErasing) {
+			p.cursor("not-allowed");
+		} else if (p.creatingLink) {
+			p.cursor('e-resize');
+		} else if (p.hoveringNode) {
+			p.cursor(p.CROSS);
+		} else if (p.isMovingDiagram) {
+			p.cursor(p.MOVE);
+		} else {
+			p.cursor(p.ARROW);
 		}
-	})
+	}
 
+	/** Change la couleur des boutons selon leur état associé  */
+	p.highlightButtons = function () {
+
+		// Bouton pour effacer
+		if (p.isErasing) {
+			p.buttonEraser.addClass('bg-success');
+		} else {
+			p.buttonEraser.removeClass('bg-success');
+		}
+
+		// Boutons pour la sélection ou déplacement avec la souris
+		if (p.isMovingDiagram) {
+			p.buttonMouseSelection.removeClass('bg-success');
+			p.buttonMouseDisplacement.addClass('bg-success');
+		} else {
+			p.buttonMouseSelection.addClass('bg-success');
+			p.buttonMouseDisplacement.removeClass('bg-success');
+		}
+
+		// Boutons pour créer les questions et les textes
+		if (p.hoveringNode) {
+			if (p.creatingNodeType === 'questionNode') {
+				p.buttonCreateQuestion.addClass('bg-success');
+				p.buttonCreateTextNode.removeClass('bg-success');
+			} else {
+				p.buttonCreateQuestion.removeClass('bg-success');
+				p.buttonCreateTextNode.addClass('bg-success');
+			}
+		} else {
+			p.buttonCreateQuestion.removeClass('bg-success');
+			p.buttonCreateTextNode.removeClass('bg-success');
+		}
+
+		// Bouton pour créer les liens
+		if (p.creatingLink) {
+			p.buttonCreateLink.addClass('bg-success');
+		} else {
+			p.buttonCreateLink.removeClass('bg-success');
+		}
+	}
+
+	/**
+	 * Activer / désactiver les actions de la souris différentes de celle du state
+	 * @param {p.CursorState} state qui est activé, tous les autres seront désactivés
+	 */
+	p.switchButtonState = function (state) {
+		switch (state) {
+			case p.CursorState.CREATENODE:
+				p.creatingLink = false;
+				p.isErasing = false;
+				p.isMovingDiagram = false;
+				break;
+			case p.CursorState.CREATELINK:
+				p.hoveringNode = false;
+				p.isErasing = false;
+				p.isMovingDiagram = false;
+				break;
+			case p.CursorState.SELECTION:
+				p.hoveringNode = false;
+				p.isErasing = false;
+				p.creatingLink = false;
+				break;
+			case p.CursorState.DISPLACEMENT:
+				p.hoveringNode = false;
+				p.isErasing = false;
+				p.creatingLink = false;
+				break;
+			case p.CursorState.ERASING:
+				p.hoveringNode = false;
+				p.creatingLink = false;
+				p.isMovingDiagram = false;
+				break;
+			default:
+				logger.error('Serious Game | unknown button state ' + state);
+		}
+	}
 
 	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
 	function generateJson(){
@@ -612,8 +872,8 @@ var sketch = function (p) {
 		
 		return true;
 	}
-	
 }
+
 
 if (typeof myP5 === 'undefined') {
 	var myP5 = new p5(sketch);
@@ -739,3 +999,12 @@ function deleteGame(){
 	myP5 = new p5(sketch);
 	logger.info("Réinitialisation de la page Sérious Game");
 }
+
+$("#generateSG").on('click', function () {
+		qr = generateJson();
+		facade = new FacadeController();
+		if(showError()) {
+			facade.genererQRCode(document.getElementById("qrView"),qr);
+			logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+		}
+	});

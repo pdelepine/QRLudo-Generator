@@ -79,7 +79,7 @@ class SGNode {
 			myP5.setPreviousNodeErased(false);
 			myP5.setLastClick(myP5.mouseX, myP5.mouseY);
 		}
-		if (this.isMouseHover()) {
+		if (this.isMouseHover() && !this.isMouseHoveringDots()) {
 			this.dragging = true;
 			this.clicked = true;
 			this.offsetX = this.x * myP5.zoom - (myP5.mouseX - myP5.translateX);
