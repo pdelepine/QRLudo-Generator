@@ -1,3 +1,4 @@
+
 var sketch = function (p) {
 	/** Déclaration de variables du dessin */
 	/** Récupération du div parent du dessin / canvas */
@@ -109,6 +110,12 @@ var sketch = function (p) {
 	});
 
 	/** Mutateur des coordonnées du dernier click */
+	p.lastNodeClickedType = "";
+
+	p.setLastNodeClickedType = function (type) {
+		p.lastNodeClickedType = type;
+	}
+  
 	p.setLastClick = function (x, y) {
 		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
@@ -626,6 +633,245 @@ var sketch = function (p) {
 				logger.error('Serious Game | unknown button state ' + state);
 		}
 	}
+
+	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
+	function generateJson(){
+		let questionNodes = [];
+		let textNodes = [];
+		let textNodesJson = [];
+		let questionNodesJson = [];
+
+		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		for (i=0 ; i < p.nodeArray.length ; ++i){
+			if (p.nodeArray[i] instanceof SGTextNode) {
+				textNodes.push(p.nodeArray[i]);
+			} else {
+				questionNodes.push(p.nodeArray[i]);
+			}
+		}
+
+		// traitement de textNodes
+		for (i=0 ; i < textNodes.length ; ++i){
+			let name = textNodes[i].name;
+			let text = textNodes[i].description;
+			let exitLink = "";
+			for (z = 0 ; z <p.linkArray.length ; ++z){
+				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+					next_node = p.linkArray[z].node2;
+					if(next_node instanceof SGQuestionNode)
+						exitLink = p.linkArray[z].node2.name;
+					else
+						exitLink = p.linkArray[z].node2.name;
+					break;
+				}
+			}
+			let textObject;
+			if(text.substring(text.length - 3, text.length) == "mp3")
+				textObject = {
+					type: "music",
+					name: text,
+					url: textNodes[i].url
+				}
+			else {
+				textObject = {
+					type: "text",
+					text: text
+				}
+			}
+			let textNode = new TextNode(name, textObject, exitLink);
+			textNodesJson.push(textNode);
+		}
+
+		// traitement de questionNodes
+		for (i=0 ; i < questionNodes.length ; ++i){
+			let name = questionNodes[i].name;
+			let textQuestion = questionNodes[i].question;
+			let reponses = [];
+
+			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
+				let text = questionNodes[i].answers[j];
+				let exitLink = "";
+				for (z = 0 ; z <p.linkArray.length ; ++z){
+					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+						next_node = p.linkArray[z].node2;
+					}
+					if(next_node instanceof SGTextNode)
+						exitLink = next_node.name;
+					if(next_node instanceof SGQuestionNode)
+						exitLink = next_node.name;
+				}
+				let reponse = {
+					text: text,
+					exitLink: exitLink
+				}
+				reponses.push(reponse);
+			}
+
+			let textQuestionObject;
+			if(textQuestion.substring(textQuestion.length - 3, textQuestion.length) == "mp3")
+				textQuestionObject = {
+					type: "music",
+					name: textQuestion,
+					url: questionNodes[i].url
+				}
+			else {
+				textQuestionObject = {
+					type: "text",
+					text: textQuestion
+				}
+			}
+			
+			let questionNode = new QuestionNode(name, textQuestionObject, reponses);
+			questionNodesJson.push(questionNode);
+		}
+		
+		projet = new ProjetSeriousGame(textNodesJson, questionNodesJson);
+		return projet;
+	}
+
+	/** Fonction pour vérifier que l'histoire est correcte */
+	function showError(){
+		let textNodes = [];
+		let questionNodes = [];
+
+		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		for (i=0 ; i < p.nodeArray.length ; ++i){
+			if (p.nodeArray[i] instanceof SGTextNode) {
+				textNodes.push(p.nodeArray[i]);
+			} else {
+				questionNodes.push(p.nodeArray[i]);
+			}
+		}
+
+		let nbStartNode = 0; // Nombre de noeud d'introduction
+
+		// On regarde s'il y a un noeud texte qui est un noeud de départ
+		for(i = 0; i < textNodes.length; ++i){
+			entryDot = textNodes[i].entryDot;
+			let x = entryDot.getPositionX();
+			let y = entryDot.getPositionY();
+			let found = false;
+
+			console.log("textNode X: " + x + " textNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node2Dot.getPositionX();
+				let linkY = p.linkArray[j].node2Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbStartNode;
+		}
+
+		// On regarde s'il y a un noeud question qui est un noeud de départ
+		for(i = 0; i < questionNodes.length; ++i){
+			entryDot = questionNodes[i].entryDot;
+			let x = entryDot.getPositionX();
+			let y = entryDot.getPositionY();
+			let found = false;
+
+			console.log("questionNode X: " + x + " questionNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node2Dot.getPositionX();
+				let linkY = p.linkArray[j].node2Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbStartNode;
+		}
+
+		// Il ne peut y avoir qu'un seul noeud de départ
+		if(nbStartNode == 0){
+			messageInfos("Attention aucun noeud de départ n'est présent", "danger");
+			logger.error("Attention aucun noeud de départ n'est présents");
+			return false;
+		}
+		else if(nbStartNode > 1){
+			messageInfos("Attention plusieurs noeuds de départ sont présents", "danger");
+			logger.error("Attention plusieurs noeuds de départ sont présents");
+			return false;
+		}
+
+		let nbEndNode = 0; // Nombre de noeud d'introduction
+
+		// On regarde s'il y a un noeud texte qui est un noeud de fin
+		for(i = 0; i < textNodes.length; ++i){
+			exitDot = textNodes[i].exitDots[0];
+			let x = exitDot.getPositionX();
+			let y = exitDot.getPositionY();
+			let found = false;
+
+			console.log("textNode X: " + x + " textNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node1Dot.getPositionX();
+				let linkY = p.linkArray[j].node1Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found)
+				++nbEndNode;
+		}
+
+		// On regarde s'il y a un noeud question qui est un noeud de fin
+		for(i = 0; i < questionNodes.length; ++i){
+			exitDot = questionNodes[i].exitDots[0];
+			let x = exitDot.getPositionX();
+			let y = exitDot.getPositionY();
+			let found = false;
+
+			console.log("questionNode X: " + x + " questionNode Y: " + y);
+
+			for(j = 0; j < p.linkArray.length; ++j){
+				let linkX = p.linkArray[j].node1Dot.getPositionX();
+				let linkY = p.linkArray[j].node1Dot.getPositionY();
+
+				console.log("link X: " + linkX + " link Y: " + linkY);
+
+				if(linkX == x && linkY == y){
+					found = true;
+				}
+			}
+
+			if(!found) {
+				messageInfos("Attention l'histoire se finit par une question", "danger");
+				logger.error("Attention l'histoire se finit par une question");
+				return false;
+			}
+		}
+
+		// Il ne peut y avoir qu'un seul noeud de fin
+		if(nbEndNode == 0){
+			messageInfos("Attention aucun noeud de fin n'est présent", "danger");
+			logger.error("Attention aucun noeud de fin n'est présent");
+			return false;
+		}
+		else if(nbEndNode > 1){
+			messageInfos("Attention plusieurs noeuds de fin sont présents", "danger");
+			logger.error("Attention plusieurs noeuds de fin sont présents");
+			return false;
+		}
+		
+		return true;
+	}
 }
 
 
@@ -635,3 +881,130 @@ if (typeof myP5 === 'undefined') {
 	myP5.remove();
 	myP5 = new p5(sketch);
 }
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+	/** Check internet connection*/
+	logger.info('Test de la connexion internet');
+	if (!navigator.onLine) {
+		logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+		alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+		setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
+	} else {
+		logger.info('L\'application est bien connectée à internet');
+		let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+		let loader = document.createElement('div');
+		let errorMsg = document.createElement('label');
+
+		const {
+			clipboard
+		} = require('electron');
+
+		let url = clipboard.readText();
+		let xhr = new XMLHttpRequest();
+
+		Music.getDownloadLink(url, link => {
+			if (link == null) {
+				showError(modal, errorMsg);
+				return
+			}
+
+			try {
+				xhr.open('GET', link, true);
+			} catch (e) {
+				showError(modal, errorMsg);
+			}
+			xhr.responseType = 'blob';
+			xhr.onload = function (e) {
+
+				if (this.status == 200) {
+					let blob = this.response; // get binary data as a response
+					let contentType = xhr.getResponseHeader("content-type");
+					console.log(contentType);
+
+					if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+						// get filename
+						let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+						filename = filename.replace('filename="', '');
+						filename = filename.replace('.mp3"', '.mp3');
+
+						// save file in folder projet/download
+						let fileReader = new FileReader();
+						fileReader.onload = function () {
+							fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+							$(loader, errorMsg).remove();
+							$('#closeModalListeMusic').on('click',); // close modal add music
+						};
+						fileReader.readAsArrayBuffer(blob);
+
+						ajouterChampSon(filename, link);
+					} else {
+						showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+					}
+				} else {
+					// request failed
+					showError(modal, errorMsg);
+				}
+			};
+
+			xhr.onloadstart = function (e) {
+				console.log('load start');
+				$(loader).addClass('loader');
+				$(modal).find('.errorLoader').remove();
+				$(modal).prepend(loader); // show loader when request progress
+			};
+
+			xhr.onerror = function (e) {
+				showError(modal, errorMsg);
+			};
+
+			xhr.send();
+		});
+	}
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+	let id_input = "";
+	if (myP5.lastNodeClickedType == "question") {
+		id_input = "input_node_question";
+	}
+	else {
+		if (myP5.lastNodeClickedType == "text") {
+			id_input = "input_node_description";
+		}
+	}
+	document.getElementById(id_input).value = nom;
+	document.getElementById(id_input).name = url;
+	for (let i = 0; i < myP5.nodeArray.length; i++) {
+		if (myP5.nodeArray[i].clicked) {
+			myP5.nodeArray[i].saveAudioModification();
+		}
+	}
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+	console.log('error ');
+	$(modal).find('.loader').remove();
+	$(errorMsg).text(message);
+	$(errorMsg).css('color', '#f35b6a');
+	$(errorMsg).addClass('errorLoader');
+	$(modal).prepend(errorMsg); // add error message
+}
+
+//fonction appeler pour réinitialiser le sérious game
+function deleteGame(){
+	myP5.remove();
+	myP5 = new p5(sketch);
+	logger.info("Réinitialisation de la page Sérious Game");
+}
+
+$("#generateSG").on('click', function () {
+		qr = generateJson();
+		facade = new FacadeController();
+		if(showError()) {
+			facade.genererQRCode(document.getElementById("qrView"),qr);
+			logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+		}
+	});

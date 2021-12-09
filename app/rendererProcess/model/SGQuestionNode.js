@@ -8,9 +8,10 @@ class SGQuestionNode extends SGNode {
 	 */
 	constructor(x, y, w, h) {
 		super(x, y, w, h);
-		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71]);
-		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2])];
+		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71],false);
+		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2],true)];
 		this.name = "";
+		this.url = "";
 		this.question = "";
 		this.answers = [""];
 		this.btn_add_answer = null;
@@ -71,6 +72,8 @@ class SGQuestionNode extends SGNode {
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
 		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
 		this.btn_add_audio.id('btn_add_audio');
+		this.btn_add_audio.attribute('data-target', '#listeMusic');
+		this.btn_add_audio.attribute('data-toggle', 'modal');
 		this.btn_add_audio.mousePressed(() => { SGQuestionNode.addAudio(self); });
 		this.btn_add_audio.parent('displayQuestionZone');
 
@@ -89,7 +92,7 @@ class SGQuestionNode extends SGNode {
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
 			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
-			btn_delete_answer.parent('displayQuestionZone')
+			btn_delete_answer.parent('displayQuestionZone');
 
 		}
 
@@ -127,7 +130,7 @@ class SGQuestionNode extends SGNode {
 			for (var id_answer = 0; id_answer < self.answers.length - 1; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (self.answers.length + 1));
 			}
-			self.exitDots.push(new SGDot(self, (self.answers.length) * self.w / (self.answers.length + 1), 0, [231, 10, 2]));
+			self.exitDots.push(new SGDot(self, (self.answers.length) * self.w / (self.answers.length + 1), 0, [231, 10, 2], true, self.exitDots.length));
 			self.displayDot();
 		}
 	}
@@ -147,6 +150,8 @@ class SGQuestionNode extends SGNode {
 			self.displayQuestionZone();
 			for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 				self.exitDots[id_answer].setPositionX((id_answer + 1) * self.w / (self.answers.length + 1));
+				// on actualise l'id des exitDots
+				self.exitDots[id_answer].setIdAnswer(id_answer);
 			}
 			self.displayDot();
 		} else {
@@ -165,15 +170,28 @@ class SGQuestionNode extends SGNode {
 
 	static addAudio(self) {
 		/** Add an audio file */
+		myP5.setLastNodeClickedType("question");
 	}
 
 	static saveModification(self) {
 		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.question = document.getElementById('input_node_question').value;
+		
+		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
+		if (document.getElementById('input_node_question').name != null) {
+			if(self.question.substring(self.question.length - 3, self.question.length) == "mp3")
+				self.url = document.getElementById('input_node_question').name;
+		}
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 			self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
 		}
+	}
+
+	saveAudioModification() {
+		/** Fonction appelée quand un fichier audio est ajouté */
+		const self = this;
+		SGQuestionNode.saveModification(self);
 	}
 
 	/** Draw the node */

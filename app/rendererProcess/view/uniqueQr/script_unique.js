@@ -174,10 +174,7 @@ $('#preview').on('click',e => {
       let jsonAudio = JSON.stringify(dataAudio);
       qrData.push(JSON.parse(jsonAudio));
     } else{
-      let dataText = {
-        type: 'text',
-        text: data.value
-      }
+      let dataText = data.value;
 
       let jsonText = JSON.stringify(dataText);
       qrData.push(JSON.parse(jsonText));
