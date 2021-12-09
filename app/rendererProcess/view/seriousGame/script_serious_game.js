@@ -115,7 +115,7 @@ var sketch = function (p) {
 	p.setLastNodeClickedType = function (type) {
 		p.lastNodeClickedType = type;
 	}
-  
+
 	p.setLastClick = function (x, y) {
 		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
@@ -635,14 +635,14 @@ var sketch = function (p) {
 	}
 
 	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
-	function generateJson(){
+	function generateJson() {
 		let questionNodes = [];
 		let textNodes = [];
 		let textNodesJson = [];
 		let questionNodesJson = [];
 
 		//mettre les questionNodes dans un array et les textNodes dans un autre 
-		for (i=0 ; i < p.nodeArray.length ; ++i){
+		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				textNodes.push(p.nodeArray[i]);
 			} else {
@@ -651,14 +651,14 @@ var sketch = function (p) {
 		}
 
 		// traitement de textNodes
-		for (i=0 ; i < textNodes.length ; ++i){
+		for (i = 0; i < textNodes.length; ++i) {
 			let name = textNodes[i].name;
 			let text = textNodes[i].description;
 			let exitLink = "";
-			for (z = 0 ; z <p.linkArray.length ; ++z){
-				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+			for (z = 0; z < p.linkArray.length; ++z) {
+				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 					next_node = p.linkArray[z].node2;
-					if(next_node instanceof SGQuestionNode)
+					if (next_node instanceof SGQuestionNode)
 						exitLink = p.linkArray[z].node2.name;
 					else
 						exitLink = p.linkArray[z].node2.name;
@@ -666,7 +666,7 @@ var sketch = function (p) {
 				}
 			}
 			let textObject;
-			if(text.substring(text.length - 3, text.length) == "mp3")
+			if (text.substring(text.length - 3, text.length) == "mp3")
 				textObject = {
 					type: "music",
 					name: text,
@@ -683,21 +683,21 @@ var sketch = function (p) {
 		}
 
 		// traitement de questionNodes
-		for (i=0 ; i < questionNodes.length ; ++i){
+		for (i = 0; i < questionNodes.length; ++i) {
 			let name = questionNodes[i].name;
 			let textQuestion = questionNodes[i].question;
 			let reponses = [];
 
-			for (j = 0 ; j < questionNodes[i].answers.length; ++j){
+			for (j = 0; j < questionNodes[i].answers.length; ++j) {
 				let text = questionNodes[i].answers[j];
 				let exitLink = "";
-				for (z = 0 ; z <p.linkArray.length ; ++z){
-					if (questionNodes[i].exitDots[j].getPositionX()==p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY()==p.linkArray[z].node1Dot.getPositionY()){
+				for (z = 0; z < p.linkArray.length; ++z) {
+					if (questionNodes[i].exitDots[j].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 						next_node = p.linkArray[z].node2;
 					}
-					if(next_node instanceof SGTextNode)
+					if (next_node instanceof SGTextNode)
 						exitLink = next_node.name;
-					if(next_node instanceof SGQuestionNode)
+					if (next_node instanceof SGQuestionNode)
 						exitLink = next_node.name;
 				}
 				let reponse = {
@@ -708,7 +708,7 @@ var sketch = function (p) {
 			}
 
 			let textQuestionObject;
-			if(textQuestion.substring(textQuestion.length - 3, textQuestion.length) == "mp3")
+			if (textQuestion.substring(textQuestion.length - 3, textQuestion.length) == "mp3")
 				textQuestionObject = {
 					type: "music",
 					name: textQuestion,
@@ -720,22 +720,22 @@ var sketch = function (p) {
 					text: textQuestion
 				}
 			}
-			
+
 			let questionNode = new QuestionNode(name, textQuestionObject, reponses);
 			questionNodesJson.push(questionNode);
 		}
-		
+
 		projet = new ProjetSeriousGame(textNodesJson, questionNodesJson);
 		return projet;
 	}
 
 	/** Fonction pour vérifier que l'histoire est correcte */
-	function showError(){
+	function showError() {
 		let textNodes = [];
 		let questionNodes = [];
 
 		//mettre les questionNodes dans un array et les textNodes dans un autre 
-		for (i=0 ; i < p.nodeArray.length ; ++i){
+		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				textNodes.push(p.nodeArray[i]);
 			} else {
@@ -746,7 +746,7 @@ var sketch = function (p) {
 		let nbStartNode = 0; // Nombre de noeud d'introduction
 
 		// On regarde s'il y a un noeud texte qui est un noeud de départ
-		for(i = 0; i < textNodes.length; ++i){
+		for (i = 0; i < textNodes.length; ++i) {
 			entryDot = textNodes[i].entryDot;
 			let x = entryDot.getPositionX();
 			let y = entryDot.getPositionY();
@@ -754,23 +754,23 @@ var sketch = function (p) {
 
 			console.log("textNode X: " + x + " textNode Y: " + y);
 
-			for(j = 0; j < p.linkArray.length; ++j){
+			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
 				let linkY = p.linkArray[j].node2Dot.getPositionY();
 
 				console.log("link X: " + linkX + " link Y: " + linkY);
 
-				if(linkX == x && linkY == y){
+				if (linkX == x && linkY == y) {
 					found = true;
 				}
 			}
 
-			if(!found)
+			if (!found)
 				++nbStartNode;
 		}
 
 		// On regarde s'il y a un noeud question qui est un noeud de départ
-		for(i = 0; i < questionNodes.length; ++i){
+		for (i = 0; i < questionNodes.length; ++i) {
 			entryDot = questionNodes[i].entryDot;
 			let x = entryDot.getPositionX();
 			let y = entryDot.getPositionY();
@@ -778,28 +778,28 @@ var sketch = function (p) {
 
 			console.log("questionNode X: " + x + " questionNode Y: " + y);
 
-			for(j = 0; j < p.linkArray.length; ++j){
+			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
 				let linkY = p.linkArray[j].node2Dot.getPositionY();
 
 				console.log("link X: " + linkX + " link Y: " + linkY);
 
-				if(linkX == x && linkY == y){
+				if (linkX == x && linkY == y) {
 					found = true;
 				}
 			}
 
-			if(!found)
+			if (!found)
 				++nbStartNode;
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de départ
-		if(nbStartNode == 0){
+		if (nbStartNode == 0) {
 			messageInfos("Attention aucun noeud de départ n'est présent", "danger");
 			logger.error("Attention aucun noeud de départ n'est présents");
 			return false;
 		}
-		else if(nbStartNode > 1){
+		else if (nbStartNode > 1) {
 			messageInfos("Attention plusieurs noeuds de départ sont présents", "danger");
 			logger.error("Attention plusieurs noeuds de départ sont présents");
 			return false;
@@ -808,7 +808,7 @@ var sketch = function (p) {
 		let nbEndNode = 0; // Nombre de noeud d'introduction
 
 		// On regarde s'il y a un noeud texte qui est un noeud de fin
-		for(i = 0; i < textNodes.length; ++i){
+		for (i = 0; i < textNodes.length; ++i) {
 			exitDot = textNodes[i].exitDots[0];
 			let x = exitDot.getPositionX();
 			let y = exitDot.getPositionY();
@@ -816,23 +816,23 @@ var sketch = function (p) {
 
 			console.log("textNode X: " + x + " textNode Y: " + y);
 
-			for(j = 0; j < p.linkArray.length; ++j){
+			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node1Dot.getPositionX();
 				let linkY = p.linkArray[j].node1Dot.getPositionY();
 
 				console.log("link X: " + linkX + " link Y: " + linkY);
 
-				if(linkX == x && linkY == y){
+				if (linkX == x && linkY == y) {
 					found = true;
 				}
 			}
 
-			if(!found)
+			if (!found)
 				++nbEndNode;
 		}
 
 		// On regarde s'il y a un noeud question qui est un noeud de fin
-		for(i = 0; i < questionNodes.length; ++i){
+		for (i = 0; i < questionNodes.length; ++i) {
 			exitDot = questionNodes[i].exitDots[0];
 			let x = exitDot.getPositionX();
 			let y = exitDot.getPositionY();
@@ -840,18 +840,18 @@ var sketch = function (p) {
 
 			console.log("questionNode X: " + x + " questionNode Y: " + y);
 
-			for(j = 0; j < p.linkArray.length; ++j){
+			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node1Dot.getPositionX();
 				let linkY = p.linkArray[j].node1Dot.getPositionY();
 
 				console.log("link X: " + linkX + " link Y: " + linkY);
 
-				if(linkX == x && linkY == y){
+				if (linkX == x && linkY == y) {
 					found = true;
 				}
 			}
 
-			if(!found) {
+			if (!found) {
 				messageInfos("Attention l'histoire se finit par une question", "danger");
 				logger.error("Attention l'histoire se finit par une question");
 				return false;
@@ -859,17 +859,17 @@ var sketch = function (p) {
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de fin
-		if(nbEndNode == 0){
+		if (nbEndNode == 0) {
 			messageInfos("Attention aucun noeud de fin n'est présent", "danger");
 			logger.error("Attention aucun noeud de fin n'est présent");
 			return false;
 		}
-		else if(nbEndNode > 1){
+		else if (nbEndNode > 1) {
 			messageInfos("Attention plusieurs noeuds de fin sont présents", "danger");
 			logger.error("Attention plusieurs noeuds de fin sont présents");
 			return false;
 		}
-		
+
 		return true;
 	}
 }
@@ -994,17 +994,17 @@ function showError(modal, errorMsg, message = "Veuillez coller un lien de fichie
 }
 
 //fonction appeler pour réinitialiser le sérious game
-function deleteGame(){
+function deleteGame() {
 	myP5.remove();
 	myP5 = new p5(sketch);
 	logger.info("Réinitialisation de la page Sérious Game");
 }
 
 $("#generateSG").on('click', function () {
-		qr = generateJson();
-		facade = new FacadeController();
-		if(showError()) {
-			facade.genererQRCode(document.getElementById("qrView"),qr);
-			logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
-		}
-	});
+	qr = generateJson();
+	facade = new FacadeController();
+	if (showError()) {
+		facade.genererQRCode(document.getElementById("qrView"), qr);
+		logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+	}
+});
