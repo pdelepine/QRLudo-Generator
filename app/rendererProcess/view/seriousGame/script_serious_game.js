@@ -493,9 +493,10 @@ var sketch = function (p) {
 
 	/** Fonction appelée lors d'un scroll de la souris */
 	p.mouseWheel = function (event) {
-		p.zoom += (event.delta / 500);
-		if (p.zoom <= 0) p.zoom = 0.1;
-		console.log(`Zoom ${p.zoom}`);
+		if (p.hoveringCanvas) {
+			p.zoom += (event.delta / 500);
+			if (p.zoom <= 0) p.zoom = 0.1;
+		}
 	}
 
 	/** Fonction appelée lorsqu'une touche est appuyée */
@@ -635,7 +636,7 @@ var sketch = function (p) {
 	}
 
 	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
-	function generateJson() {
+	p.generateJson = function () {
 		let questionNodes = [];
 		let textNodes = [];
 		let textNodesJson = [];
@@ -730,7 +731,7 @@ var sketch = function (p) {
 	}
 
 	/** Fonction pour vérifier que l'histoire est correcte */
-	function showError() {
+	p.showError = function () {
 		let textNodes = [];
 		let questionNodes = [];
 
@@ -985,7 +986,7 @@ function ajouterChampSon(nom, url) {
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
-	console.log('error ');
+	console.trace('error ');
 	$(modal).find('.loader').remove();
 	$(errorMsg).text(message);
 	$(errorMsg).css('color', '#f35b6a');
@@ -1001,9 +1002,9 @@ function deleteGame() {
 }
 
 $("#generateSG").on('click', function () {
-	qr = generateJson();
+	qr = myP5.generateJson();
 	facade = new FacadeController();
-	if (showError()) {
+	if (myP5.showError()) {
 		facade.genererQRCode(document.getElementById("qrView"), qr);
 		logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
 	}
