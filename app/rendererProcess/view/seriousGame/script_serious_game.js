@@ -18,12 +18,6 @@ var sketch = function (p) {
 	/** Variable sur la taille de la palette */
 	p.paletteWidth = 70;
 
-	/** Le bouton pour cacher la palette */
-	p.buttonHidePalette;
-
-	/** Le bouton pour afficher la palette */
-	p.buttonShowPalette;
-
 	/** Le bouton de création de question */
 	p.buttonCreateQuestion;
 
@@ -155,19 +149,6 @@ var sketch = function (p) {
 		link1.type = 'static';
 		p.linkArray.push(link1);
 		*/
-
-		/** Déclaration du bouton de cache de la palette */
-		p.buttonHidePalette = p.createButton('<');
-		p.buttonHidePalette.position(155, 115);
-		p.buttonHidePalette.mousePressed(p.hidePalette);
-		p.buttonHidePalette.parent("seriousGameDiagram");
-
-		/** Déclaration du bouton d'affichage de la palette */
-		p.buttonShowPalette = p.createButton('>');
-		p.buttonShowPalette.position(5, 115);
-		p.buttonShowPalette.mousePressed(p.hidePalette);
-		p.buttonShowPalette.parent("seriousGameDiagram");
-		p.buttonShowPalette.hide();
 
 		/** Déclaration du bouton de création de TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
@@ -515,24 +496,6 @@ var sketch = function (p) {
 					return;
 				}
 			}
-		}
-	}
-
-	/** Fonction appelée lorsque le bouton buttonHidePalette ou le bouton buttonShowPalette est appuyé */
-	p.hidePalette = function () {
-		if (p.palette) {
-			p.palette = false;
-			p.buttonHidePalette.hide();
-			p.buttonShowPalette.show();
-			p.buttonCreateQuestion.hide();
-			p.buttonCreateTextNode.hide();
-		}
-		else {
-			p.palette = true;
-			p.buttonHidePalette.show();
-			p.buttonShowPalette.hide();
-			p.buttonCreateQuestion.show();
-			p.buttonCreateTextNode.show();
 		}
 	}
 
