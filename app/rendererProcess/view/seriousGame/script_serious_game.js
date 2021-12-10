@@ -1,4 +1,3 @@
-
 var sketch = function (p) {
 	/** Déclaration de variables du dessin */
 	/** Récupération du div parent du dessin / canvas */
@@ -260,13 +259,13 @@ var sketch = function (p) {
 		p.nodeArray.forEach(n => n.update());
 
 		// On affiche les nodes
-		p.nodeArray.forEach(n => { n.display(); n.displayDot() });
+		p.nodeArray.forEach(n => n.display());
 
 		// On affiche les liens
 		p.linkArray.forEach(l => l.display());
 
 		// On affiche les dot des nodes
-		//p.nodeArray.forEach(n => n.displayDot());
+		p.nodeArray.forEach(n => n.displayDot());
 		p.pop();
 
 		// On dessine l'encadré lors de la création de node
@@ -971,4 +970,35 @@ $("#generateSG").on('click', function () {
 		facade.genererQRCode(document.getElementById("qrView"), qr);
 		logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
 	}
+});
+
+/** Permet de sauvegarder l'image du QR code sur l'ordinateur */
+$("#saveQRCode").on('click', function () {
+	console.log(dialog);
+
+	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que son nom
+	 * Cela retourne le path du fichier 
+	 */
+	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
+	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
+
+	if (dir_path !== undefined) {
+
+		let img = document.querySelector('#qrView img');
+		let imgData;
+
+		if (img != null) {
+			imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
+			let buf = Buffer.from(imgData, 'base64');
+
+			fs.writeFile(dir_path, buf, 'base64', function (err) {
+				if (err) {
+					logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
+				} else {
+					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}`);
+				}
+			})
+		}
+	}
+	logger.info("Exportation du QRCode");
 });
