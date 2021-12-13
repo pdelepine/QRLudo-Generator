@@ -693,18 +693,51 @@ var sketch = function (p) {
 		return projet;
 	}
 
-	/** Fonction pour vérifier que l'histoire est correcte */
+	/** Fonction pour vérifier que l'histoire est correcte et ques tous les champs sont remplis*/
 	p.showError = function () {
 		let textNodes = [];
 		let questionNodes = [];
 
-		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		let errorNodes = [];
+
+		// Boucle pour mettre les questionNodes dans un array et les textNodes dans un autre 
 		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
-				textNodes.push(p.nodeArray[i]);
+				// On récupère les noeuds textes avec des champs vides
+				if(p.nodeArray[i].name == "" || p.nodeArray[i].description == ""){
+					p.nodeArray[i].containError = true;
+					errorNodes.push(p.nodeArray[i]);
+				}
+				else {
+					textNodes.push(p.nodeArray[i]);
+					p.nodeArray[i].containError = false;
+				}
 			} else {
+				// On récupère les noeuds questions avec des champs vides
+				if(p.nodeArray[i].name == "" || p.nodeArray[i].question == ""){
+					p.nodeArray[i].containError = true;
+					errorNodes.push(p.nodeArray[i]);
+				}
+				else {
+					for(j = 0; j < p.nodeArray[i].answers.length; ++j){
+						if(p.nodeArray[i].answers[j] == ""){
+							if(!p.nodeArray[i].containError) {
+								p.nodeArray[i].containError = true;
+								errorNodes.push(p.nodeArray[i]);
+							}
+						}
+					}
+					questionNodes.push(p.nodeArray[i]);
+					p.nodeArray[i].containError = false;
+				}
 				questionNodes.push(p.nodeArray[i]);
 			}
+		}
+
+		if(errorNodes.length > 0){
+			messageInfos("Attention un ou plusieurs noeuds possèdent des champs vides", "danger");
+			logger.error("Attention un ou plusieurs noeuds possèdent des champs vides");
+			return false;
 		}
 
 		let nbStartNode = 0; // Nombre de noeud d'introduction
@@ -716,13 +749,9 @@ var sketch = function (p) {
 			let y = entryDot.getPositionY();
 			let found = false;
 
-			console.log("textNode X: " + x + " textNode Y: " + y);
-
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
 				let linkY = p.linkArray[j].node2Dot.getPositionY();
-
-				console.log("link X: " + linkX + " link Y: " + linkY);
 
 				if (linkX == x && linkY == y) {
 					found = true;
@@ -740,13 +769,9 @@ var sketch = function (p) {
 			let y = entryDot.getPositionY();
 			let found = false;
 
-			console.log("questionNode X: " + x + " questionNode Y: " + y);
-
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
 				let linkY = p.linkArray[j].node2Dot.getPositionY();
-
-				console.log("link X: " + linkX + " link Y: " + linkY);
 
 				if (linkX == x && linkY == y) {
 					found = true;

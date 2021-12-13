@@ -18,6 +18,7 @@ class SGQuestionNode extends SGNode {
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
 		this.btn_discard_modification = null;
+		this.containError = false;
 	}
 
 	isMouseHover() {
@@ -53,20 +54,46 @@ class SGQuestionNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
-		let txt_Title = myP5.createElement('label', "Nom de la question :");
-		txt_Title.class('question-intro-label');
-		txt_Title.parent('displayQuestionZone');
-		let input_name = myP5.createInput(this.name);
-		input_name.id('input_node_name');
-		input_name.parent('displayQuestionZone');
+
+		// Si le champ name est vide on l'affiche en rouge
+		if(this.containError && this.name == ""){
+			let txt_Title = myP5.createElement('label', "Nom de la question :");
+			txt_Title.class('question-intro-label');
+			txt_Title.parent('displayQuestionZone');
+			let input_name = myP5.createInput(this.name);
+			input_name.id('input_node_name');
+			input_name.parent('displayQuestionZone');
+			input_name.style('border: 2px solid red');
+		}
+		else {
+			let txt_Title = myP5.createElement('label', "Nom de la question :");
+			txt_Title.class('question-intro-label');
+			txt_Title.parent('displayQuestionZone');
+			let input_name = myP5.createInput(this.name);
+			input_name.id('input_node_name');
+			input_name.parent('displayQuestionZone');
+		}
 
 		// Partie question
-		let txt_question = myP5.createElement('label', "Question :");
-		txt_question.class('control-label');
-		txt_question.parent('displayQuestionZone');
-		let input_question = myP5.createInput(this.question);
-		input_question.id('input_node_question');
-		input_question.parent('displayQuestionZone');
+
+		// Si le champ question est vide on l'affiche en rouge
+		if(this.containError && this.question == "") {
+			let txt_question = myP5.createElement('label', "Question :");
+			txt_question.class('control-label');
+			txt_question.parent('displayQuestionZone');
+			let input_question = myP5.createInput(this.question);
+			input_question.id('input_node_question');
+			input_question.parent('displayQuestionZone');
+			input_question.style('border: 2px solid red');
+		}
+		else {
+			let txt_question = myP5.createElement('label', "Question :");
+			txt_question.class('control-label');
+			txt_question.parent('displayQuestionZone');
+			let input_question = myP5.createInput(this.question);
+			input_question.id('input_node_question');
+			input_question.parent('displayQuestionZone');
+		}
 
 		// Ajout de l'audio
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
@@ -84,9 +111,17 @@ class SGQuestionNode extends SGNode {
 
 		// Ajout des réponses (Champ texte et Bouton de suppression)
 		for (let i = 0; i < this.answers.length; i++) {
-			let input_answer = myP5.createInput(this.answers[i]);
-			input_answer.id('input_node_answer_' + (i + 1));
-			input_answer.parent('displayQuestionZone');
+			if(this.containError && this.answers[i] == ""){
+				let input_answer = myP5.createInput(this.answers[i]);
+				input_answer.id('input_node_answer_' + (i + 1));
+				input_answer.parent('displayQuestionZone');
+				input_answer.style('border: 2px solid red');
+			}
+			else {
+				let input_answer = myP5.createInput(this.answers[i]);
+				input_answer.id('input_node_answer_' + (i + 1));
+				input_answer.parent('displayQuestionZone');
+			}
 
 			let btn_delete_answer = myP5.createButton("Supprimer Reponse " + (i + 1));
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl');
@@ -186,6 +221,8 @@ class SGQuestionNode extends SGNode {
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
 			self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
 		}
+		if(self.name != "" && self.question != "")
+			self.containError = false;
 	}
 
 	saveAudioModification() {
@@ -205,6 +242,10 @@ class SGQuestionNode extends SGNode {
 			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
+		else if(this.containError) {
+			myP5.stroke('red')
+			myP5.fill(235);
+		}
 		else
 			myP5.fill(235);
 		myP5.triangle(this.x, this.y, this.x + this.w, this.y, this.x + this.w / 2, this.y - this.h);
