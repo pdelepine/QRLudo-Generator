@@ -103,7 +103,7 @@ class FacadeController {
         // UserComment est un tag spécifique au Exif du JPEG et permet de mettre un string en valeur
         exif[piexif.ExifIFD.UserComment] = qrcode.getDataString().toString();
       }
-      
+
       let exifObj = { "Exif": exif };
       let exifBytes = piexif.dump(exifObj);                                 // Tranformation de l'obj exif en string
       let exifModified = piexif.insert(exifBytes, qrdata);                  // Insertion de l'exif string dans le dataURL du Jpeg
