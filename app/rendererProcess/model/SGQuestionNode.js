@@ -8,8 +8,8 @@ class SGQuestionNode extends SGNode {
 	 */
 	constructor(x, y, w, h) {
 		super(x, y, w, h);
-		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71],false);
-		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2],true)];
+		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71], false);
+		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2], true)];
 		this.name = "";
 		this.url = "";
 		this.question = "";
@@ -177,10 +177,10 @@ class SGQuestionNode extends SGNode {
 		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.question = document.getElementById('input_node_question').value;
-		
+
 		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
 		if (document.getElementById('input_node_question').name != null) {
-			if(self.question.substring(self.question.length - 3, self.question.length) == "mp3")
+			if (self.question.substring(self.question.length - 3, self.question.length) == "mp3")
 				self.url = document.getElementById('input_node_question').name;
 		}
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
@@ -215,7 +215,6 @@ class SGQuestionNode extends SGNode {
 		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y - this.h / 3);
 		myP5.pop();
 	}
-
 }
 
 module.exports = {
