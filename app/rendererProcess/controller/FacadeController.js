@@ -33,6 +33,7 @@ class FacadeController {
         divImg.removeChild(divImg.firstChild);
       }
 
+      // Ajout de version du format du JSON représentatif du qr code
       switch (qrcode.qrcode.type) {
         case "unique":
           qrcode.qrcode.version = '3';
@@ -47,13 +48,13 @@ class FacadeController {
           qrcode.qrcode.version = '3';
           break;
         case "ExerciceReconnaissanceVocaleQCM":
-          qrcode.qrcode.version = '4';
+          qrcode.qrcode.version = '6';
           break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
           break;
         case "SeriousGame":
-          qrcode.qrcode.version = '4';
+          qrcode.qrcode.version = '6';
           break;
         default:
           logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
@@ -78,6 +79,7 @@ class FacadeController {
           });
         } else {
           logger.info('FacadeController.genererQRCode | Génération du QR code sans compression');
+
           qr = new QRious({
             mime: "image/jpeg",
             size: 400,
@@ -94,7 +96,14 @@ class FacadeController {
 
       // Création de l'exif
       let exif = {};
-      exif[piexif.ExifIFD.UserComment] = qrcode.getDataString().toString(); // UserComment est un tag spécifique au Exif du JPEG et permet de mettre un string en valeur
+
+      if (qrcode.qrcode.type === "SeriousGame") {
+        exif[piexif.ExifIFD.UserComment] = qrcode.getJSONMetaData().toString();
+      } else {
+        // UserComment est un tag spécifique au Exif du JPEG et permet de mettre un string en valeur
+        exif[piexif.ExifIFD.UserComment] = qrcode.getDataString().toString();
+      }
+      
       let exifObj = { "Exif": exif };
       let exifBytes = piexif.dump(exifObj);                                 // Tranformation de l'obj exif en string
       let exifModified = piexif.insert(exifBytes, qrdata);                  // Insertion de l'exif string dans le dataURL du Jpeg
