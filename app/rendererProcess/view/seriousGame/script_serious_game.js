@@ -835,6 +835,94 @@ var sketch = function (p) {
 
 		return true;
 	}
+
+	/** Fonction pour créer les métadonnées qui serviront à reconstruire le Serious Game */
+	p.generateMetadata = function () {
+		// Liste de tri des nodes
+		let questionNodes = [];
+		let textNodes = [];
+
+		// Liste des nodes convertis en JSON pour les metadonnées
+		let questionNodesJSON = [];
+		let textNodesJSON = [];
+
+		// Tri des questionNode et des textNodes
+		for (let i = 0; i < p.nodeArray.length; ++i) {
+			if (p.nodeArray[i] instanceof SGTextNode) {
+				textNodes.push(p.nodeArray[i]);
+			} else {
+				questionNodes.push(p.nodeArray[i]);
+			}
+		}
+
+		// Traitement de textNodes
+		for (let i = 0; i < textNodes.length; ++i) {
+			// Le noeud relier à la sorti du textNode
+			let exitLink = "";
+
+			for (let z = 0; z < p.linkArray.length; ++z) {
+				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
+					next_node = p.linkArray[z].node2;
+					if (next_node instanceof SGQuestionNode)
+						exitLink = p.linkArray[z].node2.name;
+					else
+						exitLink = p.linkArray[z].node2.name;
+					break;
+				}
+			}
+
+			// Transformation du textNode
+			let textNode = {
+				name: textNodes[i].name,
+				text: textNodes[i].description,
+				url: textNodes[i].url,
+				x: textNodes[i].x,
+				y: textNodes[i].y,
+				exitLink: exitLink
+			}
+			textNodesJSON.push(textNode);
+		}
+
+		// Traitement de questionNodes
+		for (i = 0; i < questionNodes.length; ++i) {
+			let listeReponses = [];
+
+			for (j = 0; j < questionNodes[i].answers.length; ++j) {
+				let text = questionNodes[i].answers[j];
+				let exitLink = "";
+				for (z = 0; z < p.linkArray.length; ++z) {
+					if (questionNodes[i].exitDots[j].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
+						next_node = p.linkArray[z].node2;
+					}
+					exitLink = next_node.name;
+				}
+				let reponse = {
+					text: text,
+					exitLink: exitLink
+				}
+				listeReponses.push(reponse);
+			}
+
+			let questionNode = {
+				name: questionNodes[i].name,
+				textQuestion: questionNodes[i].question,
+				url: questionNodes[i].url,
+				reponses: listeReponses
+			};
+
+			questionNodesJSON.push(questionNode);
+		}
+
+		let qrMetadata = {
+			textNodes: textNodesJSON,
+			questionNodes: questionNodesJSON
+		};
+
+
+		logger.info(`SeriousGame | Metadonnée générées : ${JSON.stringify(qrMetaData)}`);
+
+		return qrMetadata;
+	}
 }
 
 
@@ -964,7 +1052,13 @@ function deleteGame() {
 }
 
 $("#generateSG").on('click', function () {
-	qr = myP5.generateJson();
+	let qr = myP5.generateJson();
+
+	// Ajout métadonnées
+	let qrMetaData = myP5.generateMetadata();
+
+	qr.setQrCodeMetadata(qrMetaData);
+
 	facade = new FacadeController();
 	if (myP5.showError()) {
 		facade.genererQRCode(document.getElementById("qrView"), qr);
@@ -977,7 +1071,7 @@ $("#saveQRCode").on('click', function () {
 	console.log(dialog);
 
 	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que son nom
-	 * Cela retourne le path du fichier 
+	 * Cela retourne le path du fichier
 	 */
 	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
 	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
