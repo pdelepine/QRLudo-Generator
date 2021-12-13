@@ -260,13 +260,13 @@ var sketch = function (p) {
 		p.nodeArray.forEach(n => n.update());
 
 		// On affiche les nodes
-		p.nodeArray.forEach(n => n.display());
+		p.nodeArray.forEach(n => { n.display(); n.displayDot() });
 
 		// On affiche les liens
 		p.linkArray.forEach(l => l.display());
 
 		// On affiche les dot des nodes
-		p.nodeArray.forEach(n => n.displayDot());
+		//p.nodeArray.forEach(n => n.displayDot());
 		p.pop();
 
 		// On dessine l'encadré lors de la création de node
@@ -388,7 +388,7 @@ var sketch = function (p) {
 					if (n.pressed()) {
 						p.nodeArray = p.nodeArray.filter(removeNode => removeNode != n);
 						p.nodeArray.push(n);
-						return;
+						break;
 					}
 				}
 			}
