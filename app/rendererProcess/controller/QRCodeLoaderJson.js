@@ -110,12 +110,13 @@ class QRCodeLoaderJson {
         qrcode = new QRCodeQuestionOuverte(qr.name, qr.data, qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
         break;
 
-      case "SeriousGameScenario":
-        qrcode = new QRCodeSeriousGame(qr.name, qr.introduction, qr.fin, qr.enigmes, qr.questionsQrCode, qr.questionRecoVocale, qr.color)
+      case "SeriousGame":
+        qrcode = new ProjetSeriousGame();
+        qrcode.setQrCodeMetadata(qr);
         break;
 
       default:
-        logger.info(`QR Code importé ${JSON.parse(qrcodeString).type} invalide`);
+        logger.error(`QR Code importé ${JSON.parse(qrcodeString).type} invalide`);
         throw "QR Code invalide";
     }
 

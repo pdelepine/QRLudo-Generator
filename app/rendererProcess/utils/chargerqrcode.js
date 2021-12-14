@@ -90,12 +90,8 @@ function drawQRCodeImport(qrcode) {
       $("#MessageMauvaisereponse").val(qrcode.getBadAnswer());
       store.set("sousOnglet", "question_ouverte");
     });
-  } else if (qrcode.getType() == 'SeriousGameScenario') {
+  } else if (qrcode.getType() == 'SeriousGame') {
     $("#charger-page").load(root + "/rendererProcess/view/seriousGame/seriousGame.html", function () {
-      $("#projectId").val(qrcode.getName());
-      $("#textAreaIntro").val(qrcode.getIntro());
-      $("#textAreaFin").val(qrcode.getEnd());
-      var projet = new ProjetSeriousGame(qrcode.getName(), qrcode.getQuestionQRCode(), qrcode.getQuestionRecoVocale());
       drawQRCodeSeriousGameEnigma(qrcode);
     });
   }
@@ -168,17 +164,76 @@ function drawQRCodeDataRecVocale(qrcode) {
 
 /** recréer les inputs d'un qrcode Scenario Serious Game */
 function drawQRCodeSeriousGameEnigma(qrcode) {
-  let enigmes = qrcode.getEnigmes();
-  console.log(qrcode);
-  for (var i = 0; i < enigmes.length; i++) {
-    if (i == 0) {
-      $("#enigme1").val(enigmes[i][1]);
+  let qrcodeMetadata = qrcode.qrcodeMetaData;
+  let textNodes = [];
+  let questionNodes = [];
+  let linkArray = [];
 
-    } else {
-      $("#ajouterEnigme").trigger("click");
-      $("input#enigme" + (i + 1)).val(enigmes[i][1]);
+  console.log(qrcodeMetadata);
+
+  // Création SGTextNode
+  for (let textNode of qrcodeMetadata.textNodes) {
+    console.log(textNode);
+    let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
+    qrTextNode.name = textNode.name;
+    qrTextNode.url = textNode.url;
+    qrTextNode.description = textNode.text;
+
+    textNodes.push(qrTextNode);
+  }
+
+  // Création SGQuestionNode
+  for (let questionNode of qrcodeMetadata.questionNodes) {
+    let qrQuestionNode = new SGQuestionNode(questionNode.x, questionNode.y, 100, 80);
+    qrQuestionNode.name = questionNode.name;
+    qrQuestionNode.url = questionNode.url;
+    qrQuestionNode.question = questionNode.textQuestion;
+
+    for (let answer of questionNode.reponses) {
+      qrQuestionNode.answers = [];
+      qrQuestionNode.answers.push(answer.text);
+    }
+
+    questionNodes.push(qrQuestionNode);
+  }
+
+  // Création des liens des textNode
+  for (let textNode of qrcodeMetadata.textNodes) {
+    let next_node = textNode.exitLink;
+    if (next_node) {
+      // Recherche si lier à un textNode
+      textNodes.forEach(n => {
+        if (n.name === next_node) {
+          textNodes.forEach(n2 => {
+            if (n2.name === textNode.name) {
+              let link = new SGLink(n2, n2.exitDots[0], n, n.entryDot);
+              linkArray.push(link);
+            }
+          });
+        }
+      });
+      // Recherche si lier à un questionNode
+      questionNodes.forEach(n => {
+        if (n.name === next_node) {
+          textNodes.forEach(n2 => {
+            if (n2.name === textNode.name) {
+              let link = new SGLink(n2, n2.exitDots[0], n, n.entryDot);
+              linkArray.push(link);
+            }
+          });
+        }
+      });
     }
   }
+
+  console.log(textNodes);
+  console.log(questionNodes);
+  console.log(linkArray);
+
+  // Ajout des nodes et link au dessin
+  textNodes.forEach(n => myP5.nodeArray.push(n));
+  questionNodes.forEach(n => myP5.nodeArray.push(n));
+  linkArray.forEach(l => myP5.linkArray.push(l));
 }
 
 
