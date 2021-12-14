@@ -907,19 +907,24 @@ var sketch = function (p) {
 				name: questionNodes[i].name,
 				textQuestion: questionNodes[i].question,
 				url: questionNodes[i].url,
-				reponses: listeReponses
+				reponses: listeReponses,
+				x: questionNodes[i].x,
+				y: questionNodes[i].y
 			};
 
 			questionNodesJSON.push(questionNode);
 		}
 
 		let qrMetadata = {
+			type: 'SeriousGame',
 			textNodes: textNodesJSON,
 			questionNodes: questionNodesJSON
 		};
 
+		console.log(qrMetadata);
 
-		logger.info(`SeriousGame | Metadonnée générées : ${JSON.stringify(qrMetaData)}`);
+
+		logger.info(`SeriousGame | Metadonnée générées : ${JSON.stringify(qrMetadata)}`);
 
 		return qrMetadata;
 	}
