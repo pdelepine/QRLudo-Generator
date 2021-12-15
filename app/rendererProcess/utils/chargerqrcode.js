@@ -169,11 +169,8 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   let questionNodes = [];
   let linkArray = [];
 
-  console.log(qrcodeMetadata);
-
   // Création SGTextNode
   for (let textNode of qrcodeMetadata.textNodes) {
-    console.log(textNode);
     let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
     qrTextNode.name = textNode.name;
     qrTextNode.url = textNode.url;
@@ -189,9 +186,10 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
     qrQuestionNode.url = questionNode.url;
     qrQuestionNode.question = questionNode.textQuestion;
 
-    for (let answer of questionNode.reponses) {
-      qrQuestionNode.answers = [];
-      qrQuestionNode.answers.push(answer.text);
+    for (let i = 0; i < questionNode.reponses.length; i++) {
+      // Il y a de base une réponse vide (avec son Dot) dans le questionNode, on utilise la fonction addAnswer pour ajouter une réponse et SGDot
+      if (i !== 0) SGQuestionNode.addAnswer(qrQuestionNode);
+      qrQuestionNode.answers[i] = questionNode.reponses[i].text;
     }
 
     questionNodes.push(qrQuestionNode);
@@ -226,9 +224,42 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
     }
   }
 
-  console.log(textNodes);
-  console.log(questionNodes);
-  console.log(linkArray);
+  // Création des liens des questionNode
+  for (let questionNode of qrcodeMetadata.questionNodes) {
+    // On parcourt les réponses du questionNode
+    for (let i = 0; i < questionNode.reponses.length; i++) {
+      let next_node = questionNode.reponses[i].exitLink;
+
+      if (next_node) {
+        // Recherche si la réponse est liée à un textNode
+        textNodes.forEach(n => {
+          // Si le nom du textNode correspond au Nom du noeud lier à l'exitLink
+          if (n.name === next_node) {
+            questionNodes.forEach(n2 => {
+              if (n2.name === questionNode.name) {
+                console.log(`Dot${n2.exitDots[i]}`);
+                let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
+                linkArray.push(link);
+              }
+            });
+          }
+        });
+        // Recherche si lier à un questionNode
+        questionNodes.forEach(n => {
+          // Si le nom du questionNode correspond au Nom du noeud lier à l'exitLink
+          if (n.name === next_node) {
+            questionNodes.forEach(n2 => {
+              if (n2.name === questionNode.name) {
+                console.log(n2.exitDots[i]);
+                let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
+                linkArray.push(link);
+              }
+            });
+          }
+        });
+      }
+    }
+  }
 
   // Ajout des nodes et link au dessin
   textNodes.forEach(n => myP5.nodeArray.push(n));
