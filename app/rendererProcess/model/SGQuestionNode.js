@@ -174,17 +174,20 @@ class SGQuestionNode extends SGNode {
 	}
 
 	static saveModification(self) {
-		/** Save all modifications into the class attributes */
-		self.name = document.getElementById('input_node_name').value;
-		self.question = document.getElementById('input_node_question').value;
 
-		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
-		if (document.getElementById('input_node_question').name != null) {
-			if (self.question.substring(self.question.length - 3, self.question.length) == "mp3")
-				self.url = document.getElementById('input_node_question').name;
-		}
-		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
-			self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
+		if (self.clicked === true) {
+			/** Save all modifications into the class attributes */
+			self.name = document.getElementById('input_node_name').value;
+			self.question = document.getElementById('input_node_question').value;
+
+			// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
+			if (document.getElementById('input_node_question').name != null) {
+				if (self.question.substring(self.question.length - 3, self.question.length) == "mp3")
+					self.url = document.getElementById('input_node_question').name;
+			}
+			for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
+				self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
+			}
 		}
 	}
 
