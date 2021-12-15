@@ -921,21 +921,27 @@ var sketch = function (p) {
 			questionNodes: questionNodesJSON
 		};
 
-		console.log(qrMetadata);
-
-
 		logger.info(`SeriousGame | Metadonnée générées : ${JSON.stringify(qrMetadata)}`);
 
 		return qrMetadata;
 	}
 }
 
-
+// Test pour savoir s'il existait déjà un sketch myP5 du SeriousGame
 if (typeof myP5 === 'undefined') {
 	var myP5 = new p5(sketch);
 } else {
+	// On récupère les données de l'ancien sketch
+	let metadata = { qrcodeMetaData: myP5.generateMetadata() };
+
+	// On détruit l'ancien sketch
 	myP5.remove();
+
+	// On crée un nouveau sketch
 	myP5 = new p5(sketch);
+
+	// On reconstruit l'ancien sketch sur le nouveau
+	drawQRCodeSeriousGameEnigma(metadata);
 }
 
 /** Fonction pour ajouter un fichier audio */
@@ -1075,7 +1081,7 @@ $("#generateSG").on('click', function () {
 $("#saveQRCode").on('click', function () {
 	console.log(dialog);
 
-	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que son nom
+	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
 	 * Cela retourne le path du fichier
 	 */
 	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
