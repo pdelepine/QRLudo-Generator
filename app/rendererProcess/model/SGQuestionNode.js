@@ -248,12 +248,24 @@ class SGQuestionNode extends SGNode {
 		}
 		else
 			myP5.fill(235);
+		if(this.name != ""){
+			this.w = myP5.textWidth(this.name) * 3;
+			this.entryDot.setPositionX(this.w / 2);
+			if(this.answers.length == 1){
+				this.exitDots[0].setPositionX(this.w / 2);
+			}
+			else {
+				for (var id_answer = 0; id_answer < this.answers.length; id_answer++) {
+					this.exitDots[id_answer].setPositionX((id_answer + 1) * this.w / (this.answers.length + 1));
+				}
+			}
+		}
 		myP5.triangle(this.x, this.y, this.x + this.w, this.y, this.x + this.w / 2, this.y - this.h);
 		myP5.fill(0);
 		myP5.noStroke();
 		myP5.textSize(20);
 		myP5.textFont('Helvetica');
-		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y - this.h / 3);
+		myP5.text(this.name, this.x + this.w / 2 - (myP5.textWidth(this.name) / 2), this.y - this.h / 4);
 		myP5.pop();
 	}
 

@@ -658,11 +658,8 @@ var sketch = function (p) {
 				for (z = 0; z < p.linkArray.length; ++z) {
 					if (questionNodes[i].exitDots[j].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 						next_node = p.linkArray[z].node2;
+						exitLink = next_node.name;
 					}
-					if (next_node instanceof SGTextNode)
-						exitLink = next_node.name;
-					if (next_node instanceof SGQuestionNode)
-						exitLink = next_node.name;
 				}
 				let reponse = {
 					text: text,
@@ -694,7 +691,7 @@ var sketch = function (p) {
 	}
 
 	/** Fonction pour vérifier que l'histoire est correcte et ques tous les champs sont remplis*/
-	p.showError = function () {
+	p.checkCorrectGeneration = function () {
 		let textNodes = [];
 		let questionNodes = [];
 
@@ -719,18 +716,18 @@ var sketch = function (p) {
 					errorNodes.push(p.nodeArray[i]);
 				}
 				else {
-					for(j = 0; j < p.nodeArray[i].answers.length; ++j){
-						if(p.nodeArray[i].answers[j] == ""){
-							if(!p.nodeArray[i].containError) {
-								p.nodeArray[i].containError = true;
-								errorNodes.push(p.nodeArray[i]);
-							}
-						}
-					}
 					questionNodes.push(p.nodeArray[i]);
 					p.nodeArray[i].containError = false;
 				}
-				questionNodes.push(p.nodeArray[i]);
+				// On récupère les réponses qui sont vides
+				for(j = 0; j < p.nodeArray[i].answers.length; ++j){
+					if(p.nodeArray[i].answers[j] == ""){
+						if(!p.nodeArray[i].containError) {
+							p.nodeArray[i].containError = true;
+							errorNodes.push(p.nodeArray[i]);
+						}
+					}
+				}
 			}
 		}
 
@@ -740,14 +737,16 @@ var sketch = function (p) {
 			return false;
 		}
 
-		let nbStartNode = 0; // Nombre de noeud d'introduction
+		//---- Gestion du noeud de départ ----//
+
+		let nbStartNode = 0; // Nombre de noeud d'introduction 
 
 		// On regarde s'il y a un noeud texte qui est un noeud de départ
 		for (i = 0; i < textNodes.length; ++i) {
 			entryDot = textNodes[i].entryDot;
 			let x = entryDot.getPositionX();
 			let y = entryDot.getPositionY();
-			let found = false;
+			let found = false; // Booléen pour savoir si on a trouvé un lien avec le noeud courant
 
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
@@ -758,8 +757,9 @@ var sketch = function (p) {
 				}
 			}
 
-			if (!found)
+			if(!found) {
 				++nbStartNode;
+			}
 		}
 
 		// On regarde s'il y a un noeud question qui est un noeud de départ
@@ -767,7 +767,7 @@ var sketch = function (p) {
 			entryDot = questionNodes[i].entryDot;
 			let x = entryDot.getPositionX();
 			let y = entryDot.getPositionY();
-			let found = false;
+			let found = false; // Booléen pour savoir si on a trouvé un lien avec le noeud courant
 
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node2Dot.getPositionX();
@@ -778,14 +778,15 @@ var sketch = function (p) {
 				}
 			}
 
-			if (!found)
+			if(!found) {
 				++nbStartNode;
+			}
 		}
 
 		// Il ne peut y avoir qu'un seul noeud de départ
 		if (nbStartNode == 0) {
 			messageInfos("Attention aucun noeud de départ n'est présent", "danger");
-			logger.error("Attention aucun noeud de départ n'est présents");
+			logger.error("Attention aucun noeud de départ n'est présent");
 			return false;
 		}
 		else if (nbStartNode > 1) {
@@ -794,6 +795,8 @@ var sketch = function (p) {
 			return false;
 		}
 
+		//---- Gestion du noeud de fin ----//
+
 		let nbEndNode = 0; // Nombre de noeud d'introduction
 
 		// On regarde s'il y a un noeud texte qui est un noeud de fin
@@ -801,15 +804,11 @@ var sketch = function (p) {
 			exitDot = textNodes[i].exitDots[0];
 			let x = exitDot.getPositionX();
 			let y = exitDot.getPositionY();
-			let found = false;
-
-			console.log("textNode X: " + x + " textNode Y: " + y);
+			let found = false; // Booléen pour savoir si on a trouvé un lien avec le noeud courant
 
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node1Dot.getPositionX();
 				let linkY = p.linkArray[j].node1Dot.getPositionY();
-
-				console.log("link X: " + linkX + " link Y: " + linkY);
 
 				if (linkX == x && linkY == y) {
 					found = true;
@@ -825,15 +824,11 @@ var sketch = function (p) {
 			exitDot = questionNodes[i].exitDots[0];
 			let x = exitDot.getPositionX();
 			let y = exitDot.getPositionY();
-			let found = false;
-
-			console.log("questionNode X: " + x + " questionNode Y: " + y);
+			let found = false; // Booléen pour savoir si on a trouvé un lien avec le noeud courant
 
 			for (j = 0; j < p.linkArray.length; ++j) {
 				let linkX = p.linkArray[j].node1Dot.getPositionX();
 				let linkY = p.linkArray[j].node1Dot.getPositionY();
-
-				console.log("link X: " + linkX + " link Y: " + linkY);
 
 				if (linkX == x && linkY == y) {
 					found = true;
@@ -857,6 +852,30 @@ var sketch = function (p) {
 			messageInfos("Attention plusieurs noeuds de fin sont présents", "danger");
 			logger.error("Attention plusieurs noeuds de fin sont présents");
 			return false;
+		}
+
+		//---- Gestion des réponses ----//
+
+		for (i = 0; i < questionNodes.length; ++i) {
+			for (j = 0; j < questionNodes[i].exitDots.length; ++j) {
+				let found = false; // Booléen pour savoir si on a trouvé un lien avec le noeud courant
+				let x = questionNodes[i].exitDots[j].getPositionX();
+				let y = questionNodes[i].exitDots[j].getPositionY();
+
+				for(z = 0; z < p.linkArray.length; ++z) {
+					let linkX = p.linkArray[z].node1Dot.getPositionX();
+					let linkY = p.linkArray[z].node1Dot.getPositionY();
+
+					if(linkX == x && linkY == y)
+						found = true
+				}
+
+				if(!found){
+					messageInfos("Attention une réponse n'est pas relié à un noeud", "danger");
+					logger.error("Attention une réponse n'est pas relié à un noeud");
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -992,7 +1011,7 @@ function deleteGame() {
 $("#generateSG").on('click', function () {
 	qr = myP5.generateJson();
 	facade = new FacadeController();
-	if (myP5.showError()) {
+	if (myP5.checkCorrectGeneration()) {
 		facade.genererQRCode(document.getElementById("qrView"), qr);
 		logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
 	}

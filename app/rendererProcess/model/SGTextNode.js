@@ -140,12 +140,17 @@ class SGTextNode extends SGNode {
 		}
 		else
 			myP5.fill(235);
+		if(this.name != ""){
+			this.w = myP5.textWidth(this.name) * 2;
+			this.entryDot.setPositionX(this.w / 2);
+			this.exitDots[0].setPositionX(this.w / 2);
+		}
 		myP5.rect(this.x, this.y, this.w, this.h);
 		myP5.fill(0);
 		myP5.noStroke();
 		myP5.textSize(20);
 		myP5.textFont('Helvetica');
-		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y + this.h / 1.8);
+		myP5.text(this.name, this.x + this.w / 2 - (myP5.textWidth(this.name) / 2), this.y + this.h / 1.8);
 		myP5.pop();
 	}
 
