@@ -16,7 +16,7 @@ class SGTextNode extends SGNode {
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
 		this.btn_discard_modification = null;
-
+		this.containError = false;
 	}
 
 	displayQuestionZone() {
@@ -29,20 +29,46 @@ class SGTextNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		/** Create an input related to the node title/name */
-		let txt_Title = myP5.createElement('label', "Nom de la forme :");
-		txt_Title.class('question-intro-label');
-		txt_Title.parent('displayQuestionZone');
-		let input_name = myP5.createInput(this.name);
-		input_name.id('input_node_name');
-		input_name.parent('displayQuestionZone');
+
+		// Si champ vide on met le champ en rouge
+		if(this.containError && this.name == ""){
+			let txt_Title = myP5.createElement('label', "Nom de la forme :");
+			txt_Title.class('question-intro-label');
+			txt_Title.parent('displayQuestionZone');
+			let input_name = myP5.createInput(this.name);
+			input_name.id('input_node_name');
+			input_name.parent('displayQuestionZone');
+			input_name.style('border: 2px solid red');
+		}
+		else {
+			let txt_Title = myP5.createElement('label', "Nom de la forme :");
+			txt_Title.class('question-intro-label');
+			txt_Title.parent('displayQuestionZone');
+			let input_name = myP5.createInput(this.name);
+			input_name.id('input_node_name');
+			input_name.parent('displayQuestionZone');
+		}
 
 		/** Create an input related to the text to play (audio) */
-		let txt_Description = myP5.createElement('label', "Champ texte à lire :");
-		txt_Description.class('question-intro-label');
-		txt_Description.parent('displayQuestionZone');
-		let input_description = myP5.createInput(this.description);
-		input_description.id('input_node_description');
-		input_description.parent('displayQuestionZone');
+
+		// Si champ vide on met le champ en rouge
+		if(this.containError && this.description == ""){
+			let txt_Description = myP5.createElement('label', "Champ texte à lire :");
+			txt_Description.class('question-intro-label');
+			txt_Description.parent('displayQuestionZone');
+			let input_description = myP5.createInput(this.description);
+			input_description.id('input_node_description');
+			input_description.parent('displayQuestionZone');
+			input_description.style('border: 1px solid red');
+		}
+		else {
+			let txt_Description = myP5.createElement('label', "Champ texte à lire :");
+			txt_Description.class('question-intro-label');
+			txt_Description.parent('displayQuestionZone');
+			let input_description = myP5.createInput(this.description);
+			input_description.id('input_node_description');
+			input_description.parent('displayQuestionZone');
+		}
 
 		/** Create the button to add an audio file */
 		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
@@ -87,6 +113,8 @@ class SGTextNode extends SGNode {
 			if(self.description.substring(self.description.length - 3, self.description.length) == "mp3")
 				self.url = document.getElementById('input_node_description').name;
 		}
+		if(self.name != "" && self.description != "")
+			self.containError = false;
 	}
 
 	saveAudioModification() {
@@ -106,14 +134,23 @@ class SGTextNode extends SGNode {
 			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
+		else if(this.containError) {
+			myP5.stroke('red')
+			myP5.fill(235);
+		}
 		else
 			myP5.fill(235);
+		if(this.name != ""){
+			this.w = myP5.textWidth(this.name) * 2;
+			this.entryDot.setPositionX(this.w / 2);
+			this.exitDots[0].setPositionX(this.w / 2);
+		}
 		myP5.rect(this.x, this.y, this.w, this.h);
 		myP5.fill(0);
 		myP5.noStroke();
 		myP5.textSize(20);
 		myP5.textFont('Helvetica');
-		myP5.text(this.name, this.x + this.w / 2 - 5.7 * this.name.length, this.y + this.h / 1.8);
+		myP5.text(this.name, this.x + this.w / 2 - (myP5.textWidth(this.name) / 2), this.y + this.h / 1.8);
 		myP5.pop();
 	}
 
