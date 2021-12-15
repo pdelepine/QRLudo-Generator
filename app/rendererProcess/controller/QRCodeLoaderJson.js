@@ -61,7 +61,7 @@ class QRCodeLoaderJson {
    */
   static convertJSONStringToQR(qrcodeString, callback) {
 
-    logger.info(`QRCodeLoaderJson.loadImage | Essaie tranformation des données ${qrcodeString}`);
+    logger.info(`QRCodeLoaderJson.loadImage | Essaie tranformation des données`);
     let qrcode;
     let qr;
 
@@ -120,8 +120,7 @@ class QRCodeLoaderJson {
         throw "QR Code invalide";
     }
 
-    logger.info(`QR Code chargé avec succès : ${JSON.stringify(qrcode)}`);
-    console.log("QR code restauré : ", qrcode);
+    logger.info(`QRCodeLoaderJson.convertJSONStringToQR | QR Code chargé avec succès : ${JSON.stringify(qrcode)}`);
 
     if (callback)
       callback(qrcode);
