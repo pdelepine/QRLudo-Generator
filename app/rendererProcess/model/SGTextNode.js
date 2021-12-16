@@ -29,66 +29,64 @@ class SGTextNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		/** Create an input related to the node title/name */
-
+		let txt_Title = myP5.createElement('label', "Nom de la forme :");
+		txt_Title.class('titre-serious-label');
+		txt_Title.parent('displayQuestionZone');
+		let input_name = myP5.createInput(this.name);
+		input_name.id('input_node_name');
+		input_name.parent('displayQuestionZone');
+		input_name.class('text-titre-input input-lg');
+		input_name.attribute('placeholder', 'Nom de la forme')
 		// Si champ vide on met le champ en rouge
-		if(this.containError && this.name == ""){
-			let txt_Title = myP5.createElement('label', "Nom de la forme :");
-			txt_Title.class('question-intro-label');
-			txt_Title.parent('displayQuestionZone');
-			let input_name = myP5.createInput(this.name);
-			input_name.id('input_node_name');
-			input_name.parent('displayQuestionZone');
+		if(this.containError && this.name == "")
 			input_name.style('border: 2px solid red');
-		}
-		else {
-			let txt_Title = myP5.createElement('label', "Nom de la forme :");
-			txt_Title.class('question-intro-label');
-			txt_Title.parent('displayQuestionZone');
-			let input_name = myP5.createInput(this.name);
-			input_name.id('input_node_name');
-			input_name.parent('displayQuestionZone');
-		}
-
 		/** Create an input related to the text to play (audio) */
+		let txt_Description = myP5.createElement('label', "Champ texte à lire :");
+		txt_Description.class('titre-serious-label');
+		txt_Description.parent('displayQuestionZone');
 
+		let div_description = myP5.createDiv();
+		div_description.id('div_description');
+		div_description.class('d-flex align-items-start');
+		div_description.parent('displayQuestionZone');
+
+		let input_description = myP5.createInput(this.description);
+		input_description.id('input_node_description');
+		input_description.parent('div_description');
+		input_description.class('description-serious-input input-lg');
+		input_description.attribute('placeholder', 'Texte du champ à lire')
 		// Si champ vide on met le champ en rouge
-		if(this.containError && this.description == ""){
-			let txt_Description = myP5.createElement('label', "Champ texte à lire :");
-			txt_Description.class('question-intro-label');
-			txt_Description.parent('displayQuestionZone');
-			let input_description = myP5.createInput(this.description);
-			input_description.id('input_node_description');
-			input_description.parent('displayQuestionZone');
+		if(this.containError && this.description == "")
 			input_description.style('border: 1px solid red');
-		}
-		else {
-			let txt_Description = myP5.createElement('label', "Champ texte à lire :");
-			txt_Description.class('question-intro-label');
-			txt_Description.parent('displayQuestionZone');
-			let input_description = myP5.createInput(this.description);
-			input_description.id('input_node_description');
-			input_description.parent('displayQuestionZone');
-		}
 
 		/** Create the button to add an audio file */
-		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
+		this.btn_add_audio = myP5.createButton('Audio');
 		this.btn_add_audio.mousePressed(() => { SGTextNode.addAudio(self); });
 		this.btn_add_audio.attribute('data-target', '#listeMusic');
 		this.btn_add_audio.attribute('data-toggle', 'modal');
-		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
-		this.btn_add_audio.parent('displayQuestionZone');
+		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl btn-audio');
+		this.btn_add_audio.id('btn_add_audio');
+		let icon_audio = myP5.createElement('i');
+		icon_audio.class('fa fa-music');
+		icon_audio.parent('btn_add_audio');
+		this.btn_add_audio.parent('div_description');
+
+		let div_btn = myP5.createDiv();
+		div_btn.id('div_btn');
+		div_btn.class('div-serious-btn align-items-start d-flex');
+		div_btn.parent('displayQuestionZone');
 
 		/** Create a button to discard all modifications */
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.mousePressed(() => { SGTextNode.discardModification(self); });
 		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_discard_modification.parent('displayQuestionZone');
+		this.btn_discard_modification.parent('div_btn');
 
 		/** Create a button to save all the modifications */
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
 		this.btn_save_modification.mousePressed(() => { SGTextNode.saveModification(self); });
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_save_modification.parent('displayQuestionZone');
+		this.btn_save_modification.parent('div_btn');
 
 	}
 

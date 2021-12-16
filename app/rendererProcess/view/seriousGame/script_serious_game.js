@@ -604,7 +604,7 @@ var sketch = function (p) {
 		let textNodesJson = [];
 		let questionNodesJson = [];
 
-		//mettre les questionNodes dans un array et les textNodes dans un autre 
+		//mettre les questionNodes dans un array et les textNodes dans un autre
 		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				textNodes.push(p.nodeArray[i]);
@@ -696,11 +696,11 @@ var sketch = function (p) {
 
 		let errorNodes = [];
 
-		// Boucle pour mettre les questionNodes dans un array et les textNodes dans un autre 
+		// Boucle pour mettre les questionNodes dans un array et les textNodes dans un autre
 		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				// On récupère les noeuds textes avec des champs vides
-				if(p.nodeArray[i].name == "" || p.nodeArray[i].description == ""){
+				if(p.nodeArray[i].name == "" || p.nodeArray[i].description == "") {
 					p.nodeArray[i].containError = true;
 					errorNodes.push(p.nodeArray[i]);
 				}
@@ -710,7 +710,7 @@ var sketch = function (p) {
 				}
 			} else {
 				// On récupère les noeuds questions avec des champs vides
-				if(p.nodeArray[i].name == "" || p.nodeArray[i].question == ""){
+				if(p.nodeArray[i].name == "" || p.nodeArray[i].question == "") {
 					p.nodeArray[i].containError = true;
 					errorNodes.push(p.nodeArray[i]);
 				}
@@ -719,8 +719,8 @@ var sketch = function (p) {
 					p.nodeArray[i].containError = false;
 				}
 				// On récupère les réponses qui sont vides
-				for(j = 0; j < p.nodeArray[i].answers.length; ++j){
-					if(p.nodeArray[i].answers[j] == ""){
+				for(j = 0; j < p.nodeArray[i].answers.length; ++j) {
+					if(p.nodeArray[i].answers[j] == "") {
 						if(!p.nodeArray[i].containError) {
 							p.nodeArray[i].containError = true;
 							errorNodes.push(p.nodeArray[i]);
@@ -738,7 +738,7 @@ var sketch = function (p) {
 
 		//---- Gestion du noeud de départ ----//
 
-		let nbStartNode = 0; // Nombre de noeud d'introduction 
+		let nbStartNode = 0; // Nombre de noeud d'introduction
 
 		// On regarde s'il y a un noeud texte qui est un noeud de départ
 		for (i = 0; i < textNodes.length; ++i) {

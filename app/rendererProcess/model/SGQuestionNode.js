@@ -49,105 +49,115 @@ class SGQuestionNode extends SGNode {
 
 		// Création du div de la zone
 		this.questionZone = myP5.createDiv();
-		this.questionZone.id('displayQuestionZone')
+		this.questionZone.id('displayQuestionZone');
 		this.questionZone.class('question');
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
-
+		let txt_Title = myP5.createElement('label', "Nom de la question :");
+		txt_Title.class('titre-serious-label');
+		txt_Title.parent('displayQuestionZone');
+		let input_name = myP5.createInput(this.name);
+		input_name.id('input_node_name');
+		input_name.class('text-titre-input input-lg')
+		input_name.parent('displayQuestionZone');
+		input_name.attribute('placeholder', 'Nom de la question')
 		// Si le champ name est vide on l'affiche en rouge
-		if(this.containError && this.name == ""){
-			let txt_Title = myP5.createElement('label', "Nom de la question :");
-			txt_Title.class('question-intro-label');
-			txt_Title.parent('displayQuestionZone');
-			let input_name = myP5.createInput(this.name);
-			input_name.id('input_node_name');
-			input_name.parent('displayQuestionZone');
+		if(this.containError && this.name == "")
 			input_name.style('border: 2px solid red');
-		}
-		else {
-			let txt_Title = myP5.createElement('label', "Nom de la question :");
-			txt_Title.class('question-intro-label');
-			txt_Title.parent('displayQuestionZone');
-			let input_name = myP5.createInput(this.name);
-			input_name.id('input_node_name');
-			input_name.parent('displayQuestionZone');
-		}
 
 		// Partie question
+		let txt_question = myP5.createElement('label', "Question :");
+		txt_question.class('titre-serious-label');
+		txt_question.parent('displayQuestionZone');
 
+		let div_question = myP5.createDiv();
+		div_question.id('div_question');
+		div_question.class('d-flex align-items-start');
+		div_question.parent('displayQuestionZone');
+
+		let input_question = myP5.createInput(this.question);
+		input_question.id('input_node_question');
+		input_question.class('text-titre-input input-lg')
+		input_question.attribute('placeholder', 'Texte de la question')
+		input_question.parent('div_question');
 		// Si le champ question est vide on l'affiche en rouge
-		if(this.containError && this.question == "") {
-			let txt_question = myP5.createElement('label', "Question :");
-			txt_question.class('control-label');
-			txt_question.parent('displayQuestionZone');
-			let input_question = myP5.createInput(this.question);
-			input_question.id('input_node_question');
-			input_question.parent('displayQuestionZone');
+		if(this.containError && this.question == "")
 			input_question.style('border: 2px solid red');
-		}
-		else {
-			let txt_question = myP5.createElement('label', "Question :");
-			txt_question.class('control-label');
-			txt_question.parent('displayQuestionZone');
-			let input_question = myP5.createInput(this.question);
-			input_question.id('input_node_question');
-			input_question.parent('displayQuestionZone');
-		}
 
 		// Ajout de l'audio
-		this.btn_add_audio = myP5.createButton('Ajouter de l\'audio');
-		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl');
-		this.btn_add_audio.id('btn_add_audio');
+		this.btn_add_audio = myP5.createButton('Audio');
+		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl btn-audio');
+		this.btn_add_audio.id('btn_add_audio_question');
 		this.btn_add_audio.attribute('data-target', '#listeMusic');
 		this.btn_add_audio.attribute('data-toggle', 'modal');
 		this.btn_add_audio.mousePressed(() => { SGQuestionNode.addAudio(self); });
-		this.btn_add_audio.parent('displayQuestionZone');
+		this.btn_add_audio.parent('div_question');
+		let icon_audio = myP5.createElement('i');
+		icon_audio.class('fa fa-music');
+		icon_audio.parent('btn_add_audio_question');
 
 		// Partie réponses
 		let txt_answers = myP5.createElement('label', "Réponses :");
-		txt_answers.class('control-label');
+		txt_answers.class('titre-serious-label');
 		txt_answers.parent('displayQuestionZone');
 
 		// Ajout des réponses (Champ texte et Bouton de suppression)
 		for (let i = 0; i < this.answers.length; i++) {
-			if(this.containError && this.answers[i] == ""){
-				let input_answer = myP5.createInput(this.answers[i]);
-				input_answer.id('input_node_answer_' + (i + 1));
-				input_answer.parent('displayQuestionZone');
-				input_answer.style('border: 2px solid red');
-			}
-			else {
-				let input_answer = myP5.createInput(this.answers[i]);
-				input_answer.id('input_node_answer_' + (i + 1));
-				input_answer.parent('displayQuestionZone');
-			}
 
-			let btn_delete_answer = myP5.createButton("Supprimer Reponse " + (i + 1));
-			btn_delete_answer.class('btn btn-outline-success btn-unique-xl');
+			let div_reponse = myP5.createDiv();
+			div_reponse.id('div_reponse');
+			div_reponse.class('d-flex align-items-start');
+			div_reponse.parent('displayQuestionZone');
+
+			let input_answer = myP5.createInput(this.answers[i]);
+			input_answer.id('input_node_answer_' + (i + 1));
+			input_answer.class('text-titre-input input-lg')
+			input_answer.attribute('placeholder', 'Texte de la réponse')
+			input_answer.parent('div_reponse');
+
+			if(this.containError && this.answers[i] == "")
+				input_answer.style('border: 2px solid red');
+
+			let btn_delete_answer = myP5.createButton('');
+			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
 			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
-			btn_delete_answer.parent('displayQuestionZone');
-
+			btn_delete_answer.parent('div_reponse');
+			let icon_trash = myP5.createElement('i');
+			icon_trash.class('fa fa-trash');
+			icon_trash.parent('btn_delete_answer_' + (i + 1));
 		}
 
 		if (this.answers.length < 5) {
-			this.btn_add_answer = myP5.createButton("Ajouter une réponse");
-			this.btn_add_answer.class('btn btn-outline-success btn-unique-xl');
+			let btn_add_answer_div = myP5.createDiv('')
+			btn_add_answer_div.id('btn_add_answer_div')
+			btn_add_answer_div.class('form-group col-md-6 div-serious-add-answer')
+			btn_add_answer_div.parent('displayQuestionZone')
+			this.btn_add_answer = myP5.createButton('Ajouter une réponse ')
+			this.btn_add_answer.id('btn_add_answer')
+			this.btn_add_answer.class('btn btn-outline-success align-self-center btn_add_answer');
 			this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
-			this.btn_add_answer.parent('displayQuestionZone');
+			this.btn_add_answer.parent('btn_add_answer_div');
+			let icon_plus = myP5.createElement('i');
+			icon_plus.class('fas fa-plus-square');
+			icon_plus.parent('btn_add_answer');
 		}
 
+		let div_btn = myP5.createDiv();
+		div_btn.id('div_btn');
+		div_btn.class('div-serious-btn align-items-start d-flex');
+		div_btn.parent('displayQuestionZone');
 
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_discard_modification.mousePressed(() => { SGQuestionNode.discardModification(self); });
-		this.btn_discard_modification.parent('displayQuestionZone');
+		this.btn_discard_modification.parent('div_btn');
 
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
-		this.btn_save_modification.parent('displayQuestionZone');
+		this.btn_save_modification.parent('div_btn');
 
 	}
 
@@ -171,7 +181,7 @@ class SGQuestionNode extends SGNode {
 	}
 	/**
 	 * Supprime une réponse de la zone Question ainsi que les ExitDot
-	 * @param {SGQuestionNode} self , l'instance SGQuestionNode qui s'affiche dans la zone 
+	 * @param {SGQuestionNode} self , l'instance SGQuestionNode qui s'affiche dans la zone
 	 * @param {integer} indice , l'indice de la réponse dans la liste answers de self
 	 */
 	static deleteAnswer(self, indice) {
