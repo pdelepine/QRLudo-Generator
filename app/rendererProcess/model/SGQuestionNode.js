@@ -50,7 +50,8 @@ class SGQuestionNode extends SGNode {
 		// Création du div de la zone
 		this.questionZone = myP5.createDiv();
 		this.questionZone.id('displayQuestionZone');
-		this.questionZone.class('question');
+		this.questionZone.class('question scrollbar-success');
+		this.questionZone.style('height:400px; overflow-y: scroll;')
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
@@ -105,16 +106,17 @@ class SGQuestionNode extends SGNode {
 		// Ajout des réponses (Champ texte et Bouton de suppression)
 		for (let i = 0; i < this.answers.length; i++) {
 
-			let div_reponse = myP5.createDiv();
-			div_reponse.id('div_reponse');
-			div_reponse.class('d-flex align-items-start');
-			div_reponse.parent('displayQuestionZone');
+			let div_answer = myP5.createDiv();
+			div_answer.id('div_answer_' + (i + 1));
+			div_answer.class('d-flex align-items-start');
+			div_answer.style('margin-bottom:5px')
+			div_answer.parent('displayQuestionZone');
 
 			let input_answer = myP5.createInput(this.answers[i]);
 			input_answer.id('input_node_answer_' + (i + 1));
 			input_answer.class('text-titre-input input-lg')
 			input_answer.attribute('placeholder', 'Texte de la réponse')
-			input_answer.parent('div_reponse');
+			input_answer.parent('div_answer_' + (i + 1));
 
 			if(this.containError && this.answers[i] == "")
 				input_answer.style('border: 2px solid red');
@@ -123,7 +125,7 @@ class SGQuestionNode extends SGNode {
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
 			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
-			btn_delete_answer.parent('div_reponse');
+			btn_delete_answer.parent('div_answer_' + (i + 1));
 			let icon_trash = myP5.createElement('i');
 			icon_trash.class('fa fa-trash');
 			icon_trash.parent('btn_delete_answer_' + (i + 1));
@@ -262,7 +264,10 @@ class SGQuestionNode extends SGNode {
 		else
 			myP5.fill(235);
 		if(this.name != ""){
-			this.w = myP5.textWidth(this.name) * 3;
+			if((myP5.textWidth(this.name) * 3) > 100)
+				this.w = myP5.textWidth(this.name) * 3;
+			else
+				this.w = 100;
 			this.entryDot.setPositionX(this.w / 2);
 			if(this.answers.length == 1){
 				this.exitDots[0].setPositionX(this.w / 2);

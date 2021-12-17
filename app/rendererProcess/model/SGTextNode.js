@@ -139,7 +139,11 @@ class SGTextNode extends SGNode {
 		else
 			myP5.fill(235);
 		if(this.name != ""){
-			this.w = myP5.textWidth(this.name) * 2;
+			if((myP5.textWidth(this.name) * 2) > 100)
+				this.w = myP5.textWidth(this.name) * 2;
+			else
+				this.w = 100;
+
 			this.entryDot.setPositionX(this.w / 2);
 			this.exitDots[0].setPositionX(this.w / 2);
 		}
