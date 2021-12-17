@@ -151,7 +151,7 @@ var sketch = function (p) {
 
 		/** Déclaration du bouton de création de TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
-		p.buttonCreateTextNode.position(15, 125);
+		p.buttonCreateTextNode.position(15, - p.seriousGameCanvas.height, 'relative');
 		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateTextNode.size(40);
 		p.buttonCreateTextNode.attribute('title', 'Créer un texte');
@@ -161,7 +161,7 @@ var sketch = function (p) {
 
 		/** Déclaration du bouton de création de QuestionNode */
 		p.buttonCreateQuestion = p.createButton('?');
-		p.buttonCreateQuestion.position(15, 165);
+		p.buttonCreateQuestion.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
 		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateQuestion.size(40);
 		p.buttonCreateQuestion.attribute('title', 'Créer une question');
@@ -170,7 +170,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de création de lien */
 		p.buttonCreateLink = p.createButton('');
 		p.buttonCreateLink.id('btn-create-link');
-		p.buttonCreateLink.position(15, 205);
+		p.buttonCreateLink.position(- 65, - p.seriousGameCanvas.height + 80, 'relative');
 		p.buttonCreateLink.size(40);
 		p.buttonCreateLink.attribute('title', 'Créer un lien');
 		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.switchButtonState(p.CursorState.CREATELINK); p.getCursor(); })
@@ -185,7 +185,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de suppression */
 		p.buttonEraser = p.createButton('');
 		p.buttonEraser.id('btn-eraser');
-		p.buttonEraser.position(15, 245);
+		p.buttonEraser.position(- 105, - p.seriousGameCanvas.height + 120, 'relative');
 		p.buttonEraser.size(40);
 		p.buttonEraser.attribute('title', 'Supprimer');
 		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.switchButtonState(p.CursorState.ERASING); p.getCursor(); });
@@ -200,7 +200,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de sélection */
 		p.buttonMouseSelection = p.createButton('');
 		p.buttonMouseSelection.id('btn-mouse-selection');
-		p.buttonMouseSelection.position(15, 285);
+		p.buttonMouseSelection.position(-145, - p.seriousGameCanvas.height + 160, 'relative');
 		p.buttonMouseSelection.size(40);
 		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
 		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.switchButtonState(p.CursorState.SELECTION); p.getCursor(); });
@@ -215,7 +215,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de déplacement */
 		p.buttonMouseDisplacement = p.createButton('');
 		p.buttonMouseDisplacement.id('btn-mouse-displacement');
-		p.buttonMouseDisplacement.position(15, 325);
+		p.buttonMouseDisplacement.position(-185, - p.seriousGameCanvas.height + 200, 'relative');
 		p.buttonMouseDisplacement.size(40);
 		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
 		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.switchButtonState(p.CursorState.DISPLACEMENT); });
@@ -236,6 +236,8 @@ var sketch = function (p) {
 		});
 		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
 		p.sliderZoom.parent("seriousGameDiagram");
+		// Positionnemnt du slider en bas à droite
+		p.sliderZoom.position(p.seriousGameCanvas.position().x + p.seriousGameCanvas.size().width - 170, p.seriousGameCanvas.position().y + p.seriousGameCanvas.size().height - 20);
 
 	}
 
@@ -283,8 +285,6 @@ var sketch = function (p) {
 		p.rect(0, 0, p.parentDiv.width, p.parentDiv.height);
 		p.pop();
 
-		// Positionnemnt du slider en bas à droite
-		p.sliderZoom.position((p.width) - 170, (p.height) + 90);
 		// Change la valeur du slider si on zoome ou dézoome avec la molette de la souris
 		p.sliderZoom.value((p.zoom) * 100);
 
@@ -503,6 +503,7 @@ var sketch = function (p) {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
+		p.sliderZoom.position(p.seriousGameCanvas.position().x + p.seriousGameCanvas.size().width - 170, p.seriousGameCanvas.position().y + p.seriousGameCanvas.size().height - 20);
 	}
 
 	/** Transforme le curseur selon l'état activé */
@@ -700,7 +701,7 @@ var sketch = function (p) {
 		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				// On récupère les noeuds textes avec des champs vides
-				if(p.nodeArray[i].name == "" || p.nodeArray[i].description == "") {
+				if (p.nodeArray[i].name == "" || p.nodeArray[i].description == "") {
 					p.nodeArray[i].containError = true;
 					errorNodes.push(p.nodeArray[i]);
 				}
@@ -710,7 +711,7 @@ var sketch = function (p) {
 				}
 			} else {
 				// On récupère les noeuds questions avec des champs vides
-				if(p.nodeArray[i].name == "" || p.nodeArray[i].question == "") {
+				if (p.nodeArray[i].name == "" || p.nodeArray[i].question == "") {
 					p.nodeArray[i].containError = true;
 					errorNodes.push(p.nodeArray[i]);
 				}
@@ -719,9 +720,9 @@ var sketch = function (p) {
 					p.nodeArray[i].containError = false;
 				}
 				// On récupère les réponses qui sont vides
-				for(j = 0; j < p.nodeArray[i].answers.length; ++j) {
-					if(p.nodeArray[i].answers[j] == "") {
-						if(!p.nodeArray[i].containError) {
+				for (j = 0; j < p.nodeArray[i].answers.length; ++j) {
+					if (p.nodeArray[i].answers[j] == "") {
+						if (!p.nodeArray[i].containError) {
 							p.nodeArray[i].containError = true;
 							errorNodes.push(p.nodeArray[i]);
 						}
@@ -730,7 +731,7 @@ var sketch = function (p) {
 			}
 		}
 
-		if(errorNodes.length > 0){
+		if (errorNodes.length > 0) {
 			messageInfos("Attention un ou plusieurs noeuds possèdent des champs vides", "danger");
 			logger.error("Attention un ou plusieurs noeuds possèdent des champs vides");
 			return false;
@@ -756,7 +757,7 @@ var sketch = function (p) {
 				}
 			}
 
-			if(!found) {
+			if (!found) {
 				++nbStartNode;
 			}
 		}
@@ -777,7 +778,7 @@ var sketch = function (p) {
 				}
 			}
 
-			if(!found) {
+			if (!found) {
 				++nbStartNode;
 			}
 		}
@@ -861,15 +862,15 @@ var sketch = function (p) {
 				let x = questionNodes[i].exitDots[j].getPositionX();
 				let y = questionNodes[i].exitDots[j].getPositionY();
 
-				for(z = 0; z < p.linkArray.length; ++z) {
+				for (z = 0; z < p.linkArray.length; ++z) {
 					let linkX = p.linkArray[z].node1Dot.getPositionX();
 					let linkY = p.linkArray[z].node1Dot.getPositionY();
 
-					if(linkX == x && linkY == y)
+					if (linkX == x && linkY == y)
 						found = true
 				}
 
-				if(!found){
+				if (!found) {
 					messageInfos("Attention une réponse n'est pas relié à un noeud", "danger");
 					logger.error("Attention une réponse n'est pas relié à un noeud");
 					return false;
@@ -1153,7 +1154,7 @@ $("#saveQRCode").on('click', function () {
 });
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
-$("#infos-serious-game").on('click',function () {
+$("#infos-serious-game").on('click', function () {
 	remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
 	$("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
-  });
+});
