@@ -206,14 +206,113 @@
 
 
       <div class="tab-pane" id="info-serious-game">
-        <h5>Comment utiliser les Serious Game ?</h5>
+        <h5>Comment utiliser le Serious Game ?</h5>
         <hr>
 
-        <h5><a href="#affichageVideoSeriousGame" id="buttonAffichageVideoSeriousGame">Vidéo explicative</a></h5>
-        <div id="affichageVideoSeriousGame" class="info-content">
-          <iframe id="videoSeriousGame" width="560" height="315" src="https://www.youtube.com/embed/10bE3uU1-MI" frameborder="0"
+        <h5><a href="#affichageTexteExplicatifSeriousGame" id="buttonAffichageTexteExplicatifSeriousGame">Texte explicatif</a></h5>
+        <div id="affichageTexteExplicatifSeriousGame" class="info-content">
+          <!--<iframe id="videoSeriousGame" width="560" height="315" src="https://www.youtube.com/embed/10bE3uU1-MI" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
+            allowfullscreen></iframe> -->
+          <ul>
+            <li>Pour accéder à l'exercice Serious Game il faut cliquer sur l'icône suivante :     <img src="../rendererProcess/assets/images/infos_serious_game/boutonSeriousGame.png"></li>
+            <li><br /></li>
+            <li>La zone de création de l'exercice va alors s'afficher :
+              <br />
+              <img src="../rendererProcess/assets/images/infos_serious_game/zoneSeriousGame.png" height="500px">
+            </li>
+            <li><br /></li>
+            <li>L'objectif de cette exercice est de pouvoir créer une histoire composée d'énigmes.</li>
+            <li>Pour cela vous avez à votre dispostion une palette qui permet de créer les différentes étapes de l'histoire par le biais de noeuds et de flèches.</li>
+            <li>
+              <table>
+                <tr>
+                  <td>
+                    <img src="../rendererProcess/assets/images/infos_serious_game/paletteSeriousGame.png" height="280px">
+                  </td>
+                  <td>
+                    <ol>
+                      <li>Un bouton pour créer un noeud de texte</li>
+                      <br />
+                      <li>Un bouton pour créer un noeud de question</li>
+                      <br />
+                      <li>Un bouton pour créer une flèche entre deux éléments</li>
+                      <br />
+                      <li>Un bouton pour supprimer un élément</li>
+                      <br />
+                      <li>Un bouton pour selectionner un élément</li>
+                      <br />
+                      <li>Un bouton pour se déplacer sur la zone de dessin</li>
+                    </ol>
+                  </td>
+                </tr>
+              </table>
+            </li>
+            <br />
+            <li>Pour chacun de ces boutons vous devez cliquer sur la zone graphique pour que cela ai un effet.</li>
+          </ul>
+          <br />
+          <ul>
+            <li>Afin d'expliquer le fonctionnement des outils, il y a deux règles à respecter pour créer un Serious Game valide : </li>
+            <ul>
+              <li>Une histoire doit avoir un seul noeud de départ.</li>
+              <li>Une histoire doit avoir une seule fin. De plus, il est impossible de finir l'histoire par une question.</li>
+            </ul>
+          </ul>
+          <br />
+          <ul>
+            <li><u>Fonctionnement des outils : </u></li>
+            <ol>
+              <li><u>Noeud texte</u></li>
+              <ul>
+                <li>Un noeud texte est representé par un rectangle qui possède un point d'entrée et un seul point de sortie.</li>
+                <li>Ce noeud texte représente une étape dans l'histoire où du texte ou un fichier audio sera lu.</li>
+                <li>Pour remplir les informations du noeud, lorsque vous cliquez sur la forme une nouvelle zone apparaît à la droite de votre écran où un formulaire est mis à votre disposition afin de remplir les informations du noeud.</li>
+                <li>
+                  <img src="../rendererProcess/assets/images/infos_serious_game/texteSeriousGame.png" height="400px" width="1024px">
+                </li>
+                <br />
+                <li>Chaque champ est obligatoire, le nom de la forme doit être unique et sert à afficher un nom sur la forme afin de pouvoir la différencier des différents noeuds. Quant au champ suivant c'est le texte qui sera lu lors de la lecture du noeud sur l'application mobile QR Ludo. </li>
+                <br />
+              </ul>
+              <li><u>Noeud question</u></li>
+              <ul>
+                <li>Un noeud question est représenté par un triangle qui possède un point d'entrée et un point de sortie par réponses possibles à la question.</li>
+                <li>Ce noeud question représente une étape dans l'histoire où il faudra répondre oralement à une question.</li>
+                <li>Pour remplir les informations du noeud, lorsque vous cliquez sur la forme une nouvelle zone apparaît à la droite de votre écran où un formulaire est mis à votre disposition afin de remplir les informations du noeud.</li>
+                <li>
+                  <img src="../rendererProcess/assets/images/infos_serious_game/questionSeriousGame.png" height="400px" width="1024px">
+                </li>
+                <br />
+                <li>Chaque champ est obligatoire, le nom de la forme doit être unique et sert à afficher un nom sur la forme afin de pouvoir la différencier des différents noeuds.</li>
+                <li>Le champ question est la question qui sera lu lors de la lecture du QR Code sur l'application mobile QR Ludo.</li>
+                <li>Ensuite, il est possible de définir les réponses possibles afin de répondre à la question</li>
+              </ul>
+              <br />
+              <li><u>Les flèches</u></li>
+              <ul>
+                <li>Les flèches ont pour but de relier les noeuds entre eux afin de déterminer l'ordre de lecture de l'histoire.</li>
+                <li>Pour cela, il y a différentes règles à respecter : </li>
+                <ul>
+                  <li>Une flèche peut partir seulement d'un point de sortie (rouge) vers un point d'entrée (vert)</li>
+                  <li>Pour créer une flèche vous pouvez faire un clic droit sur un point de sortie ou cliquer sur le bouton flèche sur la palette puis ensuite créer la flèche à partir d'un clic gauche</li>
+                  <li>Chaque noeud, sauf le dernier noeud de l'histoire, doit avoir une flèche et seulement une pour chacun de ces points de sortie</li>
+                  <li>Chaque noeud, sauf le premier noeud de l'histoire, doit avoir au moins une flèche à son point d'entrée</li>
+                </ul>
+                <br />
+                <li>Voici un exemple de schéma possible : </li>
+                <li>
+                  <img src="../rendererProcess/assets/images/infos_serious_game/flecheSeriousGame.png" height="500px">
+                </li>
+              </ul>
+              <br />
+              <li><u>Le zoom</u></li>
+              <ul>
+                <li>Vous avez à votre dispostion une barre de zoom en bas à droite de la zone de dessin.</li>
+                <li>Vous pouvez aussi zoomer ou dézoomer à l'aide de la molette de la souris</li>
+              </ul>
+            </ol>
+          </ul>
         </div>
       </div>
     </div>

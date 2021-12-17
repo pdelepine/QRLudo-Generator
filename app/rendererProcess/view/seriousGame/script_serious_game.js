@@ -1151,3 +1151,9 @@ $("#saveQRCode").on('click', function () {
 	}
 	logger.info("Exportation du QRCode");
 });
+
+//pour ouvrir la page info.html quand on clique sur le bouton info du haut
+$("#infos-serious-game").on('click',function () {
+	remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
+	$("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+  });
