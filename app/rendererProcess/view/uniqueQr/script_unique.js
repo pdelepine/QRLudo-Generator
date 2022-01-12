@@ -1,3 +1,4 @@
+
 /**
  * @Author: alassane
  * @Date:   2018-11-10T17:59:11+01:00
@@ -8,6 +9,7 @@
 // fichier script concernant les qr codes uniques
 var qrcode;
 var qrType;
+var newQrUnique;
 
 // var { ipcRenderer } = require('electron');
 var { Menu, MenuItem } = remoteElectron;
@@ -16,9 +18,14 @@ var menu = new Menu();
 
 $(document).ready(function () {
 
+
+  store.set("charMax", 1134);
+
   //appel à la fonction qui permet de lire les enregistrement
   chargement();
   SetProgressBar();
+
+
 
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
@@ -26,17 +33,17 @@ $(document).ready(function () {
 
 
   // desactiver les boutons s'il y a rien à lire ou generer
-  if(document.getElementById('qrName') !== null){
+  if (document.getElementById('qrName') !== null) {
     if (document.getElementById('qrName').value.length === 0) {
       $('#preview').attr('disabled', true);
     }
-  }  
+  }
 
-  $("#saveQRCode").on('click',e => {
+  $("#saveQRCode").on('click', e => {
     saveQRCodeImage();
   });
 
-  $('#closeModalListeMusic').on('click',e => {
+  $('#closeModalListeMusic').on('click', e => {
     $('#musicUrl').val('');
     $('#listeMusic').find('.errorLoader').remove();
   }); // close modal add music
@@ -63,7 +70,7 @@ $(document).ready(function () {
   });
 
   /** Show the information about the audio file import (help) */
-  $('button#showInfo').on('click',e => {
+  $('button#showInfo').on('click', e => {
     e.preventDefault();
     if (info_activ == false) {
       info.innerHTML = ``;
@@ -85,7 +92,7 @@ $(document).ready(function () {
     }
   });
 
-  $('button#emptyFields').on('click',function() {
+  $('button#emptyFields').on('click', function () {
 
     /** mise a jour des données sur le progress bar */
     $("#progressbarId").attr('aria-valuenow', 0);
@@ -100,25 +107,25 @@ $(document).ready(function () {
 
     store.delete(`titreUnique`);
     //implémentation des différentes zones de txt enregistrées
-    for(var i = 0; i<=numZoneCourante; i++){
-      if (store.get(`zone${i}`)){
+    for (var i = 0; i <= numZoneCourante; i++) {
+      if (store.get(`zone${i}`)) {
         store.delete(`zone${i}`);
       }
     }
 
     /** On parcours le store pour afficher les texte enregistré dans les zones correspondantes */
-    for(var i = 0; i<=numZoneCourante; i++){
-      if (store.get(`text${i}`)){
+    for (var i = 0; i <= numZoneCourante; i++) {
+      if (store.get(`text${i}`)) {
         store.delete(`text${i}`);
       }
     }
 
     store.delete("numZoneCourante");
     numZoneCourante = 0;
-    store.set(`numZoneCourante`,numZoneCourante);
+    store.set(`numZoneCourante`, numZoneCourante);
     store.delete("nbZoneDonne")
     nbZoneDonne = 0;
-    store.set(`nbZoneDonne`,nbZoneDonne);
+    store.set(`nbZoneDonne`, nbZoneDonne);
 
     /** supprimer les textarea, inputs .. */
     var divChamps = $('#cible');
@@ -142,7 +149,7 @@ $(document).ready(function () {
 });
 
 /** trigger preview qrcode action */
-$('#preview').on('click',e => {
+$('#preview').on('click', e => {
 
   //re-afficher le qr generer si le bouton est reinitialiser a deja été utilisé
   $("#qrView").show();
@@ -157,17 +164,21 @@ $('#preview').on('click',e => {
   let qrData = [];
 
   for (let data of document.getElementsByClassName("form-control qrData")) {
-    if (data.name == 'AudioName') {
+    if (data.name.substr(0, 5) == 'https') {
       let dataAudio = {
         type: 'music',
-        url: data.id,
+        url: data.name,
         name: data.value
       }
 
       let jsonAudio = JSON.stringify(dataAudio);
       qrData.push(JSON.parse(jsonAudio));
-    } else
-      qrData.push(data.value);
+    } else {
+      let dataText = data.value;
+
+      let jsonText = JSON.stringify(dataText);
+      qrData.push(JSON.parse(jsonText));
+    }
   }
 
   qrType = $('#typeQRCode').val();
@@ -175,20 +186,68 @@ $('#preview').on('click',e => {
   // Generate in a div, the qrcode image for qrcode object
   let div = $('#qrView')[0];
 
-  let newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
+  newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
 
-  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(newQrUnique) }`);
+  newQrUnique.setId(store.get("newQrID"));
 
   previewQRCode(qrName, qrData, qrColor, div);
   $('#emptyZones').attr('disabled', false);
 });
 
 
+
+
+function generQRInter() {
+  /** 
+  cette fonction va être appeler quand on va remplir le champ de "qrName" et elle va générer un qrcode intermédiaire
+  et on prends son ID et on va stocker ce ID dans l'objet store "newQrID" et on va également stocker le nombre de char Max
+  qu'on peut avoir dans un qrcode dans l'objet store "charMax"
+  charMax = 1240 - qrcolor - qrID - qrtype et  puis dans la fonction verifNombreCaractere on va prendre en 
+  compte qrName et qrData "compter les mots qui se trouvent dans les champs qname et data".
+  
+  et puis on va appeler verifNombreCaractere pour verifier le nombre de caractere total ou j'ai ajouté le comptage de char  
+  du champ qrName et la fonction verifNombreCaractere va appeler la fonction SetProgressBar qui va faire la mise à jour
+  du progressBar 
+
+  sachant que comme j'ai implémenté cette solution de manière dynamique, on perd l'assosiation data -> ID comme l'ID 
+  est calculé en fonction de data.
+  */
+
+  let charMax = 1240;
+  let qrColor = $('#qrColor').val();
+  let qrName = $('#qrName').val();
+  let qrData = random_string(50);
+  let newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
+  //  le QRcode intermédiaire
+  //  console.log(`test : ${ JSON.stringify(newQrUnique) }`);
+  charMax -= qrColor.length;
+  charMax -= newQrUnique.getType().length;
+  charMax -= newQrUnique.getId().length;
+  // a nested function to generate a random string in order to get QRcode data and use it to generate our QRcode 
+  function random_string(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  store.set("newQrID", newQrUnique.getId());
+  verifNombreCaractere(store.get("numZoneCourante"));
+  store.set("charMax", charMax);
+
+}
+
+
+
+
 /** Fonction permettant la continuité entre les onglet avec la gestion de l'objet store */
 function chargement() {
 
   //nombre de zone texte courant
-  if(store.get(`nbZoneDonne`))
+  if (store.get(`nbZoneDonne`))
     numZoneDonne = store.get(`nbZoneDonne`);
   else
     store.set(`nbZoneDonne`, nbZoneDonne);
@@ -203,37 +262,37 @@ function chargement() {
     $('#qrName').val(store.get(`titreUnique`));
   }
 
-  if(!isImportationQRUnique) {
-      //implémentation des différentes zones de txt enregistrées
-      for (var i = 1; i <= numZoneCourante; i++) {
-        if (store.get(`zone${i}`)) {
-          var text = document.createElement('div');
-          text.innerHTML = store.get(`zone${i}`);
-          text.setAttribute("class", "d-flex align-items-start legendeQR");
+  if (!isImportationQRUnique) {
+    //implémentation des différentes zones de txt enregistrées
+    for (var i = 1; i <= numZoneCourante; i++) {
+      if (store.get(`zone${i}`)) {
+        var text = document.createElement('div');
+        text.innerHTML = store.get(`zone${i}`);
+        text.setAttribute("class", "d-flex align-items-start legendeQR");
 
-          // L'id du div est différent si c'est une zone de texte ou un fichier audio
-          if (store.get(`zone${i}`).indexOf("textarea") != -1) {
-            text.setAttribute("id", "legendeTextarea"+i);
-          }
-          else {
-            text.setAttribute("id", "inputAudio");
-          }
-
-          $('#cible').append(text);
+        // L'id du div est différent si c'est une zone de texte ou un fichier audio
+        if (store.get(`zone${i}`).indexOf("textarea") != -1) {
+          text.setAttribute("id", "legendeTextarea" + i);
         }
+        else {
+          text.setAttribute("id", "inputAudio");
+        }
+
+        $('#cible').append(text);
       }
+    }
   }
 
   /** On parcours le store pour afficher les texte enregistré dans les zones correspondantes */
-  for(var i = 0; i <= numZoneCourante; i++){
-    if (store.get(`text${i}`)){
-      $('#textarea'+(i)).val(store.get(`text${i}`));
+  for (var i = 0; i <= numZoneCourante; i++) {
+    if (store.get(`text${i}`)) {
+      $('#textarea' + (i)).val(store.get(`text${i}`));
     }
   }
 
   //insertion du premier champ Texte s'il y en a pas
-  if(numZoneCourante < 1){
-     ajouterChampLegende();
+  if (numZoneCourante < 1) {
+    ajouterChampLegende();
   }
 }
 
@@ -265,12 +324,9 @@ function validateForm(inputArray) {
 function previewQRCode(name, data, color, div) {
 
   // instanciate a qrcode unique object
-  if (qrType == 'xl')
-    qrcode = new QRCodeXL(name, data, color);
-  else
-    qrcode = new QRCodeUnique(name, data, color);
-
+  qrcode = new QRCodeUnique(name, data, color);
   let facade = new FacadeController();
+  logger.info(`Génération du QR Code Unique : ${JSON.stringify(qrcode)}`);
   facade.genererQRCode(div, qrcode);
 }
 
@@ -302,79 +358,88 @@ function saveQRCodeImage() {
 }
 
 function getMusicFromUrl() {
-  let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
-  let loader = document.createElement('div');
-  let errorMsg = document.createElement('label');
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
 
-  const { clipboard } = require('electron');
+    const { clipboard } = require('electron');
 
-  let url = clipboard.readText();
-  let xhr = new XMLHttpRequest();
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
 
-  logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
+    logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${url}`);
 
-  Music.getDownloadLink(url, link => {
-    if (link == null) {
-      showError(modal, errorMsg);
-      logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
-      return
-    }
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${url}`);
+        return
+      }
 
-    try {
-      xhr.open('GET', link, true);
-    } catch (e) {
-      showError(modal, errorMsg);
-    }
-    xhr.responseType = 'blob';
-    xhr.onload = function (e) {
-
-      if (this.status == 200) {
-        let blob = this.response; // get binary data as a response
-        let contentType = xhr.getResponseHeader("content-type");
-
-        if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
-          // get filename
-          let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
-          filename = filename.replace('filename="', '');
-          filename = filename.replace('.mp3"', '.mp3');
-
-          // save file in folder projet/download
-          let fileReader = new FileReader();
-          fileReader.onload = function () {
-            fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
-
-            $(loader, errorMsg).remove();
-            $('#closeModalListeMusic').on('click',); // close modal add music
-          };
-          fileReader.readAsArrayBuffer(blob);
-
-          logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
-
-          ajouterChampSon(filename, link);
-        } else {
-          logger.error('Le fichier n\'est pas un fichier audio');
-          showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
-        }
-      } else {
-        // request failed
-        logger.error('La requête de téléchargement a échouée');
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
         showError(modal, errorMsg);
       }
-    };
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
 
-    xhr.onloadstart = function (e) {
-      logger.info(`Début téléchargement du fichier audio`);
-      $(loader).addClass('loader');
-      $(modal).find('.errorLoader').remove();
-      $(modal).prepend(loader); // show loader when request progress
-    };
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
 
-    xhr.onerror = function (e) {
-      showError(modal, errorMsg);
-    };
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
 
-    xhr.send();
-  });
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            logger.info(`Fichier audio <${filename}> téléchargé avec succès`);
+
+            changementChampLegendeEnChampSon(filename, link);
+          } else {
+            logger.error('Le fichier n\'est pas un fichier audio');
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          logger.error('La requête de téléchargement a échouée');
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        logger.info(`Début téléchargement du fichier audio`);
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
@@ -414,7 +479,10 @@ function ajouterChampLegende(valeur = "") {
 
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
-    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (255 caractères maximum)' maxlength='255'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});">${valeur}</textarea>
+    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1100 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();">${valeur}</textarea>
+    <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
+      <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+    </button>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success align-self-center legendeQR-close-btn' onclick='supprimerChampLegende(this, ${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>
@@ -427,23 +495,27 @@ function ajouterChampLegende(valeur = "") {
 
   document.getElementById('cible').appendChild(textareaLegende);
 
-  store.set(`zone${numZoneCourante}`,textareaLegende.innerHTML);
+  store.set(`zone${numZoneCourante}`, textareaLegende.innerHTML);
 
   //reasignation du nombre total de caractère restant pour la nouvelle zone
-  var totatCaractere= SetProgressBar();
-  $('#textarea'+numZoneCourante).attr('maxlength',(255-totatCaractere));
+  var totatCaractere = SetProgressBar();
+  $('#textarea' + numZoneCourante).attr('maxlength', (store.get("charMax") - totatCaractere));
 }
 
 /** foncion qui  calcule le nombre de caractère dans les zones de texte et met la valeur sur les progress bar */
 function SetProgressBar() {
   //progress bar gestion
   var total = 0;
-  var nombreCaratereMAX = 255;
+  var nombreCaratereMAX = store.get("charMax");
 
   $("#cible textarea").each(function () {
     total += $(this).val().length;
     //console.log(total);
   });
+
+  if (document.getElementById("qrName") != null) total += document.getElementById("qrName").value.length;
+  // on va ajouter la taille du qr nom aussi
+
   //$("#cible input").val().length;
   var totalSeted = Math.round((total * 100) / nombreCaratereMAX);
 
@@ -458,32 +530,53 @@ function SetProgressBar() {
 /** verifier si le nombre de caractère maximal est respecté, si ce n'est pas le cas on affiche une pop up d'informations */
 function verifNombreCaractere(num) {
   //Permet l'enregistrement du text dans le store
-  store.delete(`text${num}`);
-  var txt = document.getElementById('textarea' + num).value;
-  store.set(`text${num}`, txt);
 
-  var nombreCaratereMAX = 255;
+  if (document.getElementById('textarea' + num) != null) {
+    store.delete(`text${num}`);
+    var txt = document.getElementById('textarea' + num).value;
+    store.set(`text${num}`, txt);
+  }
+
+  var nombreCaratereMAX = store.get("charMax");
   //progress bar gestion
   var total = SetProgressBar();
 
-  //console.log($('#textarea'+num).attr('maxlength'));
   $('#messages').empty();
   if (total >= nombreCaratereMAX) {
-    messageInfos("La limite de caractère est atteinte (255 caractères)", "warning");
+    messageInfos("La limite de caractère est atteinte (" + store.get("charMax") + " caractères)", "warning");
     disableButtonAddNewData();
     //si nombre de caractére max attein toute les zone de texte sont fermer a l'jout de caractère
     $("#cible textarea").each(function () {
-      $(this).attr('maxlength', 0);
+      $(this).attr('maxlength', $(this).val().length);
     });
+    document.getElementById("qrName").setAttribute("maxlength", $("#qrName").val().length);
   }
   else {
     activateButtonAddNewData();
     //reassignation du nombre de caractére disponible pour toutes les zones
     $("#cible textarea").each(function () {
-      $(this).attr('maxlength', 255);
+      $(this).attr('maxlength', store.get("charMax"));
     });
+    document.getElementById("qrName").setAttribute("maxlength", store.get("charMax"));
+  }
+
+  if (total > nombreCaratereMAX) {
+    if (document.getElementById("preview").disabled == false)
+      document.getElementById("preview").disabled = true;
+  }
+  else {
+    if (document.getElementById("qrName") != null) {
+      if (document.getElementById("qrName").value.length == 0) {
+        document.getElementById("preview").disabled = true;
+      }
+      else {
+        document.getElementById("preview").disabled = false;
+      }
+    }
   }
 }
+
+
 
 /** supprime un le textarea correspondant au numText */
 function supprimerChampLegende(e, numText) {
@@ -492,10 +585,32 @@ function supprimerChampLegende(e, numText) {
   //suppression dans le store de la zone de txt correspondante
   store.delete(`text` + numText);
   store.delete(`zone` + numText);
-  
+
   $(e).parents('div#legendeTextarea' + numText).remove();
 
   activateButtonAddNewData();
+
+  //calcul et mise a jour de la bar de progression
+  SetProgressBar();
+}
+
+//permet de savoir quel bouton audio a été clické
+var audioSource = "";
+
+/** Fonction qui modifie la variable audioSource */
+function changementAudioSource(numText) {
+  audioSource = numText;
+}
+
+/** Fonction qui modifie un champ legende en champ son */
+function changementChampLegendeEnChampSon(nom, url) {
+  let textArea = document.getElementById("textarea" + audioSource);
+  textArea.value = nom;
+  textArea.name = url;
+  textArea.setAttribute("disabled", "true");
+  //cache le bouton audio
+  let boutonAudio = document.getElementById("showAudio" + audioSource);
+  boutonAudio.style.visibility = "hidden";
 
   //calcul et mise a jour de la bar de progression
   SetProgressBar();
@@ -511,7 +626,7 @@ function ajouterChampSon(nom, url) {
   var inputSon = document.createElement('div');
   inputSon.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class='fa fa-pause align-self-center icon-player'></i>
       <!-- <input type='text' id='${url}' name='AudioName' class='form-control qrData' value='${nom}' readonly>  -->
-    <textarea id='${url}' class='form-control qrData'  name='AudioName'  maxlength='255'  readonly>${nom}'</textarea>
+    <textarea id='${url}' class='form-control qrData'  name='AudioName'  maxlength='1240'  readonly>${nom}'</textarea>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success legendeQR-close-btn align-self-center' onclick='supprimerChampLegende(this,${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>
@@ -614,7 +729,7 @@ function disableButtonAddNewData() {
 }
 
 /** pour ouvrir la page info.html quand on clique sur le bouton info du haut */
-$("#infos-unique").on('click',function () {
+$("#infos-unique").on('click', function () {
   require('electron').remote.getGlobal('sharedObject').ongletAideActif = 'unique'
   $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/aide/info.html"));
 });

@@ -11,13 +11,12 @@ class JsonCompressor {
 
   /** qrcode must be a stringify json */
   static compress(qrcode, callback, arg) {
-    const zlib = require('zlib');
     console.log('qrcode to compress');
     console.log(qrcode);
 
 
     let gzipped = zlib.gzipSync(qrcode);
-    console.log("zipped data --- : "+gzipped.toString('base64'));
+    console.log("zipped data --- : " + gzipped.toString('base64'));
     arg.push(gzipped);
     callback(arg);
 
@@ -34,9 +33,8 @@ class JsonCompressor {
 
   /** Decompressed Data into a String */
   static decompress(zippedData, callback) {
-    const zlib = require('zlib');
 
-    zlib.gunzip(zippedData, function(err, unZippedData) {
+    zlib.gunzip(zippedData, function (err, unZippedData) {
       if (err)
         console.log("error in gzip compression using zlib module", err);
 

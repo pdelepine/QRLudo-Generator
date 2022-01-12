@@ -25,7 +25,7 @@ const log4js = require('log4js');
  * console : réalise un console.log
  * toFile : enrengistre le log dans le fichier qrludogenerator.log
  */
- log4js.configure({
+log4js.configure({
   appenders: {
     console: { type: 'console' },
     toFile: { type: 'file', filename: 'qrludogenerator.log', flags: 'w' }
@@ -127,7 +127,7 @@ app.on('window-all-closed', () => {
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
       });
-      break;controllerMultiple
+      break;
 
     default:
       console.log('Unknown operating system');
@@ -141,6 +141,18 @@ app.on('window-all-closed', () => {
   }
   log4js.shutdown();
 });
+
+app.on('render-process-gone', (evt, webcontent, details) => {
+  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ evt }\nwebcontent = ${ webcontent }\ndetails = ${ JSON.stringify(details) }`);
+});
+
+app.on('child-process-gone', (evt, details) => {
+  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ evt }\ndetails = ${ JSON.stringify(details) }`);
+});
+
+log4js.getLogger().info(`Le dossier courant de l'application ${ app.getAppPath() }`);
+log4js.getLogger().info(`Le fichier exécutable courant ${ app.getPath("exe") }`);
+log4js.getLogger().info(`Le Crash dumps ${ app.getPath("crashDumps") }`);
 
 
 /** Quitte l'application si on reçois l'event 'exitApp' venant du processus de rendu

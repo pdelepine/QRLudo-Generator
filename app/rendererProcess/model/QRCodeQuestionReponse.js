@@ -4,6 +4,7 @@
  * @Last modified time: 2018-12-04T21:01:33+01:00
  */
 
+
 /**
  * HARBOUL Abdessabour
  * 2018
@@ -32,6 +33,7 @@ class Projet {
       dataString += reponses[i];
     }
 
+    console.log("Exercice QR " + dataString);
     var md5Value = MDFiveConverter.convert(dataString);
 
     this.projet = {
@@ -159,7 +161,7 @@ class Question {
   constructor(title, bonneReponse, mauvaiseReponse, reponsesUIDs = [], nombreMinReponse, color = '#000000') {
     this.qrcode = {
       id: new Date().getTime(),
-      name: title,
+      text_question: title,
       data: reponsesUIDs,
       nb_min_reponses : nombreMinReponse,
       type: "question",
@@ -178,11 +180,11 @@ class Question {
   }
 
   getName() {
-    return this.qrcode.name;
+    return this.qrcode.text_question;
   }
 
   setName(name){
-    this.qrcode.name = name;
+    this.qrcode.text_question = name;
   }
 
   getGoodAnswer(){

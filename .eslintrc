@@ -21,13 +21,15 @@
 		"default-case": "warn",
 		"comma-dangle": "warn",
 		"comma-spacing": [
-			"warn", { "before": "false", "after": "true" }
+			"warn", { "before": false, "after": true }
 		],
 		"func-call-spacing": "warn",
 		"no-trailing-spaces": "warn",
 		"semi-spacing": [
-			"warn", { "before": "false", "after": "true" }
+			"warn", { "before": false, "after": true }
 		],
-		"space-before-blocks": "warn"
+		"space-before-blocks": "warn",
+		"no-undef":"off",
+		"no-case-declarations":"off"
 	}
   }

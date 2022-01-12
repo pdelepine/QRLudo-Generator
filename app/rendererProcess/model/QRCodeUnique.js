@@ -58,18 +58,15 @@ class QRCodeUnique {
   }
   
   getData(index = null) {
-    if (index === 0) {
+    if(index === 0){
       // console.log("le zero");
-      /** return data at index */
-      return this.qrcode.data[0];
+      return this.qrcode.data[0]; // return data at index
     }
     if (index) {
       // console.log("reste");
-      /** return data at index */
-      return this.qrcode.data[index];
+      return this.qrcode.data[index]; // return data at index
     }
     // console.log("tous");
-    /** return all data */
     return this.qrcode.data;
   }
 
@@ -96,27 +93,6 @@ class QRCodeUnique {
 
 }
 
-/** This class is a representation of QRCode unique or QRCode XL in JSON format */
-class QRCodeXL extends QRCodeUnique {
-
-  // type = unique, xl
-  // name = name of qrcode
-  // data = an array which contains input (url file) provided from form
-  // data = [
-  //   {
-  //     type: "file",
-  //     url: "file url"
-  //   }
-  // ]
-  // color = the qrcode color
-  constructor(name = "", data = [], color = "") {
-    super(name, data, color);
-    this.qrcode.type = "xl";
-  }
-
-}
-
 module.exports = {
-  QRCodeUnique,
-  QRCodeXL
+  QRCodeUnique
 };

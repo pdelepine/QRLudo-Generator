@@ -20,34 +20,22 @@
 class FacadeController {
 
   constructor() {
-    //this.compresseurXml = new CompresseurTexte();
-    this.imageGenerator = new ImageGenerator(this.compresseurXml);
-    // this.imageGenerator = new ImageGenerator();
   }
 
-  /** Renvoie un nouveau QRCodeAtomique */
-  creerQRCodeAtomique() {
-    return new QRCodeAtomique();
-  }
-
-  /** Renvoie un nouveau QRCodemultiple */
-  creerQRCodeMultiple() {
-    return new QRCodeMultiple();
-  }
-
-
-  /** Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre */
+  /**
+   * Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre
+   * @param {*} divImg 
+   * @param {Object} qrcode, Objet contenant un attribut (Object) `qrcode` qui sera tranformé en JSon pour la génération
+   */
   genererQRCode(divImg, qrcode) {
     try {
       while (divImg.hasChildNodes()) {
         divImg.removeChild(divImg.firstChild);
       }
-      
+
+      // Ajout de version du format du JSON représentatif du qr code
       switch (qrcode.qrcode.type) {
         case "unique":
-          qrcode.qrcode.version = '3';
-          break;
-        case "xl":
           qrcode.qrcode.version = '3';
           break;
         case "ensemble":
@@ -60,30 +48,75 @@ class FacadeController {
           qrcode.qrcode.version = '3';
           break;
         case "ExerciceReconnaissanceVocaleQCM":
-          qrcode.qrcode.version = '4';
-         break;
+          qrcode.qrcode.version = '6';
+          break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
-        break;
-        case "SeriousGameScenario" :
-          qrcode.qrcode.version = '4';
           break;
+        case "SeriousGame":
+          qrcode.qrcode.version = '6';
+          break;
+        default:
+          logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
       }
 
-      console.log(`FacadeController.genererQRCode : qrcode.type\n ${ qrcode.qrcode.type }`);
-      let args = [qrcode, divImg];
+      // Création d'un objet qrcode, mime => type d'image a générer, size => taille de l'image, value => le texte à transformer
+      let qr;
+      try {
+        // Si la taille du string représentant le Qrcode dépasse 120 caractères, on compresse le string avant de le tranformer
+        if (qrcode.getDataString().length > 120) {
+          logger.info('FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux');
 
-      if (qrcode.getDataString().length > 117) {
-        JsonCompressor.compress(qrcode.getDataString(), ImageGeneratorJson.genererQRCode, args);
+          let gzippedQR;
+          // Compression du QR Code
+          JsonCompressor.compress(qrcode.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
+          logger.info(`FacadeController.genererQRCode | Compressed data : \n${gzippedQR}`);
+
+          qr = new QRious({
+            mime: "image/jpeg",
+            size: 400,
+            value: gzippedQR
+          });
+        } else {
+          logger.info('FacadeController.genererQRCode | Génération du QR code sans compression');
+
+          qr = new QRious({
+            mime: "image/jpeg",
+            size: 400,
+            value: qrcode.getDataString()
+          });
+        }
+      } catch (exception) {
+        logger.error('FacadeController.genererQRCode | Problème lors de la génération du QR code \n' + exception);
+      }
+
+      // Transformation de l'objet qrcode en dataURL
+      let qrdata = qr.toDataURL();
+      console.log('Data JPEG ' + qrdata);
+
+      // Création de l'exif
+      let exif = {};
+
+      if (qrcode.qrcode.type === "SeriousGame") {
+        exif[piexif.ExifIFD.UserComment] = qrcode.getJSONMetaData().toString();
       } else {
-        args.push(qrcode.getDataString());
-        ImageGeneratorJson.genererQRCode(args);
+        // UserComment est un tag spécifique au Exif du JPEG et permet de mettre un string en valeur
+        exif[piexif.ExifIFD.UserComment] = qrcode.getDataString().toString();
       }
 
-      $('#saveQRCode, #listenField').attr('disabled', false);
+      let exifObj = { "Exif": exif };
+      let exifBytes = piexif.dump(exifObj);                                 // Tranformation de l'obj exif en string
+      let exifModified = piexif.insert(exifBytes, qrdata);                  // Insertion de l'exif string dans le dataURL du Jpeg
 
+      let image = new Image();
+      image.src = exifModified;
+      $(divImg).prepend(image);
+
+      logger.info('FacadeController.genererQRCode | Génération du QR code résussi');
+      $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
-      console.log(e);
+      logger.error('Problème dans la fonction genererQRCode du FacadeController');
+      logger.error(e);
     }
   }
 
@@ -92,21 +125,25 @@ class FacadeController {
     while (divImg.hasChildNodes()) {
       divImg.removeChild(divImg.firstChild);
     }
-    this.imageGenerator.genererImageFamilleQRCode(tableauQRCodes, divImg);
   }
 
-  /** Fonction appelée pour importer un qrcode json */
-  importQRCodeJson(file, callback) {
-    QRCodeLoaderJson.loadImage(file, callback);
+  /**
+   * Fonction appelée pour transformer le string de données du QR code en l'une des classes QR code disponibles
+   * @param {String} qrcodeDataString
+   * @param {Function} callback
+   */
+  importQRCodeJson(qrcodeDataString, callback) {
+    QRCodeLoaderJson.loadImage(qrcodeDataString, callback);
   }
 
-  /** Fonction appelée pour importer un qrcode */
-  importQRCode(file, callback) {
-    // QRCodeLoader.loadImage(file, function(qrcode, drawQRCode) {
-    //   console.log(qrcode);
-    //   callback(qrcode); // faire le view du qrcode
-    // });
-    QRCodeLoader.loadImage(file, callback);
+  /**
+   * Fonction appelée pour importer le fichier JPEG contenant le QR code.
+   * Les métadonnées du fichier sont lues et transformées en un modèle de QR code correspondant
+   * @param {String} blobFile le blob du fichier a tranformer
+   * @param {Function} callback la fonction appelée après importation du fichier
+   */
+  importQRCode(blobFile, callback) {
+    QRCodeLoaderJson.loadImage(blobFile, callback);
   }
 
   /** Renvoie la taille réelle du qrcode après compression */

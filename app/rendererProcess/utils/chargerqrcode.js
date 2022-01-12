@@ -4,10 +4,10 @@
  * @Last modified time: 25/11/2020
  */
 
-$().ready(function() {
+$().ready(function () {
   //require("./js/script_unique.js");
 
-  $('#setImportedFile').on('click',function() {
+  $('#setImportedFile').on('click', function () {
     var nomfichier = document.getElementById("importedFile").files[0].path;
     importQRCodeImport(nomfichier);
   });
@@ -15,21 +15,21 @@ $().ready(function() {
 
 /** fonction permettant de charger, importer un qr code */
 function importQRCodeImport(filename) {
-
-  logger.info(`Import du fichier <${ filename }>`);
+  <script>console.log('dans le page content')</script>
+  logger.info(`Import du fichier <${filename}>`);
   let facade = new FacadeController();
+  //facade.importQRCode(filename, drawQRCodeImport);
+
   let blob = null;
   let xhr = new XMLHttpRequest();
   xhr.open("GET", filename);
-  xhr.responseType = "blob";
-  /** force the HTTP response, response-type header to be blob */
-  xhr.onload = function() {
-    /** xhr.response is now a blob object */
-    
-    blob = xhr.response;
+  xhr.responseType = "blob"; //force the HTTP response, response-type header to be blob
+  xhr.onload = function () {
+    blob = xhr.response; //xhr.response is now a blob object
     facade.importQRCode(blob, drawQRCodeImport);
   }
   xhr.send();
+
 }
 
 /** fonction permettant de recréer visuellement un qr code */
@@ -74,8 +74,8 @@ function drawQRCodeImport(qrcode) {
       $("#questionQCMOnglet").addClass("active");
       $("#onglet-QCM").addClass("active");
       $("#QuestionQCM").val(qrcode.getName());
-      if(qrcode.getLettreReponseVocale()){
-        $("#reponseParIdentifiant").prop( "checked", true );;
+      if (qrcode.getLettreReponseVocale()) {
+        $("#reponseParIdentifiant").prop("checked", true);;
       }
       $("#MessageBonnereponseQCM").val(qrcode.getGoodAnswer());
       $("#MessageMauvaisereponseQCM").val(qrcode.getBadAnswer());
@@ -103,14 +103,15 @@ function drawQRCodeImport(qrcode) {
 }
 
 /** recréer les input d'un qrcode unique */
-function drawQRCodeData(qrcode) {
-  let data = qrcode.getData();
-  
-  for (var i = 1; i <= store.get(`numZoneCourante`); i++) {
+function drawQRCodeData(qrcodeObject) {
+  logger.info(`chargerqrcode.drawQRCodeData | QRcode unique à charger ${JSON.stringify(qrcodeObject)}`);
+  let data = qrcodeObject.getDataAll();
+
+  for (let i = 1; i <= store.get(`numZoneCourante`); i++) {
     store.delete(`zone${i}`);
   }
 
-  for (var i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     if (typeof data[i] === "string") {
       ajouterChampLegende(data[i]);
     } else if (typeof data[i] === "object") {
@@ -119,7 +120,7 @@ function drawQRCodeData(qrcode) {
   }
   let musics = data.filter(d => d.type == 'music');
 
-  if(musics.length !==0){
+  if (musics.length !== 0) {
     restoreSavedMusic(musics);
   }
 }
@@ -130,16 +131,13 @@ function drawQRCodeMultipleUnique(qrcode) {
     let qrJson = qrcode.getData()[i].qrcode;
     let qr = null;
 
-    if (qrJson.type == "unique"){
+    if (qrJson.type == "unique") {
       qr = new QRCodeUnique(qrJson.name, qrJson.data, qrJson.color);
     }
-    else if (qrJson.type == "xl"){
-      qr = new QRCodeXL(qrJson.name, qrJson.data, qrJson.color);
-    }
-    else if (qrJson.type == "ensemble"){
+    else if (qrJson.type == "ensemble") {
       qr = new QRCodeMultipleJson(qrJson.name, qrJson.data, qrJson.color);
     }
-    else if (qrJson.type == "question"){
+    else if (qrJson.type == "question") {
       qr = new QRCodeQuestionReponse(qrJson.name, qrJson.data, qrJson.color);
     }
 
@@ -157,9 +155,9 @@ function drawQRCodeDataRecVocale(qrcode) {
   for (var i = 0; i < data.length; i++) {
     console.log(i);
     var reponse = new ReponseVocale(data[i][0], data[i][1], data[i][2])
-    if(i==0) {
+    if (i == 0) {
       $("#reponseinitiale").val(reponse.getTextQuestion());
-      if(reponse.getEstBonneReponse()){
+      if (reponse.getEstBonneReponse()) {
         $("#gridCheck1").prop("checked", true);
       }
     }
@@ -171,17 +169,107 @@ function drawQRCodeDataRecVocale(qrcode) {
 
 /** recréer les inputs d'un qrcode Scenario Serious Game */
 function drawQRCodeSeriousGameEnigma(qrcode) {
-  let enigmes = qrcode.getEnigmes();
-  console.log(qrcode);
-  for (var i = 0; i < enigmes.length; i++) {
-    if(i==0){
-      $("#enigme1").val(enigmes[i][1]);
-      
-    }else{
-      $("#ajouterEnigme").trigger("click");
-      $("input#enigme"+(i+1)).val(enigmes[i][1]);
+  let qrcodeMetadata = qrcode.qrcodeMetaData;
+  let textNodes = [];
+  let questionNodes = [];
+  let linkArray = [];
+
+  // Création SGTextNode
+  for (let textNode of qrcodeMetadata.textNodes) {
+    let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
+    qrTextNode.name = textNode.name;
+    qrTextNode.url = textNode.url;
+    qrTextNode.description = textNode.text;
+
+    textNodes.push(qrTextNode);
+  }
+
+  // Création SGQuestionNode
+  for (let questionNode of qrcodeMetadata.questionNodes) {
+    let qrQuestionNode = new SGQuestionNode(questionNode.x, questionNode.y, 100, 80);
+    qrQuestionNode.name = questionNode.name;
+    qrQuestionNode.url = questionNode.url;
+    qrQuestionNode.question = questionNode.textQuestion;
+
+    for (let i = 0; i < questionNode.reponses.length; i++) {
+      // Il y a de base une réponse vide (avec son Dot) dans le questionNode, on utilise la fonction addAnswer pour ajouter une réponse et SGDot
+      if (i !== 0) SGQuestionNode.addAnswer(qrQuestionNode);
+      qrQuestionNode.answers[i] = questionNode.reponses[i].text;
+    }
+
+    questionNodes.push(qrQuestionNode);
+  }
+
+  // Création des liens des textNode
+  for (let textNode of qrcodeMetadata.textNodes) {
+    let next_node = textNode.exitLink;
+    if (next_node) {
+      // Recherche si lier à un textNode
+      textNodes.forEach(n => {
+        if (n.name === next_node) {
+          textNodes.forEach(n2 => {
+            if (n2.name === textNode.name) {
+              let link = new SGLink(n2, n2.exitDots[0], n, n.entryDot);
+              linkArray.push(link);
+            }
+          });
+        }
+      });
+      // Recherche si lier à un questionNode
+      questionNodes.forEach(n => {
+        if (n.name === next_node) {
+          textNodes.forEach(n2 => {
+            if (n2.name === textNode.name) {
+              let link = new SGLink(n2, n2.exitDots[0], n, n.entryDot);
+              linkArray.push(link);
+            }
+          });
+        }
+      });
     }
   }
+
+  // Création des liens des questionNode
+  for (let questionNode of qrcodeMetadata.questionNodes) {
+    // On parcourt les réponses du questionNode
+    for (let i = 0; i < questionNode.reponses.length; i++) {
+      let next_node = questionNode.reponses[i].exitLink;
+
+      if (next_node) {
+        // Recherche si la réponse est liée à un textNode
+        textNodes.forEach(n => {
+          // Si le nom du textNode correspond au Nom du noeud lier à l'exitLink
+          if (n.name === next_node) {
+            questionNodes.forEach(n2 => {
+              if (n2.name === questionNode.name) {
+                console.log(`Dot${n2.exitDots[i]}`);
+                let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
+                linkArray.push(link);
+              }
+            });
+          }
+        });
+        // Recherche si lier à un questionNode
+        questionNodes.forEach(n => {
+          // Si le nom du questionNode correspond au Nom du noeud lier à l'exitLink
+          if (n.name === next_node) {
+            questionNodes.forEach(n2 => {
+              if (n2.name === questionNode.name) {
+                console.log(n2.exitDots[i]);
+                let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
+                linkArray.push(link);
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  // Ajout des nodes et link au dessin
+  textNodes.forEach(n => myP5.nodeArray.push(n));
+  questionNodes.forEach(n => myP5.nodeArray.push(n));
+  linkArray.forEach(l => myP5.linkArray.push(l));
 }
 
 
@@ -205,17 +293,17 @@ function restoreSavedMusic(data) {
     }
 
     xhr.responseType = 'blob';
-    xhr.onload = function(e) {
+    xhr.onload = function (e) {
 
       if (this.status == 200) {
         /** get binary data as a response */
-        let blob = this.response; 
+        let blob = this.response;
         let contentType = xhr.getResponseHeader("content-type");
 
         if (contentType == 'audio/mpeg') {
           /** save file in folder download */
           let fileReader = new FileReader();
-          fileReader.onload = function() {
+          fileReader.onload = function () {
             // fs.writeFileSync(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)));
             fs.writeFile(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)), (err) => {
               if (err) throw err;
@@ -237,7 +325,7 @@ function restoreSavedMusic(data) {
       }
     };
 
-    xhr.onerror = function(e) {
+    xhr.onerror = function (e) {
       console.log('restoreSavedMusic : error ' + e);
     };
 

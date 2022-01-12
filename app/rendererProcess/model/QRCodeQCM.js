@@ -1,116 +1,133 @@
- 
-
-class QRCodeQCM {    
-    /** Permet de créer une question
-     * @param  {} title
-     * @param  {} reponses=[]
-     * @param  {} reponseParIdentifiant
-     * @param  {} text_bonne_reponse
-     * @param  {} text_mauvaise_reponse
-     * @param  {} color='#000000'
-     */
-    constructor(title, reponses = [], reponseParIdentifiant, text_bonne_reponse, text_mauvaise_reponse, color = '#000000') {
-      this.qrcode = {
-        id: new Date().getTime(),
-        name: title,
-        type: "ExerciceReconnaissanceVocaleQCM",
-        data: reponses,
-        lettreReponseVocale : reponseParIdentifiant,
-        text_bonne_reponse: text_bonne_reponse,
-        text_mauvaise_reponse: text_mauvaise_reponse,
-        color: color
-      };
-    }
-  
-    setId(id) {
-      this.qrcode.id = id;
-    }
-  
-    getId() {
-      return this.qrcode.id;
-    }
-  
-    getName() {
-      return this.qrcode.name;
-    }
-  
-    setName(name){
-      this.qrcode.name = name;
-    }
-
-    getData() {
-      return this.qrcode.data;
-    }
-
-    getGoodAnswer() {
-      return this.qrcode.text_bonne_reponse;
-    }
-
-    getBadAnswer() {
-      return this.qrcode.text_mauvaise_reponse;
-    }
-
-    getLettreReponseVocale() {
-      return this.qrcode.lettreReponseVocale
-    }
-  
-    getText(){
-      return this.qrcode.text;
-    }
-  
-    setText(){
-      this.qrcode.text = this.qrcode.name;  
-      for(let i=0; i<this.qrcode.data.length; ++i) {
-        this.qrcode.text += " réponse " + (i+1) + " " + this.qrcode.data[i].message + " ";
-      }
-    }
-  
-    getReponses() {
-      return this.qrcode.data;
-    }
-  
-    getColor() {
-      return this.qrcode.color;
-    }
-  
-    setColor(color){
-      this.qrcode.color = color;
-    }
-  
-    getType(){
-      return this.qrcode.type;
-    }
-  
-    getDataString() {
-      return JSON.stringify(this.qrcode);
-    }
-  }
-  
-
+ /**
+  * classe permettant de créer une réponse
+  */
+class ReponseQCM {
   /**
-   * Classe permettant de créer une réponse QCM
+   * 
+   * @param {} id = "question{i}reponse{j}"
+   * @param {} reponse valeur de la réponse
+   * @param {} isGoodAnswer true si c'est la bonne réponse à la question; false sinon
    */
-  class ReponseVocale {
-    constructor(numeroEnigme, estBonneReponse, textQuestion) {
-        this.numeroEnigme = numeroEnigme;
-        this.estBonneReponse = estBonneReponse;
-        this.textQuestion = textQuestion;
-    }
-
-    getNumeroEnigme() {
-      return this.numeroEnigme;
-    }
-
-    getEstBonneReponse() {
-      return this.estBonneReponse;
-    }
-
-    getTextQuestion() {
-      return this.textQuestion;
-    }
+  constructor(id, reponseText = "", isGoodAnswer = false){
+    this.reponse = {
+      id: id,
+      reponseText: reponseText,
+      isGoodAnswer: isGoodAnswer
+    };
   }
+
+  getId(){
+    return this.reponse.id;
+  }
+
+  getReponse(){
+    return this.reponse.reponseText;
+  }
+
+  getIsGoodAnswer(){
+    return this.reponse.isGoodAnswer;
+  }
+ }
+/**
+ * classe permettant de créer une question
+ */
+class QuestionQCM {
+  /**
+   * 
+   * @param {} id = "question{i}"
+   * @param {} textQuestion la question
+   * @param {} reponses tableau de ReponseQCM
+   */
+  constructor(id, textQuestion = "", reponses = []){
+    this.question = {
+      id: id,
+      textQuestion: textQuestion,
+      reponses: reponses
+    };
+  }
+
+  getId(){
+    return this.id;
+  }
+
+  setId(newId){
+    this.id=newId;
+  }
+
+  getTextQuestion(){
+    return this.textQuestion;
+  }
+
+  setTextQuestion(newTextQuestion){
+    this.textQuestion=newTextQuestion;
+  }
+
+  getReponses(){
+    return this.reponses;
+  }
+
+  setReponses(newReponses){
+    this.reponses=newReponses;
+  }
+ }
+/**
+ * Classe permettant de créer un projet de QCM
+ */
+class ProjetQCM {
+  /**
+   * @param type - Qr Code type
+   * @param {} questions tableau de QuestionQCM
+   * @param {} textBonneReponse le message de bonne réponse 
+   * @param {} textMauvaiseReponse le message de mauvaise réponse
+   */
+  constructor(questions = [], textBonneReponse = "", textMauvaiseReponse = ""){
+    var dataString="";
+        for (let i = 0; i < questions.length; i++) {
+            dataString += questions[i];
+        }
+    var md5Value = MDFiveConverter.convert(dataString);
+    
+    this.qrcode = {
+      id: md5Value,
+      type: "ExerciceReconnaissanceVocaleQCM",
+      questions: questions,
+      textBonneReponse: textBonneReponse,
+      textMauvaiseReponse: textMauvaiseReponse
+    };
+  }
+
+  getId(){
+    return this.qrcode.id;
+  }
+
+  getQuestions(){
+    return this.qrcode.questions;
+  }
+
+  getQuestionFromId(id){
+    for(let i = 0 ; i < this.qrcode.questions.length; i++){
+      if(this.qrcode.questions[i].id == id){
+          return this.qrcode.questions[i];
+      }
+  }
+  return null;
+  }
+
+  getTextBonneReponse(){
+    return this.qrcode.textBonneReponse;
+  }
+
+  getTextMauvaiseReponse(){
+    return this.qrcode.textMauvaiseReponse;
+  }
+
+  getDataString() {
+    return JSON.stringify(this.qrcode);
+  }
+ }
 
   module.exports = {
-    QRCodeQCM,
-    ReponseVocale
+    ProjetQCM,
+    QuestionQCM,
+    ReponseQCM  
   };

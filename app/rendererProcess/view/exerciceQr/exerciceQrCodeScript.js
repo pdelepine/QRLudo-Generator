@@ -20,7 +20,7 @@ $(document).ready(function () {
 
   //fonction pour ajouter un nouvelle reponse
   $("#validerDataDialog").on('click', function () {
-
+    logger.info('Ajout d\'une réponse');
     let identifiant = $('#newId').val();
     let reponseVocale = $("#newContenuVocal").val();
     let qrColor = $('#qrColor').val();
@@ -43,10 +43,26 @@ $(document).ready(function () {
       return false; // si le champ est vide on sort
     }
 
-    qrData.push(reponseVocale);
+    let reponse = reponseVocale
+    qrData.push(reponse);
     var new_rep = new QRCodeUnique(identifiant, qrData, qrColor);
     var new_rep_vocal = reponseVocale;
 
+    //sortir de la fonction si la reponse existe déjà pour la question
+    let existe = false;
+    $.each(projet.getReponses(), function (i, val) {
+      if (projet.getReponseById(val.getId()).getName() === identifiant) {
+        existe = true;
+        return;
+      }
+    });
+    if (existe) {
+      $("#alertReponseDoublonError").show();
+      setTimeout(function () {
+        $('#alertReponseDoublonError').hide();
+      }, 3500);
+      return false;
+    }
     //Récuperation des inforamtion de la question pour gérer la continuité
     numReponse++;
     deleteStore('numReponse');
@@ -64,22 +80,6 @@ $(document).ready(function () {
     deleteStore("reponseColor" + numReponse);
     store.set("reponseColor" + numReponse, qrColor);
 
-    //sortir de la fonction si la reponse existe déjà pour la question
-    let existe = false;
-    $.each(projet.getReponses(), function (i, val) {
-      if (projet.getReponseById(val.getId()).getName() === identifiant) {
-        existe = true;
-        return;
-      }
-    });
-    if (existe) {
-      $("#alertReponseDoublonError").show();
-      setTimeout(function () {
-        $('#alertReponseDoublonError').hide();
-      }, 3500);
-      return false;
-    }
-
     //Ajouter au projet et à la question la nouvelle réponse
     projet.addReponse(new_rep);
     //console.log('id='+new_rep.getId() );
@@ -96,6 +96,7 @@ $(document).ready(function () {
     console.log("--------------------");
     console.log(projet.getQuestion().getReponses());
 
+    verifNombreCaractere();
     return true;
 
   });
@@ -104,11 +105,20 @@ $(document).ready(function () {
   $("#preview").on('click', function () {
     previewQRCodeQuestion();
     $('#qrView').show();
-
   });
+
+
 
   $("#emptyFields").on('click', function () {
     viderZone();
+    logger.info('Réinitialisation du QR Code Exercice');
+    store.set("excerciceEstCree", false);
+    deleteStore('QuestionUrl');
+    deleteStore("BonneReponseUrl");
+    deleteStore("MauvaiseReponseUrl");
+    document.getElementById("genererQestion").disabled = false;
+    verifNombreCaractere();
+    $("#cible").empty();                       //  pour vider les Bonnes Reponses!
   })
 
   function viderZone() {
@@ -134,6 +144,16 @@ $(document).ready(function () {
     $('#newMauvaiseReponseText').val('');
     $('#newNbMinimalBonneReponse').val('');
 
+    $('#newQuestionText').attr('disabled', false);
+    $("#newQuestionAudio").attr('disabled', false);
+    $("#newBonneReponseText").attr('disabled', false);
+    $("#newBonneReponseAudio").attr('disabled', false);
+    $("#newMauvaiseReponseText").attr('disabled', false);
+    $('#newMauvaiseReponseAudio').attr('disabled', false);
+    $('#newNbMinimalBonneReponse').attr('disabled', false);
+
+
+
     deleteStore(`newQuestionText`);
 
     deleteStore(`newBonneReponseText`);
@@ -152,6 +172,7 @@ $(document).ready(function () {
     deleteStore('numReponse');
     numReponse = 0;
   }
+  verifNombreCaractere();
 });
 
 // fonction qui ajoute la ligne de la reponse sur la zone prévu a cet effet
@@ -165,8 +186,8 @@ function addReponseLine(reponse) {
   var newRepLine = "<div style='height:35px;' id='" + reponse.getId() + "'>" +
     "<li style='color:black;font-size:14px;'>" +
     "<label>" + reponse.getName() + "&nbsp&nbsp</label>" +
-    "<em style='color:gray'>" + reponse.getDataAll() + "</em>" +
-    "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='deleteReponse(this);'><i class='fa fa-trash-alt'></i></button>" +
+    "<em style='color:gray'>" + reponse.getData(0) + "</em>" +
+    "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='deleteReponse(this);verifNombreCaractere();'><i class='fa fa-trash-alt'></i></button>" +
     "<button class='btn btn-outline-success float-right' id='" + reponse.getId() + "' onclick='lireReponse(this);'><i class='fa fa-play'></i></button>" +
     "</li>" +
     "</div>";
@@ -175,28 +196,71 @@ function addReponseLine(reponse) {
 }
 
 $("#genererQestion").on('click', function () {
-  $("#ajoutNewReponse").attr('disabled', false);
-
-  let question = $('#newQuestionText').val();
-  let bonneReponse = $('#newBonneReponseText').val();
-  let mauvaiseReponse = $('#newMauvaiseReponseText').val();
+  let question = document.getElementById('newQuestionText');
+  if (question.value.substring(question.value.length - 3, question.value.length) == "mp3") {
+    question = {
+      type: 'music',
+      name: question.value,
+      url: question.name
+    }
+  }
+  else {
+    question = question.value
+  }
+  let bonneReponse = document.getElementById('newBonneReponseText');
+  if (bonneReponse.value.substring(bonneReponse.value.length - 3, bonneReponse.value.length) == "mp3") {
+    bonneReponse = {
+      type: 'music',
+      name: bonneReponse.value,
+      url: bonneReponse.name
+    }
+  }
+  else {
+    bonneReponse = bonneReponse.value;
+  }
+  let mauvaiseReponse = document.getElementById('newMauvaiseReponseText');
+  if (mauvaiseReponse.value.substring(mauvaiseReponse.value.length - 3, mauvaiseReponse.value.length) == "mp3") {
+    mauvaiseReponse = {
+      type: 'music',
+      name: mauvaiseReponse.value,
+      url: mauvaiseReponse.name
+    }
+  }
+  else {
+    mauvaiseReponse = mauvaiseReponse.value
+  }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();
 
+  // if ((question.text !== "" || question.name !== "") && (bonneReponse.text !== "" || bonneReponse.name !== "") && (mauvaiseReponse.text !=="" || mauvaiseReponse.name !== "") && nbMinBoneReponse !== "")
+
   //On verifie si le texte de la question n'est pas vide
-  if (question !== "" && bonneReponse !== "" && mauvaiseReponse !== "" && nbMinBoneReponse !== "") {
+  if ((question || question.name) && (bonneReponse || bonneReponse.name) && (mauvaiseReponse || mauvaiseReponse.name) && nbMinBoneReponse !== "") {
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
+    document.getElementById("newMauvaiseReponseText").disabled = true;
+    document.getElementById("newQuestionText").disabled = true;
+    document.getElementById("newBonneReponseText").disabled = true;
+    document.getElementById("newNbMinimalBonneReponse").disabled = true;
+    document.getElementById("newQuestionAudio").disabled = true;
+    document.getElementById("newBonneReponseAudio").disabled = true;
+    document.getElementById("newMauvaiseReponseAudio").disabled = true;
+    $("#ajoutNewReponse").attr('disabled', false);
     projet.setQuestion(nouvQuestion);
+    logger.info('Création du QR Code Exercice');
 
     initMessages();
-
     //affichage de la zone de question
     $("#dropZone").show();
 
     //on cache le bouton question
     $("#genererQestion").hide();
+
+    store.set("excerciceEstCree", true);
+
+    verifNombreCaractere();
   } else {
     messageInfos("Veuillez renseigner tous les champs", "danger");
+    logger.error("Des champs sont vides! ")
   }
 });
 
@@ -234,9 +298,6 @@ function viderChamps() {
   document.getElementById("newNbMinimalBonneReponse").value = "";
 }
 
-//compteur du nombre de reponse pour  pouvoir reinitliser la zone de drad and drop
-
-
 
 // Supprime une ligne dans la zone de drop
 function effacerLigne() {
@@ -255,6 +316,8 @@ On enregistre toutes les questions et réponses du projet dans le répertoire s�
 par l'utilisateur*/
 $("#saveQRCode").on('click', e => {
   saveQRCodeImage();
+  logger.info('Exportation du QR Code Exercice');
+
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -387,12 +450,10 @@ function supprimeInfoBtnQrCode(button, cible) {
 function deleteReponse(button) {
   var k = $('#newNbMinimalBonneReponse').val();
   var id_reponse = $(button).attr('id');
-  console.log(k);
-  console.log(numReponse);
+
   numReponse--;
   if (k > numReponse) {
     $("#preview").attr("disabled", true);
-    console.log("test");
   }
   projet.removeReponse(id_reponse);
   $("div#" + id_reponse).remove();
@@ -401,6 +462,7 @@ function deleteReponse(button) {
   nombre_reponse--;
   console.log(nombre_reponse);
   console.log(projet.getQuestion());
+
   if (nombre_reponse == 0) {
     txtDragAndDrop.setAttribute("id", "txtDragAndDrop");
     txtDragAndDrop.setAttribute("class", "col-sm-7");
@@ -410,16 +472,18 @@ function deleteReponse(button) {
   }
 
   //Permet de gérer la conuité en suppriant la "bonne" reponse du store
-  for (var i = 1; i < numReponse + 1; i++) {
+  for (var i = 1; i <= numReponse + 1; i++) {
     if (store.get('reponseId' + i) == id_reponse) {
       deleteStore('reponse' + i);
       deleteStore('data' + i);
       deleteStore('reponseId' + i);
       deleteStore('reponseColor' + i);
     }
-
-
   }
+
+  logger.info('Suppression d\'une réponse');
+  // deleteStore("reponse"+id_reponse);    // delete la reponse du store 
+
 }
 
 //Méthode appliqué au chargement pour récupérer les élément enregistrés
@@ -431,17 +495,32 @@ function enregistrement() {
   else
     store.set(`numReponse`, numReponse);
 
-  if (store.get(`newQuestionText`))
+  if (store.get(`newQuestionText`)) {
     $("#newQuestionText").val(store.get(`newQuestionText`));
-
-  if (store.get(`newBonneReponseText`))
+    if (store.get("newQuestionText").substring(store.get("newQuestionText").length - 3, store.get("newQuestionText").length) == "mp3") {
+      document.getElementById("newQuestionText").name = store.get("QuestionUrl");
+      document.getElementById("newQuestionText").disabled = true;
+    }
+  }
+  if (store.get(`newBonneReponseText`)) {
     $("#newBonneReponseText").val(store.get(`newBonneReponseText`));
+    if (store.get("newBonneReponseText").substring(store.get("newBonneReponseText").length - 3, store.get("newBonneReponseText").length) == "mp3") {
+      document.getElementById("newBonneReponseText").name = store.get("BonneReponseUrl");
+      document.getElementById("newBonneReponseText").disabled = true;
+    }
+  }
 
-  if (store.get('newMauvaiseReponseText'))
-    $("#newMauvaiseReponseText").val(store.get('newMauvaiseReponseText'));
+  if (store.get(`newMauvaiseReponseText`)) {
+    $("#newMauvaiseReponseText").val(store.get(`newMauvaiseReponseText`));
+    if (store.get("newMauvaiseReponseText").substring(store.get("newMauvaiseReponseText").length - 3, store.get("newMauvaiseReponseText").length) == "mp3") {
+      document.getElementById("newMauvaiseReponseText").name = store.get("MauvaiseReponseUrl");
+      document.getElementById("newMauvaiseReponseText").disabled = true;
+    }
+  }
 
   if (store.get('newNbMinimalBonneReponse'))
     $('#newNbMinimalBonneReponse').val(store.get('newNbMinimalBonneReponse'));
+
 
   //créé une nouvelles question si le nombre de réponse est superieur à 0
   if (numReponse > 0) {
@@ -463,18 +542,33 @@ function enregistrement() {
       var new_rep = new QRCodeUnique(store.get('reponse' + i), store.get('data' + i), store.get('reponseColor' + i)); // creation d'une nouvelle reponse
       new_rep.setId(store.get('reponseId' + i));
       projet.addReponse(new_rep);
-
-      projet.getQuestion().addReponse(new_rep.getId(), new_rep.getData());
       addReponseLine(new_rep);
-
     }
   }
+
+  if (store.get('excerciceEstCree')) {
+    document.getElementById("newMauvaiseReponseText").disabled = true;
+    document.getElementById("newQuestionText").disabled = true;
+    document.getElementById("newBonneReponseText").disabled = true;
+    document.getElementById("newNbMinimalBonneReponse").disabled = true;
+    document.getElementById("newQuestionAudio").disabled = true;
+    document.getElementById("newBonneReponseAudio").disabled = true;
+    document.getElementById("newMauvaiseReponseAudio").disabled = true;
+    document.getElementById("ajoutNewReponse").disabled = false;
+    document.getElementById("genererQestion").click();
+  }
+  //ajouter des reponses dans l'objet projet de la question 
+  for (i = 0; i < numReponse + 1; ++i) {
+    if (store.get('reponse' + i))
+      projet.getQuestion().addReponse(store.get('reponseId' + i), store.get('data' + i)[0]);
+  }
+
 }
 
 
 //Cette fonction sauvegarde l'image du qrcode dans un div pour le pouvoir generer apres
 function saveQRCodeImages(div, qrcode, directoryName) {
-  let img = $(div).children()[0].src;
+  let img = document.getElementById("qrView").children[0].src;
   //let data = img.replace(/^data:image\/\w+;base64,/, '');
   let matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
   let data = new Buffer(matches[2], 'base64');
@@ -519,6 +613,7 @@ function previewQRCodeQuestion() {
   var question = projet.getQuestion();
   question.qrcode.color = $('#qrColor').val();
   previewQRCode(question, $('#qrView')[0]);
+  logger.info(`Génération du QR Code ExerciceQR : ${JSON.stringify(question.qrcode)}`);
 }
 
 // Previsualiser les reponses
@@ -531,7 +626,6 @@ function previewQRCodeReponse(button) {
 // generate and print qr code
 function previewQRCode(qrcode, div) {
   let facade = new FacadeController();
-
   facade.genererQRCode(div, qrcode);
 }
 
@@ -539,7 +633,7 @@ function lireReponse(button) {
   var id_reponse = $(button).attr('id');
   var text_reponse = $("div#" + id_reponse + " label").text();
   var text_retourVocal = $("div#" + id_reponse + " em").text();
-
+  logger.info('Lecture d\'une réponse');
   playTTS(text_reponse + text_retourVocal);
 }
 
@@ -562,3 +656,252 @@ $("#infos-exercice-qrcode").on('click', function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'exerciceQrCode';
   $("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
+
+
+//Partie audio
+
+var audioSource = "";
+
+$("#newQuestionAudio").on('click', function () {
+  audioSource = "Question";
+  logger.info("Ajout d'un fichier audio pour la question ");
+});
+$("#newBonneReponseAudio").on('click', function () {
+  audioSource = "BonneReponse";
+  logger.info("Ajout d'un fichier audio pour la bonne réponse");
+});
+$("#newMauvaiseReponseAudio").on('click', function () {
+  audioSource = "MauvaiseReponse";
+  logger.info("Ajout d'un fichier audio pour la mauvaise réponse");
+});
+
+
+/** Fonction pour ajouter un fichier audio */
+function getMusicFromUrl() {
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
+
+    const {
+      clipboard
+    } = require('electron');
+
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
+
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        return
+      }
+
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
+        showError(modal, errorMsg);
+      }
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
+
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
+          console.log(contentType);
+
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
+
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
+
+            ajouterChampSon(filename, link);
+          } else {
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          showError(modal, errorMsg);
+        }
+      };
+
+      xhr.onloadstart = function (e) {
+        console.log('load start');
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
+
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
+
+      xhr.send();
+    });
+  }
+}
+
+/** Fonction pour ajouter au bon endroit le fichier audio */
+function ajouterChampSon(nom, url) {
+  if (audioSource == "Question") {
+    let textArea = document.getElementById("newQuestionText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+    store.set("QuestionUrl", url);
+    store.set("newQuestionText", nom);
+  } else if (audioSource == "BonneReponse") {
+    let textArea = document.getElementById("newBonneReponseText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+    store.set("BonneReponseUrl", url);
+    store.set("newBonneReponseText", nom);
+  } else if (audioSource == "MauvaiseReponse") {
+    let textArea = document.getElementById("newMauvaiseReponseText");
+    textArea.value = nom;
+    textArea.name = url;
+    textArea.setAttribute("disabled", "true");
+    store.set("MauvaiseReponseUrl", url);
+    store.set("newMauvaiseReponseText", nom);
+  }
+}
+
+function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
+  console.log('error ');
+  $(modal).find('.loader').remove();
+  $(errorMsg).text(message);
+  $(errorMsg).css('color', '#f35b6a');
+  $(errorMsg).addClass('errorLoader');
+  $(modal).prepend(errorMsg); // add error message
+}
+
+$(document).ready(function () {
+  //Use to implement information on the audio import
+  var info = document.createElement('div'); // balise div : contain html information
+  var info_activ = false; // boolean : give the etat of info (up/off)
+
+  /** Show the information about the audio file import (help) */
+  $('button#showInfo').on('click', e => {
+    e.preventDefault();
+    if (info_activ == false) {
+      info.innerHTML = ``;
+      fetch(root + '/rendererProcess/components/audioinfo.html').then(function (response) {
+        return response.text();
+      }).then(function (string) {
+        // console.log(string);
+        info.innerHTML = string;
+      }).catch(function (err) {
+        console.log(info.innerHTML);
+        info.innerHTML = `Erreur`;
+      });
+      document.getElementById('elementsAudio').appendChild(info);
+      info_activ = true;
+    }
+    else {
+      document.getElementById('elementsAudio').removeChild(info);
+      info_activ = false;
+    }
+  });
+
+  $('#closeModalListeMusic').on('click', e => {
+    $('#musicUrl').val('');
+    $('#listeMusic').find('.errorLoader').remove();
+  });
+
+  $("#play-sound-div").hide();
+});
+
+
+
+/**  une fonction pour calculer le nombre de car de QRcode + les id des qrcodes */
+function calculNombreCaractereQRCode() {
+  let char = 0;
+  let qrQuestion = projet.getQuestion();
+  let qrcodes = projet.getReponses();
+  if (qrcodes.length != 0) {
+    for (const element of qrcodes) {
+      char += element.getId().toString().length;
+      char += 2;  // pour les  "" autour de chaque QR
+    }
+    char += qrcodes.length - 1;  // pour compter la virgule qui se trouve entre chaque deux QRcodes
+  }
+  if (qrQuestion != null) {
+    char += qrQuestion.getColor().length
+    char += qrQuestion.getId().toString().length;
+    char += qrQuestion.getType().length;
+    char++;        // pour la version 
+  }
+  char += document.getElementById("newQuestionText").value.length;
+  char += document.getElementById("newBonneReponseText").value.length;
+  char += document.getElementById("newMauvaiseReponseText").value.length;
+  char += document.getElementById("newNbMinimalBonneReponse").value.length;
+  char += 133;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
+  return char;
+}
+
+
+
+function verifNombreCaractere() {
+  let nombreCaratereMAX = 1240;
+  //progress bar gestion
+  let total = SetProgressBar();
+  $('#messages').empty();
+  if (total >= nombreCaratereMAX) {
+    if (store.get("excerciceEstCree")) {
+      messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
+    } else {
+      messageInfos("La taille maximale est atteinte, il faut supprimer des Questions", "warning");
+    }
+    document.getElementById("newQuestionText").setAttribute("maxLength", 0);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength", 0);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength", 0);
+  }
+  else {
+    document.getElementById("newQuestionText").setAttribute("maxLength", nombreCaratereMAX);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength", nombreCaratereMAX);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength", nombreCaratereMAX);
+  }
+  if (document.getElementById("newQuestionText").value.length == 0 && document.getElementById("newBonneReponseText").value.length == 0 &&
+    document.getElementById("newMauvaiseReponseText").value.length == 0) {
+    document.getElementById("progressbarId").style.width = 0;
+  }
+}
+
+
+/** fonction qui fait la mis à jour de Progress Bar */
+function SetProgressBar() {
+  //progress bar gestion
+  let total = 0;
+  let nombreCaratereMAX = 1240;
+  total += calculNombreCaractereQRCode();
+  let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+  //mise ajour des données sur le progress bar
+  $("#progressbarId").attr('aria-valuenow', totalSeted);
+  $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+  $("#progressbarId").text(totalSeted + "%");
+  //FIN progress bar gestion
+  return total;
+}
+
+function deleteStore(del) {
+  if (store.get(del))
+    store.delete(del);
+}

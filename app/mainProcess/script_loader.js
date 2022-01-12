@@ -30,6 +30,8 @@ const piexif = require('piexifjs');
 const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
+logger.info('Le chemin est ' + require.resolve('qrcode'));
+const { setTimeout } = require('timers');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
@@ -41,6 +43,7 @@ function getNormalizePath(pathToNormalize) {
 
 /** Import de $ comme appel à jQuery */
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
+// window.$ = window.jQuery = require('jquery');
 require(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.js");
@@ -55,14 +58,14 @@ const { exec } = require('child_process');
 switch (process.platform) {
   case 'linux':
     var temp = path.join(process.env.HOME, 'temp/QRLudo');
-    logger.info(`Création d'un dossier temporaire : ${ temp } et ses sous-dossiers Download et tts`);
+    logger.info(`Création d'un dossier temporaire : ${temp} et ses sous-dossiers Download et tts`);
     fs.access(temp, fs.constants.F_OK, (err) => {
       if (err) {
         var { ipcRenderer } = require('electron');
 
         exec(`mkdir -p ${temp}/Download`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }/Download`);
+            logger.error(`Problème de création du dossier : ${temp}/Download`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
@@ -71,7 +74,7 @@ switch (process.platform) {
 
         exec(`mkdir -p ${temp}/tts`, (error, stdout, stderr) => {
           if (error) {
-            logger.error(`Problème de création du dossier : ${ temp }/tts`);
+            logger.error(`Problème de création du dossier : ${temp}/tts`);
             console.error(`exec error: ${error}`);
             ipcRenderer.send('exitApp', null);
             return;
@@ -115,15 +118,15 @@ switch (process.platform) {
     break;
 }
 
-/** Check internet connection */
+/** Check internet connection 
 logger.info('Test de la connexion internet');
-if (!navigator.onLine) {
+/*if (!navigator.onLine) {
   logger.error(`L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet`);
   alert("L'application ne peut pas se lancer sans une liaison à internet. Veuillez vérifier votre connexion internet");
   window.close();
 } else {
   logger.info('L\'application est bien connectée à internet');
-}
+}*/
 
 const { ipcRenderer } = require('electron');
 const dialog = remoteElectron.dialog;
@@ -131,8 +134,6 @@ const dialog = remoteElectron.dialog;
 const { CompresseurTexte } = require(`${root}/rendererProcess/controller/CompresseurTexte`);
 const { ControllerMultiple } = require(`${root}/rendererProcess/controller/ControllerMultiple`);
 const { FacadeController } = require(`${root}/rendererProcess/controller/FacadeController`);
-const { ImageGenerator } = require(`${root}/rendererProcess/controller/ImageGenerator`);
-const { ImageGeneratorJson } = require(`${root}/rendererProcess/controller/ImageGeneratorJson`);
 const { JsonCompressor } = require(`${root}/rendererProcess/controller/JsonCompressor`);
 const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveConverter`);
 const { QRCodeLoader } = require(`${root}/rendererProcess/controller/QRCodeLoader`);
@@ -142,14 +143,9 @@ const { QRCodeLoaderJson } = require(`${root}/rendererProcess/controller/QRCodeL
  * On charge les modèle de données 
  */
 
-const { DictionnaireXml } = require(`${root}/rendererProcess/model/DictionnaireXml`);
 const { Music } = require(`${root}/rendererProcess/model/Music`);
-const { QRCode } = require(`${root}/rendererProcess/model/QRCode`);
-const { QRCodeAtomique } = require(`${root}/rendererProcess/model/QRCodeAtomique`);
-const { QRCodeMultiple } = require(`${root}/rendererProcess/model/QRCodeMultiple`);
 const { QRCodeMultipleJson } = require(`${root}/rendererProcess/model/QRCodeMultipleJson`);
-const { QRCodeUnique,
-  QRCodeXL } = require(`${root}/rendererProcess/model/QRCodeJson`);
+const { QRCodeUnique } = require(`${root}/rendererProcess/model/QRCodeUnique`);
 
 const { QRCodeXMLJson } = require(`${root}/rendererProcess/model/QRCodeXMLJson`);
 
@@ -157,16 +153,27 @@ const { Projet,
   Reponse,
   Question } = require(`${root}/rendererProcess/model/QRCodeQuestionReponse`);
 
-const { QRCodeQCM,
-  ReponseVocale } = require(`${root}/rendererProcess/model/QRCodeQCM`);
+const { ProjetQCM,
+  QuestionQCM,
+  ReponseQCM } = require(`${root}/rendererProcess/model/QRCodeQCM`);
 
 const { ProjetSeriousGame,
-  QRCodeSeriousGame,
-  QRCodeQuestion,
-  RecVocaleQuestion,
-  ReponseQuestionQR } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
+  TextNode,
+  QuestionNode, } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
 
+const { SGDot } = require(`${root}/rendererProcess/model/SGDot`);
+const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
+const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
+const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
+const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode`);
+
+
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();
+
+const jsQR = require("jsqr");
+const Jimp = require('jimp');
+const QRious = require('qrious');
+const zlib = require('zlib');
