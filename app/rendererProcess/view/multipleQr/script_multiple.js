@@ -16,7 +16,7 @@ $().ready(function () {
   /** Genere le qrCode multiple */
   $("#preview").on('click', function () {
 
-    affichageLigneParDefault(); 
+    affichageLigneParDefault();
 
     let qrColor = $("#qrColor").val();
     controllerMultiple.setQRCodeMultiple(new QRCodeMultipleJson(document.getElementById('qrName').value, [], qrColor));
@@ -36,9 +36,11 @@ $().ready(function () {
     facade.genererQRCode($('#qrView')[0], qrcodeEns);
     //console.log($('#qrView')[0]);
 
+    // On affiche le qrCode
+    $('#qrView').show();
     $('#saveQRCode').attr('disabled', false);
 
-    logger.info("Génération du QR Code Multiple : "+JSON.stringify(qrcodeEns.qrcode));
+    logger.info("Génération du QR Code Multiple : " + JSON.stringify(qrcodeEns.qrcode));
   });
 
   //$("#empty").on('click',viderZone);
@@ -58,7 +60,7 @@ $().ready(function () {
   if (numFich > 0)
     document.getElementById('preview').disabled = false;
 
-verifNombreCaractere();
+  verifNombreCaractere();
 });
 
 var dropZone = document.getElementById('dropZone');
@@ -143,7 +145,7 @@ function ajoutQrCcode() {
     let jsonAudio = JSON.stringify(donnee);
     qrData.push(JSON.parse(jsonAudio));
   }
-  else{
+  else {
     donnee = {
       type: 'text',
       text: donnee.value
@@ -173,7 +175,7 @@ function ajoutQrCcode() {
 
   document.getElementById("saveQRCode").disabled = true;
 
-  logger.info("Ajout d'un QR Code : "+JSON.stringify(newQrUnique.qrcode));
+  logger.info("Ajout d'un QR Code : " + JSON.stringify(newQrUnique.qrcode));
 }
 
 /** permet la continuité entre les onflet spécifiquement pour l'onglet multiple */
@@ -273,7 +275,7 @@ function genererLigne(name, numLigne) {
   baliseDiv.appendChild(baliseButtonUp);
   baliseDiv.appendChild(baliseButtonDown);
 
-  txtZone.appendChild(baliseDiv); 
+  txtZone.appendChild(baliseDiv);
 }
 
 /** Affiche le qrCode unique lie à la ligne cliquable */
@@ -296,7 +298,7 @@ function afficherQrCode(e) {
   }
 
   console.log(controllerMultiple.getQRCodeSelectionne());
-  logger.info("Prévisualisation d'un Qr code : "+JSON.stringify(controllerMultiple.getQRCodeSelectionne()));
+  logger.info("Prévisualisation d'un Qr code : " + JSON.stringify(controllerMultiple.getQRCodeSelectionne()));
 }
 
 /** Supprime une ligne dans la zone de drop */
@@ -328,8 +330,8 @@ function effacerLigne() {
     console.log("coucou");
     $('#txtDragAndDrop').show();
   }
-  
-  logger.info("Suppression d'un QR Code; id : "+JSON.stringify(id));
+
+  logger.info("Suppression d'un QR Code; id : " + JSON.stringify(id));
 }
 
 /** Vide les tableaux qrCodes, files et les lignes de la zone drop */
@@ -337,6 +339,8 @@ function viderZone() {
   controllerMultiple = new ControllerMultiple();
   $('#qrName').val('');
   $(txtZone).empty();
+
+  $('#qrView').hide();
   txtZone.appendChild(txtDragAndDrop);
   $('#txtDragAndDrop').show();
 
@@ -402,40 +406,40 @@ function saveQRCodeImage() {
   }
 
   xhr.send();
-  
+
   logger.info("Exportation du QR Code multiple");
 }
 
 /**  function pour calculer le nombre de caractères du QRcode Multiple intermédiaire */
-function caractDansQRMult (){
+function caractDansQRMult() {
   let char = 0;
   let qrColor = $('#qrColor').val();
   let qrName = $('#qrName').val();
   let qrData = "random String";
 
   let newQrMult = new QRCodeMultipleJson(qrName, qrData, qrColor);
-  
+
   char += qrColor.length;
   char += newQrMult.getType().length;
-  char ++ ;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson 
-  char +=63;  // la taille de  {"name":"","type":"ensemble","data":[],"color":"","version":""}
+  char++;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson 
+  char += 63;  // la taille de  {"name":"","type":"ensemble","data":[],"color":"","version":""}
 
-return char;
+  return char;
 }
 
 
 /**  une fonction pour calculer la somme des caractères de chaque qrcode unique */
-function caractDeQRCodesUniques(){
+function caractDeQRCodesUniques() {
   let char = 0;
   let qrcodes = controllerMultiple.getQRCodeAtomiqueArray();
 
   for (const element of qrcodes) {
-      char += element.getData().toString().length;
-      char += element.getColor().toString().length;
-      char += element.getId().toString().length; 
-      char += element.getName().toString().length; 
-      char += element.getType().toString().length; 
-      char += 63; // la taille de {"qrcode":{"id":"","name":"","type":"","data":[""],"color":""}}
+    char += element.getData().toString().length;
+    char += element.getColor().toString().length;
+    char += element.getId().toString().length;
+    char += element.getName().toString().length;
+    char += element.getType().toString().length;
+    char += 63; // la taille de {"qrcode":{"id":"","name":"","type":"","data":[""],"color":""}}
   }
 
   char += caractDansQRMult();  // plus les caractères dans le qrmult
@@ -453,34 +457,33 @@ function verifNombreCaractere() {
   if (total >= nombreCaratereMAX) {
     messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
     //si nombre de caractére max attein on disable le button pour l'ajoute d'autre qrCode
-    document.getElementById("addNewQR").disabled=true;  
+    document.getElementById("addNewQR").disabled = true;
     document.getElementById("qrName").setAttribute("maxlength", 0);
   }
   else {
-    document.getElementById("addNewQR").disabled=false;
+    document.getElementById("addNewQR").disabled = false;
     document.getElementById("qrName").setAttribute("maxlength", nombreCaratereMAX);
   }
 
   // si le nombre de caractére max n'est pas attein mais le progress bar est > 85%, on disable le button d'ajoute 
-  if (Math.round((total * 100) / nombreCaratereMAX)>=85){
-    document.getElementById("addNewQR").disabled=true;
+  if (Math.round((total * 100) / nombreCaratereMAX) >= 85) {
+    document.getElementById("addNewQR").disabled = true;
   }
 
   // si le champ de qrName est vide ou si le pourcentage>100 , on disable le button de génération de QRcode
-  if (document.getElementById("qrName").value.length==0 || total > nombreCaratereMAX){
-    
-    document.getElementById("preview").disabled=true;
-  
+  if (document.getElementById("qrName").value.length == 0 || total > nombreCaratereMAX) {
+
+    document.getElementById("preview").disabled = true;
+
   } else {
 
-    document.getElementById("preview").disabled=false;
+    document.getElementById("preview").disabled = false;
 
   }
 
-if (document.getElementById("qrName").value.length==0 && controllerMultiple.getQRCodeAtomiqueArray()==0)
-    {
-      document.getElementById("progressbarId").style.width=0;
-    }
+  if (document.getElementById("qrName").value.length == 0 && controllerMultiple.getQRCodeAtomiqueArray() == 0) {
+    document.getElementById("progressbarId").style.width = 0;
+  }
 
 }
 
@@ -492,11 +495,11 @@ function SetProgressBar() {
 
   var nombreCaratereMAX = 1240;
 
-  if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
+  if (document.getElementById("qrName") != null) total += document.getElementById("qrName").value.length;
 
   // on ajoute la tailles des uniques qrcodes
-  total += caractDeQRCodesUniques();   
-  
+  total += caractDeQRCodesUniques();
+
   var totalSeted = Math.round((total * 100) / nombreCaratereMAX);
 
   //mise ajour des données sur le progress bar
@@ -528,7 +531,7 @@ function upItem(e) {
   store.set(`fichierDrop${tmpVal}`, prevVal);
 
   $(parentElement).insertBefore($(parentElement).prev());
-  logger.info("Déplacement d'un QR Code vers le haut; id : "+JSON.stringify(parentElementVal));
+  logger.info("Déplacement d'un QR Code vers le haut; id : " + JSON.stringify(parentElementVal));
 }
 
 /** fonction deplacement de fichier vers bas  &&& */
@@ -550,7 +553,7 @@ function downItem(e) {
   store.set(`fichierDrop${tmpVal}`, nextVal);
 
   $(parentElement).insertAfter($(parentElement).next());
-  logger.info("Déplacement d'un QR Code vers le bas; id : "+JSON.stringify(parentElementVal));
+  logger.info("Déplacement d'un QR Code vers le bas; id : " + JSON.stringify(parentElementVal));
 }
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
@@ -568,7 +571,7 @@ function getMusicFromUrl() {
   if (!navigator.onLine) {
     logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
     alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
-    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
   } else {
     logger.info('L\'application est bien connectée à internet');
     let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
@@ -645,10 +648,10 @@ function getMusicFromUrl() {
 
 /** Fonction pour ajouter au bon endroit le fichier audio */
 function ajouterChampSon(nom, url) {
-    let textArea = document.getElementById("ContenuQR");
-    textArea.value = nom;
-    textArea.name = url;
-    textArea.setAttribute("disabled", "true");
+  let textArea = document.getElementById("ContenuQR");
+  textArea.value = nom;
+  textArea.name = url;
+  textArea.setAttribute("disabled", "true");
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
@@ -668,7 +671,7 @@ $(document).ready(function () {
   enregistrement();
 
   /** Show the information about the audio file import (help) */
- $('button#showInfo').on('click', e => {
+  $('button#showInfo').on('click', e => {
     e.preventDefault();
     if (info_activ == false) {
       info.innerHTML = ``;

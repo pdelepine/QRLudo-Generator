@@ -38,6 +38,8 @@ class QRCodeLoaderJson {
       let new_dataString = exifObj['Exif'][piexif.ExifIFD.UserComment];
       logger.info(`QRCodeLoaderJson.loadImage | Métadonnées lues dans le champ UserComment \n${new_dataString}`);
 
+      // Si l'ancienne manière de stocker les metadonnées est présente, on l'utilise
+      // Sinon on utilise la nouvelle
       if (!old_dataUtf8) {
         if (new_dataString) {
           dataRead = new_dataString;
@@ -56,7 +58,7 @@ class QRCodeLoaderJson {
 
   /**
    * Transforme le string du JSON du QR code et renvoie la classe du QR code construit
-   * @param {String} qrcodeString 
+   * @param {String} qrcodeString
    * @param {Function} callback la fonction à qui on passe le QRCode généré
    */
   static convertJSONStringToQR(qrcodeString, callback) {
