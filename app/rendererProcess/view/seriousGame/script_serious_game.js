@@ -430,6 +430,11 @@ var sketch = function (p) {
 					p.getCursor();
 				}
 			}
+
+			for(i = 0; i < p.nodeArray.length; ++i){
+				if(!p.nodeArray[i].isMouseHover())
+					p.nodeArray[i].clicked = false;
+			}
 		}
 		if (p.mouseButton === p.RIGHT) {
 			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
