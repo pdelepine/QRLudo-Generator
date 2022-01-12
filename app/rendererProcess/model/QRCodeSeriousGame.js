@@ -5,7 +5,7 @@
  * DELÉPINE Pierre-yVes
  */
 
-const { MDFiveConverter } = require(getNormalizePath(`${root}/rendererProcess/controller/MDFiveConverter.js`));
+const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveConverter.js`);
 
 /**
  *  Classe permettant de créer un projet de serious game

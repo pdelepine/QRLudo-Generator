@@ -5,7 +5,7 @@
  * @Last modified time: 2018-12-08T17:37:59+01:00
  */
 
-const { MDFiveConverter } = require(getNormalizePath(`${root}/rendererProcess/controller/MDFiveConverter.js`));
+const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveConverter.js`);
 
 /** This class is a representation of QRCode unique in JSON format */
 class QRCodeUnique {

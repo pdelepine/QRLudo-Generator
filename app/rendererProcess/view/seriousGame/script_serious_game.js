@@ -141,7 +141,7 @@ $(document).ready(function () {
     e.preventDefault();
     if (info_activ == false) {
       info.innerHTML = ``;
-      fetch(getNormalizePath(root + '/rendererProcess/components/audioinfo.html')).then(function (response) {
+      fetch(root + '/rendererProcess/components/audioinfo.html').then(function (response) {
         return response.text();
       }).then(function (string) {
         // console.log(string);
@@ -973,5 +973,5 @@ function enregistrement() {
 /** pour ouvrir la page info.html quand on clique sur le bouton info du haut */
 $("#infos-serious-game").on('click', function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
-  $("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+  $("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
