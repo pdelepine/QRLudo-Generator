@@ -572,7 +572,14 @@ function saveQRCodeImages(div, qrcode, directoryName) {
   //let data = img.replace(/^data:image\/\w+;base64,/, '');
   let matches = img.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
   let data = new Buffer(matches[2], 'base64');
-  var file_name = qrcode.getName().replace(/[^a-zA-Z0-9]+/g, "") + '.jpeg';
+
+  let file_name;
+  if (typeof qrcode.getName() === 'string') {
+    file_name = qrcode.getName().replace(/[^a-zA-Z0-9]+/g, "") + '.jpeg';
+  } else {
+    file_name = qrcode.getName().name.replace(/[^a-zA-Z0-9]+/g, "") + '.jpeg';
+  }
+  
   fs.writeFile(path.join(directoryName, file_name), data, (err) => {
     if (err) {
       $("#questionsDivLabelsId").append("<div>" + err + "</div>");
@@ -595,14 +602,15 @@ function saveQRCodeImage() {
     }
 
     //On enregistre la question
-    let div = document.createElement('div');
+    let div = document.getElementById("qrView")
     facade.genererQRCode(div, projet.getQuestion());
     saveQRCodeImages(div, projet.getQuestion(), dir_path);
 
 
     //Idem pour les réponses
     $.each(projet.getReponses(), function (id, reponse) {
-      let div = document.createElement('div');
+      console.log(reponse);
+      let div = document.getElementById("qrView")
       facade.genererQRCode(div, reponse);
       saveQRCodeImages(div, reponse, dir_path);
     });
@@ -765,7 +773,7 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
-    store.set("QuestionUrl", url);
+    store.set({QuestionUrl: url});
     store.set("newQuestionText", nom);
   } else if (audioSource == "BonneReponse") {
     let textArea = document.getElementById("newBonneReponseText");
