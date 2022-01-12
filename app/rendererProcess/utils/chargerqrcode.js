@@ -15,7 +15,6 @@ $().ready(function () {
 
 /** fonction permettant de charger, importer un qr code */
 function importQRCodeImport(filename) {
-  <script>console.log('dans le page content')</script>
   logger.info(`Import du fichier <${filename}>`);
   let facade = new FacadeController();
   //facade.importQRCode(filename, drawQRCodeImport);
