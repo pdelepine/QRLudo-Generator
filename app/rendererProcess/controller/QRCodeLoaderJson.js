@@ -92,10 +92,10 @@ class QRCodeLoaderJson {
         break;
 
       case "question":
-        qrcode = new Question(qr.name, qr.data, qr.color);
+        qrcode = new Question(qr.text_question, qr.data, qr.color);
         qrcode.setId(qr.id);
         qrcode.setMinAnswer(qr.nb_min_reponses);
-        qrcode.setGoodAnswer(qr.text_bonne_reponse[0]);
+        qrcode.setGoodAnswer(qr.text_bonne_reponse);
         qrcode.setBadAnswer(qr.text_mauvaise_reponse);
         break;
 
