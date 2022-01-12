@@ -1,4 +1,4 @@
- 
+
 /**
  * @Author: alassane
  * @Date:   2018-11-10T17:59:11+01:00
@@ -19,7 +19,7 @@ var menu = new Menu();
 $(document).ready(function () {
 
 
-  store.set("charMax",1134);
+  store.set("charMax", 1134);
 
   //appel à la fonction qui permet de lire les enregistrement
   chargement();
@@ -30,20 +30,20 @@ $(document).ready(function () {
   //Use to implement information on the audio import
   var info = document.createElement('div'); // balise div : contain html information
   var info_activ = false; // boolean : give the etat of info (up/off)
-  
+
 
   // desactiver les boutons s'il y a rien à lire ou generer
-  if(document.getElementById('qrName') !== null){
+  if (document.getElementById('qrName') !== null) {
     if (document.getElementById('qrName').value.length === 0) {
       $('#preview').attr('disabled', true);
     }
-  }  
+  }
 
-  $("#saveQRCode").on('click',e => {
+  $("#saveQRCode").on('click', e => {
     saveQRCodeImage();
   });
 
-  $('#closeModalListeMusic').on('click',e => {
+  $('#closeModalListeMusic').on('click', e => {
     $('#musicUrl').val('');
     $('#listeMusic').find('.errorLoader').remove();
   }); // close modal add music
@@ -70,7 +70,7 @@ $(document).ready(function () {
   });
 
   /** Show the information about the audio file import (help) */
-  $('button#showInfo').on('click',e => {
+  $('button#showInfo').on('click', e => {
     e.preventDefault();
     if (info_activ == false) {
       info.innerHTML = ``;
@@ -92,7 +92,7 @@ $(document).ready(function () {
     }
   });
 
-  $('button#emptyFields').on('click',function() {
+  $('button#emptyFields').on('click', function () {
 
     /** mise a jour des données sur le progress bar */
     $("#progressbarId").attr('aria-valuenow', 0);
@@ -107,25 +107,25 @@ $(document).ready(function () {
 
     store.delete(`titreUnique`);
     //implémentation des différentes zones de txt enregistrées
-    for(var i = 0; i<=numZoneCourante; i++){
-      if (store.get(`zone${i}`)){
+    for (var i = 0; i <= numZoneCourante; i++) {
+      if (store.get(`zone${i}`)) {
         store.delete(`zone${i}`);
       }
     }
 
     /** On parcours le store pour afficher les texte enregistré dans les zones correspondantes */
-    for(var i = 0; i<=numZoneCourante; i++){
-      if (store.get(`text${i}`)){
+    for (var i = 0; i <= numZoneCourante; i++) {
+      if (store.get(`text${i}`)) {
         store.delete(`text${i}`);
       }
     }
 
     store.delete("numZoneCourante");
     numZoneCourante = 0;
-    store.set(`numZoneCourante`,numZoneCourante);
+    store.set(`numZoneCourante`, numZoneCourante);
     store.delete("nbZoneDonne")
     nbZoneDonne = 0;
-    store.set(`nbZoneDonne`,nbZoneDonne);
+    store.set(`nbZoneDonne`, nbZoneDonne);
 
     /** supprimer les textarea, inputs .. */
     var divChamps = $('#cible');
@@ -149,7 +149,7 @@ $(document).ready(function () {
 });
 
 /** trigger preview qrcode action */
-$('#preview').on('click',e => {
+$('#preview').on('click', e => {
 
   //re-afficher le qr generer si le bouton est reinitialiser a deja été utilisé
   $("#qrView").show();
@@ -164,7 +164,7 @@ $('#preview').on('click',e => {
   let qrData = [];
 
   for (let data of document.getElementsByClassName("form-control qrData")) {
-    if (data.name.substr(0,5) == 'https') {
+    if (data.name.substr(0, 5) == 'https') {
       let dataAudio = {
         type: 'music',
         url: data.name,
@@ -173,7 +173,7 @@ $('#preview').on('click',e => {
 
       let jsonAudio = JSON.stringify(dataAudio);
       qrData.push(JSON.parse(jsonAudio));
-    } else{
+    } else {
       let dataText = data.value;
 
       let jsonText = JSON.stringify(dataText);
@@ -197,7 +197,7 @@ $('#preview').on('click',e => {
 
 
 
-function generQRInter (){
+function generQRInter() {
   /** 
   cette fonction va être appeler quand on va remplir le champ de "qrName" et elle va générer un qrcode intermédiaire
   et on prends son ID et on va stocker ce ID dans l'objet store "newQrID" et on va également stocker le nombre de char Max
@@ -225,18 +225,18 @@ function generQRInter (){
   charMax -= newQrUnique.getId().length;
   // a nested function to generate a random string in order to get QRcode data and use it to generate our QRcode 
   function random_string(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
+    for (var i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
+    }
+    return result;
+  }
 
-store.set("newQrID",newQrUnique.getId());
-verifNombreCaractere(store.get("numZoneCourante"));
-store.set("charMax",charMax); 
+  store.set("newQrID", newQrUnique.getId());
+  verifNombreCaractere(store.get("numZoneCourante"));
+  store.set("charMax", charMax);
 
 }
 
@@ -247,7 +247,7 @@ store.set("charMax",charMax);
 function chargement() {
 
   //nombre de zone texte courant
-  if(store.get(`nbZoneDonne`))
+  if (store.get(`nbZoneDonne`))
     numZoneDonne = store.get(`nbZoneDonne`);
   else
     store.set(`nbZoneDonne`, nbZoneDonne);
@@ -262,37 +262,37 @@ function chargement() {
     $('#qrName').val(store.get(`titreUnique`));
   }
 
-  if(!isImportationQRUnique) {
-      //implémentation des différentes zones de txt enregistrées
-      for (var i = 1; i <= numZoneCourante; i++) {
-        if (store.get(`zone${i}`)) {
-          var text = document.createElement('div');
-          text.innerHTML = store.get(`zone${i}`);
-          text.setAttribute("class", "d-flex align-items-start legendeQR");
+  if (!isImportationQRUnique) {
+    //implémentation des différentes zones de txt enregistrées
+    for (var i = 1; i <= numZoneCourante; i++) {
+      if (store.get(`zone${i}`)) {
+        var text = document.createElement('div');
+        text.innerHTML = store.get(`zone${i}`);
+        text.setAttribute("class", "d-flex align-items-start legendeQR");
 
-          // L'id du div est différent si c'est une zone de texte ou un fichier audio
-          if (store.get(`zone${i}`).indexOf("textarea") != -1) {
-            text.setAttribute("id", "legendeTextarea"+i);
-          }
-          else {
-            text.setAttribute("id", "inputAudio");
-          }
-
-          $('#cible').append(text);
+        // L'id du div est différent si c'est une zone de texte ou un fichier audio
+        if (store.get(`zone${i}`).indexOf("textarea") != -1) {
+          text.setAttribute("id", "legendeTextarea" + i);
         }
+        else {
+          text.setAttribute("id", "inputAudio");
+        }
+
+        $('#cible').append(text);
       }
+    }
   }
 
   /** On parcours le store pour afficher les texte enregistré dans les zones correspondantes */
-  for(var i = 0; i <= numZoneCourante; i++){
-    if (store.get(`text${i}`)){
-      $('#textarea'+(i)).val(store.get(`text${i}`));
+  for (var i = 0; i <= numZoneCourante; i++) {
+    if (store.get(`text${i}`)) {
+      $('#textarea' + (i)).val(store.get(`text${i}`));
     }
   }
 
   //insertion du premier champ Texte s'il y en a pas
-  if(numZoneCourante < 1){
-     ajouterChampLegende();
+  if (numZoneCourante < 1) {
+    ajouterChampLegende();
   }
 }
 
@@ -326,7 +326,7 @@ function previewQRCode(name, data, color, div) {
   // instanciate a qrcode unique object
   qrcode = new QRCodeUnique(name, data, color);
   let facade = new FacadeController();
-  logger.info(`Génération du QR Code Unique : ${ JSON.stringify(qrcode) }`);
+  logger.info(`Génération du QR Code Unique : ${JSON.stringify(qrcode)}`);
   facade.genererQRCode(div, qrcode);
 }
 
@@ -363,7 +363,7 @@ function getMusicFromUrl() {
   if (!navigator.onLine) {
     logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
     alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
-    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
   } else {
     logger.info('L\'application est bien connectée à internet');
     let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
@@ -375,12 +375,12 @@ function getMusicFromUrl() {
     let url = clipboard.readText();
     let xhr = new XMLHttpRequest();
 
-    logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${ url }`);
+    logger.info(`Demande de téléchargement d'un fichier audio à l'adresse ${url}`);
 
     Music.getDownloadLink(url, link => {
       if (link == null) {
         showError(modal, errorMsg);
-        logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${ url }`);
+        logger.error(`Impossibilité de télécharger le fichier audio à l'adresse ${url}`);
         return
       }
 
@@ -412,7 +412,7 @@ function getMusicFromUrl() {
             };
             fileReader.readAsArrayBuffer(blob);
 
-            logger.info(`Fichier audio <${ filename }> téléchargé avec succès`);
+            logger.info(`Fichier audio <${filename}> téléchargé avec succès`);
 
             changementChampLegendeEnChampSon(filename, link);
           } else {
@@ -495,11 +495,11 @@ function ajouterChampLegende(valeur = "") {
 
   document.getElementById('cible').appendChild(textareaLegende);
 
-  store.set(`zone${numZoneCourante}`,textareaLegende.innerHTML);
+  store.set(`zone${numZoneCourante}`, textareaLegende.innerHTML);
 
   //reasignation du nombre total de caractère restant pour la nouvelle zone
-  var totatCaractere= SetProgressBar();
-  $('#textarea'+numZoneCourante).attr('maxlength',(store.get("charMax")-totatCaractere));
+  var totatCaractere = SetProgressBar();
+  $('#textarea' + numZoneCourante).attr('maxlength', (store.get("charMax") - totatCaractere));
 }
 
 /** foncion qui  calcule le nombre de caractère dans les zones de texte et met la valeur sur les progress bar */
@@ -513,7 +513,7 @@ function SetProgressBar() {
     //console.log(total);
   });
 
-  if (document.getElementById("qrName")!=null) total += document.getElementById("qrName").value.length; 
+  if (document.getElementById("qrName") != null) total += document.getElementById("qrName").value.length;
   // on va ajouter la taille du qr nom aussi
 
   //$("#cible input").val().length;
@@ -531,19 +531,19 @@ function SetProgressBar() {
 function verifNombreCaractere(num) {
   //Permet l'enregistrement du text dans le store
 
-  if (document.getElementById('textarea' + num)!=null){
+  if (document.getElementById('textarea' + num) != null) {
     store.delete(`text${num}`);
     var txt = document.getElementById('textarea' + num).value;
     store.set(`text${num}`, txt);
   }
-  
+
   var nombreCaratereMAX = store.get("charMax");
   //progress bar gestion
   var total = SetProgressBar();
-  
+
   $('#messages').empty();
   if (total >= nombreCaratereMAX) {
-    messageInfos("La limite de caractère est atteinte ("+store.get("charMax")+" caractères)", "warning");
+    messageInfos("La limite de caractère est atteinte (" + store.get("charMax") + " caractères)", "warning");
     disableButtonAddNewData();
     //si nombre de caractére max attein toute les zone de texte sont fermer a l'jout de caractère
     $("#cible textarea").each(function () {
@@ -560,13 +560,13 @@ function verifNombreCaractere(num) {
     document.getElementById("qrName").setAttribute("maxlength", store.get("charMax"));
   }
 
-  if(total > nombreCaratereMAX){
+  if (total > nombreCaratereMAX) {
     if (document.getElementById("preview").disabled == false)
       document.getElementById("preview").disabled = true;
   }
   else {
-    if(document.getElementById("qrName") != null){
-      if(document.getElementById("qrName").value.length == 0){
+    if (document.getElementById("qrName") != null) {
+      if (document.getElementById("qrName").value.length == 0) {
         document.getElementById("preview").disabled = true;
       }
       else {
@@ -585,7 +585,7 @@ function supprimerChampLegende(e, numText) {
   //suppression dans le store de la zone de txt correspondante
   store.delete(`text` + numText);
   store.delete(`zone` + numText);
-  
+
   $(e).parents('div#legendeTextarea' + numText).remove();
 
   activateButtonAddNewData();
@@ -595,25 +595,25 @@ function supprimerChampLegende(e, numText) {
 }
 
 //permet de savoir quel bouton audio a été clické
-var audioSource="";
+var audioSource = "";
 
 /** Fonction qui modifie la variable audioSource */
-function changementAudioSource(numText){
-  audioSource=numText;
+function changementAudioSource(numText) {
+  audioSource = numText;
 }
 
 /** Fonction qui modifie un champ legende en champ son */
-function changementChampLegendeEnChampSon(nom, url){
-  let textArea = document.getElementById("textarea"+audioSource);
-    textArea.value = nom;
-    textArea.name = url;
-    textArea.setAttribute("disabled", "true");
+function changementChampLegendeEnChampSon(nom, url) {
+  let textArea = document.getElementById("textarea" + audioSource);
+  textArea.value = nom;
+  textArea.name = url;
+  textArea.setAttribute("disabled", "true");
   //cache le bouton audio
-  let boutonAudio = document.getElementById("showAudio"+audioSource);
-    boutonAudio.style.visibility="hidden";
-  
-//calcul et mise a jour de la bar de progression
-SetProgressBar();
+  let boutonAudio = document.getElementById("showAudio" + audioSource);
+  boutonAudio.style.visibility = "hidden";
+
+  //calcul et mise a jour de la bar de progression
+  SetProgressBar();
 }
 
 /** generer un input 'pour un fichier audio' -> nom de fichier + url 
@@ -729,7 +729,7 @@ function disableButtonAddNewData() {
 }
 
 /** pour ouvrir la page info.html quand on clique sur le bouton info du haut */
-$("#infos-unique").on('click',function () {
+$("#infos-unique").on('click', function () {
   require('electron').remote.getGlobal('sharedObject').ongletAideActif = 'unique'
-  $("#charger-page").load(root + "/rendererProcess/view/aide/info.html");
+  $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/aide/info.html"));
 });

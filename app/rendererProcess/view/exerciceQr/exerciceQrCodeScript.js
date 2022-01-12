@@ -3,7 +3,7 @@
  * BAH Marouwane
  * 2019
  */
- 
+
 var projet = new Projet();
 
 nombre_reponse = 0;
@@ -63,22 +63,22 @@ $(document).ready(function () {
       }, 3500);
       return false;
     }
-      //Récuperation des inforamtion de la question pour gérer la continuité
-      numReponse++;
-      deleteStore('numReponse');
-      store.set('numReponse', numReponse);
-  
-      deleteStore("reponse" + numReponse);
-      store.set("reponse" + numReponse, new_rep.getName());
-  
-      deleteStore("data" + numReponse);
-      store.set("data" + numReponse, qrData);
-  
-      deleteStore("reponseId" + numReponse);
-      store.set("reponseId" + numReponse, new_rep.getId());
-  
-      deleteStore("reponseColor" + numReponse);
-      store.set("reponseColor" + numReponse, qrColor);
+    //Récuperation des inforamtion de la question pour gérer la continuité
+    numReponse++;
+    deleteStore('numReponse');
+    store.set('numReponse', numReponse);
+
+    deleteStore("reponse" + numReponse);
+    store.set("reponse" + numReponse, new_rep.getName());
+
+    deleteStore("data" + numReponse);
+    store.set("data" + numReponse, qrData);
+
+    deleteStore("reponseId" + numReponse);
+    store.set("reponseId" + numReponse, new_rep.getId());
+
+    deleteStore("reponseColor" + numReponse);
+    store.set("reponseColor" + numReponse, qrColor);
 
     //Ajouter au projet et à la question la nouvelle réponse
     projet.addReponse(new_rep);
@@ -112,7 +112,7 @@ $(document).ready(function () {
   $("#emptyFields").on('click', function () {
     viderZone();
     logger.info('Réinitialisation du QR Code Exercice');
-    store.set("excerciceEstCree",false);
+    store.set("excerciceEstCree", false);
     deleteStore('QuestionUrl');
     deleteStore("BonneReponseUrl");
     deleteStore("MauvaiseReponseUrl");
@@ -204,7 +204,7 @@ $("#genererQestion").on('click', function () {
       url: question.name
     }
   }
-  else{
+  else {
     question = question.value
   }
   let bonneReponse = document.getElementById('newBonneReponseText');
@@ -215,9 +215,9 @@ $("#genererQestion").on('click', function () {
       url: bonneReponse.name
     }
   }
-  else{
+  else {
     bonneReponse = bonneReponse.value;
-  }  
+  }
   let mauvaiseReponse = document.getElementById('newMauvaiseReponseText');
   if (mauvaiseReponse.value.substring(mauvaiseReponse.value.length - 3, mauvaiseReponse.value.length) == "mp3") {
     mauvaiseReponse = {
@@ -226,16 +226,16 @@ $("#genererQestion").on('click', function () {
       url: mauvaiseReponse.name
     }
   }
-  else{
+  else {
     mauvaiseReponse = mauvaiseReponse.value
   }
   let nbMinBoneReponse = $('#newNbMinimalBonneReponse').val();
   let qrColor = $('#qrColor').val();
-  
+
   // if ((question.text !== "" || question.name !== "") && (bonneReponse.text !== "" || bonneReponse.name !== "") && (mauvaiseReponse.text !=="" || mauvaiseReponse.name !== "") && nbMinBoneReponse !== "")
-  
+
   //On verifie si le texte de la question n'est pas vide
-  if (( question || question.name ) && ( bonneReponse  || bonneReponse.name ) && (mauvaiseReponse  || mauvaiseReponse.name ) && nbMinBoneReponse !== "" ){
+  if ((question || question.name) && (bonneReponse || bonneReponse.name) && (mauvaiseReponse || mauvaiseReponse.name) && nbMinBoneReponse !== "") {
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
     document.getElementById("newMauvaiseReponseText").disabled = true;
     document.getElementById("newQuestionText").disabled = true;
@@ -255,7 +255,7 @@ $("#genererQestion").on('click', function () {
     //on cache le bouton question
     $("#genererQestion").hide();
 
-    store.set("excerciceEstCree",true);
+    store.set("excerciceEstCree", true);
 
     verifNombreCaractere();
   } else {
@@ -495,24 +495,24 @@ function enregistrement() {
   else
     store.set(`numReponse`, numReponse);
 
-  if (store.get(`newQuestionText`)){  
+  if (store.get(`newQuestionText`)) {
     $("#newQuestionText").val(store.get(`newQuestionText`));
-    if  (store.get("newQuestionText").substring(store.get("newQuestionText").length - 3, store.get("newQuestionText").length) == "mp3"){
+    if (store.get("newQuestionText").substring(store.get("newQuestionText").length - 3, store.get("newQuestionText").length) == "mp3") {
       document.getElementById("newQuestionText").name = store.get("QuestionUrl");
       document.getElementById("newQuestionText").disabled = true;
     }
   }
-  if (store.get(`newBonneReponseText`)){  
+  if (store.get(`newBonneReponseText`)) {
     $("#newBonneReponseText").val(store.get(`newBonneReponseText`));
-    if  (store.get("newBonneReponseText").substring(store.get("newBonneReponseText").length - 3, store.get("newBonneReponseText").length) == "mp3"){
+    if (store.get("newBonneReponseText").substring(store.get("newBonneReponseText").length - 3, store.get("newBonneReponseText").length) == "mp3") {
       document.getElementById("newBonneReponseText").name = store.get("BonneReponseUrl");
       document.getElementById("newBonneReponseText").disabled = true;
     }
   }
 
-  if (store.get(`newMauvaiseReponseText`)){  
+  if (store.get(`newMauvaiseReponseText`)) {
     $("#newMauvaiseReponseText").val(store.get(`newMauvaiseReponseText`));
-    if  (store.get("newMauvaiseReponseText").substring(store.get("newMauvaiseReponseText").length - 3, store.get("newMauvaiseReponseText").length) == "mp3"){
+    if (store.get("newMauvaiseReponseText").substring(store.get("newMauvaiseReponseText").length - 3, store.get("newMauvaiseReponseText").length) == "mp3") {
       document.getElementById("newMauvaiseReponseText").name = store.get("MauvaiseReponseUrl");
       document.getElementById("newMauvaiseReponseText").disabled = true;
     }
@@ -546,7 +546,7 @@ function enregistrement() {
     }
   }
 
-  if (store.get('excerciceEstCree')){
+  if (store.get('excerciceEstCree')) {
     document.getElementById("newMauvaiseReponseText").disabled = true;
     document.getElementById("newQuestionText").disabled = true;
     document.getElementById("newBonneReponseText").disabled = true;
@@ -558,10 +558,10 @@ function enregistrement() {
     document.getElementById("genererQestion").click();
   }
   //ajouter des reponses dans l'objet projet de la question 
-  for (i= 0 ; i <  numReponse + 1 ; ++i){          
+  for (i = 0; i < numReponse + 1; ++i) {
     if (store.get('reponse' + i))
-      projet.getQuestion().addReponse(store.get('reponseId' + i),store.get('data' + i)[0]);
-    }
+      projet.getQuestion().addReponse(store.get('reponseId' + i), store.get('data' + i)[0]);
+  }
 
 }
 
@@ -654,13 +654,13 @@ function deleteStore(del) {
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
 $("#infos-exercice-qrcode").on('click', function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'exerciceQrCode';
-  $("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+  $("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
 
 
 //Partie audio
 
-var audioSource="";
+var audioSource = "";
 
 $("#newQuestionAudio").on('click', function () {
   audioSource = "Question";
@@ -683,7 +683,7 @@ function getMusicFromUrl() {
   if (!navigator.onLine) {
     logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
     alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
-    setTimeout(function(){$('#musicUrl').val('');},1);//obliger de mettre un setTimeout pour que le champ texte se vide
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
   } else {
     logger.info('L\'application est bien connectée à internet');
     let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
@@ -765,22 +765,22 @@ function ajouterChampSon(nom, url) {
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
-    store.set("QuestionUrl",url);
-    store.set("newQuestionText",nom);
+    store.set("QuestionUrl", url);
+    store.set("newQuestionText", nom);
   } else if (audioSource == "BonneReponse") {
     let textArea = document.getElementById("newBonneReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
-    store.set("BonneReponseUrl",url);
-    store.set("newBonneReponseText",nom);
+    store.set("BonneReponseUrl", url);
+    store.set("newBonneReponseText", nom);
   } else if (audioSource == "MauvaiseReponse") {
     let textArea = document.getElementById("newMauvaiseReponseText");
     textArea.value = nom;
     textArea.name = url;
     textArea.setAttribute("disabled", "true");
-    store.set("MauvaiseReponseUrl",url);
-    store.set("newMauvaiseReponseText",nom);
+    store.set("MauvaiseReponseUrl", url);
+    store.set("newMauvaiseReponseText", nom);
   }
 }
 
@@ -799,7 +799,7 @@ $(document).ready(function () {
   var info_activ = false; // boolean : give the etat of info (up/off)
 
   /** Show the information about the audio file import (help) */
- $('button#showInfo').on('click', e => {
+  $('button#showInfo').on('click', e => {
     e.preventDefault();
     if (info_activ == false) {
       info.innerHTML = ``;
@@ -832,28 +832,28 @@ $(document).ready(function () {
 
 
 /**  une fonction pour calculer le nombre de car de QRcode + les id des qrcodes */
-function calculNombreCaractereQRCode(){
+function calculNombreCaractereQRCode() {
   let char = 0;
   let qrQuestion = projet.getQuestion();
-  let qrcodes    = projet.getReponses();
-  if (qrcodes.length!=0){
+  let qrcodes = projet.getReponses();
+  if (qrcodes.length != 0) {
     for (const element of qrcodes) {
-        char += element.getId().toString().length; 
-        char += 2;  // pour les  "" autour de chaque QR
+      char += element.getId().toString().length;
+      char += 2;  // pour les  "" autour de chaque QR
     }
-    char += qrcodes.length-1;  // pour compter la virgule qui se trouve entre chaque deux QRcodes
+    char += qrcodes.length - 1;  // pour compter la virgule qui se trouve entre chaque deux QRcodes
   }
-  if (qrQuestion!=null) {
+  if (qrQuestion != null) {
     char += qrQuestion.getColor().length
     char += qrQuestion.getId().toString().length;
     char += qrQuestion.getType().length;
-    char ++;        // pour la version 
+    char++;        // pour la version 
   }
   char += document.getElementById("newQuestionText").value.length;
   char += document.getElementById("newBonneReponseText").value.length;
   char += document.getElementById("newMauvaiseReponseText").value.length;
   char += document.getElementById("newNbMinimalBonneReponse").value.length;
-  char += 133 ;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
+  char += 133;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
   return char;
 }
 
@@ -865,24 +865,23 @@ function verifNombreCaractere() {
   let total = SetProgressBar();
   $('#messages').empty();
   if (total >= nombreCaratereMAX) {
-    if(store.get("excerciceEstCree")){
+    if (store.get("excerciceEstCree")) {
       messageInfos("La limite de caractère est atteinte (Environ 1100 caractères)", "warning");
     } else {
       messageInfos("La taille maximale est atteinte, il faut supprimer des Questions", "warning");
     }
-    document.getElementById("newQuestionText").setAttribute("maxLength",0);
-    document.getElementById("newBonneReponseText").setAttribute("maxLength",0);
-    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength",0);
+    document.getElementById("newQuestionText").setAttribute("maxLength", 0);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength", 0);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength", 0);
   }
   else {
-    document.getElementById("newQuestionText").setAttribute("maxLength",nombreCaratereMAX);
-    document.getElementById("newBonneReponseText").setAttribute("maxLength",nombreCaratereMAX);
-    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength",nombreCaratereMAX);
+    document.getElementById("newQuestionText").setAttribute("maxLength", nombreCaratereMAX);
+    document.getElementById("newBonneReponseText").setAttribute("maxLength", nombreCaratereMAX);
+    document.getElementById("newMauvaiseReponseText").setAttribute("maxLength", nombreCaratereMAX);
   }
-  if (document.getElementById("newQuestionText").value.length==0 && document.getElementById("newBonneReponseText").value.length==0 &&
-      document.getElementById("newMauvaiseReponseText").value.length==0)
-  {
-    document.getElementById("progressbarId").style.width=0;
+  if (document.getElementById("newQuestionText").value.length == 0 && document.getElementById("newBonneReponseText").value.length == 0 &&
+    document.getElementById("newMauvaiseReponseText").value.length == 0) {
+    document.getElementById("progressbarId").style.width = 0;
   }
 }
 
@@ -892,7 +891,7 @@ function SetProgressBar() {
   //progress bar gestion
   let total = 0;
   let nombreCaratereMAX = 1240;
-  total += calculNombreCaractereQRCode();   
+  total += calculNombreCaractereQRCode();
   let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
   //mise ajour des données sur le progress bar
   $("#progressbarId").attr('aria-valuenow', totalSeted);
@@ -902,9 +901,7 @@ function SetProgressBar() {
   return total;
 }
 
-
-
-function deleteStore(del){
-  if(store.get(del) )
+function deleteStore(del) {
+  if (store.get(del))
     store.delete(del);
 }

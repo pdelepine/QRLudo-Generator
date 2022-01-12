@@ -614,7 +614,7 @@ function saveQRCodeImage(questionQCM, questionOuverte) {
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
 $("#infos-exercice-reco-vocale").on('click',function () {
   remoteElectron.getGlobal('sharedObject').ongletAideActif = 'exerciceRecoVocale'
-  $("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+  $("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
 
 

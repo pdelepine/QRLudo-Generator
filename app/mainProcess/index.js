@@ -64,7 +64,7 @@ function createWindow() {
   /** Autoriser le redimensionnement de la fenêtre */ 
   mainWindow.setResizable(true); 
   /** On charge le fichier html principal de l'application */ 
-  mainWindow.loadFile(__dirname + '/index.html');
+  mainWindow.loadFile(path.normalize(__dirname + '/index.html'));
 
   log4js.getLogger().info('Démarrage de QRLudo Générator');
   /*
@@ -87,6 +87,10 @@ app.whenReady().then(() => {
     if(BrowserWindow.getAllWindows.length === 0) createWindow();
   });
 });
+
+log4js.getLogger().info(`Le dossier courant de l'application est : ${ app.getAppPath() }`);
+log4js.getLogger().info(`Le fichier exécutable courant est : ${ app.getPath("exe") }`);
+log4js.getLogger().info(`Le Crash dumps est : ${ app.getPath("crashDumps") }`);
 /** 
  * Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
  * pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte

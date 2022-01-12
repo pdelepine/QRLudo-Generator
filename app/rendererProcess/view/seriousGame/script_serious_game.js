@@ -1,54 +1,54 @@
 var sketch = function (p) {
-	/** Déclaration de variables du dessin */
-	/** Récupération du div parent du dessin / canvas */
-	p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
+  /** Déclaration de variables du dessin */
+  /** Récupération du div parent du dessin / canvas */
+  p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 
-	/** Paramètre gérant le zoom du dessin */
-	p.zoom = 1;
+  /** Paramètre gérant le zoom du dessin */
+  p.zoom = 1;
 
-	/** Liste des noeuds du diagramme */
-	p.nodeArray = [];
+  /** Liste des noeuds du diagramme */
+  p.nodeArray = [];
 
-	/** Liste des liens du diagramme */
-	p.linkArray = [];
+  /** Liste des liens du diagramme */
+  p.linkArray = [];
 
-	/** Variable pour savoir si la palette est affichée ou cachée */
-	p.palette = true;
-	/** Variable sur la taille de la palette */
-	p.paletteWidth = 70;
+  /** Variable pour savoir si la palette est affichée ou cachée */
+  p.palette = true;
+  /** Variable sur la taille de la palette */
+  p.paletteWidth = 70;
 
-	/** Le bouton de création de question */
-	p.buttonCreateQuestion;
+  /** Le bouton de création de question */
+  p.buttonCreateQuestion;
 
-	/** Le bouton de création de champ de texte */
-	p.buttonCreateTextNode;
+  /** Le bouton de création de champ de texte */
+  p.buttonCreateTextNode;
 
-	/** Le bouton de création de liens */
-	p.buttonCreateLink;
+  /** Le bouton de création de liens */
+  p.buttonCreateLink;
 
-	/** Le bouton pour activer la suppression des formes et liens */
-	p.buttonEraser;
+  /** Le bouton pour activer la suppression des formes et liens */
+  p.buttonEraser;
 
-	/** Le bouton pour activer sélection de formes */
-	p.buttonMouseSelection;
+  /** Le bouton pour activer sélection de formes */
+  p.buttonMouseSelection;
 
-	/** Le bouton pour activer le délacement du dessin*/
-	p.buttonMouseDisplacement;
+  /** Le bouton pour activer le délacement du dessin*/
+  p.buttonMouseDisplacement;
 
-	/** Le slider qui permet de zoomer et de dézoomer */
-	p.sliderZoom;
+  /** Le slider qui permet de zoomer et de dézoomer */
+  p.sliderZoom;
 
-	/** Variable pour savoir si on utilise le slider ou non */
-	p.sliderNotPressed = true;
+  /** Variable pour savoir si on utilise le slider ou non */
+  p.sliderNotPressed = true;
 
-	/** Paramètre gérant la translation du canvas sur l'axe des x */
-	p.translateX = 0;
+  /** Paramètre gérant la translation du canvas sur l'axe des x */
+  p.translateX = 0;
 
-	/** Paramètre gérant la translation du canvas sur l'axe des y */
-	p.translateY = 0;
+  /** Paramètre gérant la translation du canvas sur l'axe des y */
+  p.translateY = 0;
 
-	/** Paramètre gérant le offset de la translation du canvas sur l'axe des x */
-	p.diagramOffsetX = 0;
+  /** Paramètre gérant le offset de la translation du canvas sur l'axe des x */
+  p.diagramOffsetX = 0;
 
 	/** Paramètre gérant le offset de la translation du canvas sur l'axe des y */
 	p.diagramOffsetY = 0;
@@ -979,187 +979,187 @@ var sketch = function (p) {
 
 // Test pour savoir s'il existait déjà un sketch myP5 du SeriousGame
 if (typeof myP5 === 'undefined') {
-	var myP5 = new p5(sketch);
+  var myP5 = new p5(sketch);
 } else {
-	// On récupère les données de l'ancien sketch
-	let metadata = { qrcodeMetaData: myP5.generateMetadata() };
+  // On récupère les données de l'ancien sketch
+  let metadata = { qrcodeMetaData: myP5.generateMetadata() };
 
-	// On détruit l'ancien sketch
-	myP5.remove();
+  // On détruit l'ancien sketch
+  myP5.remove();
 
-	// On crée un nouveau sketch
-	myP5 = new p5(sketch);
+  // On crée un nouveau sketch
+  myP5 = new p5(sketch);
 
-	// On reconstruit l'ancien sketch sur le nouveau
-	drawQRCodeSeriousGameEnigma(metadata);
+  // On reconstruit l'ancien sketch sur le nouveau
+  drawQRCodeSeriousGameEnigma(metadata);
 }
 
 /** Fonction pour ajouter un fichier audio */
 function getMusicFromUrl() {
-	/** Check internet connection*/
-	logger.info('Test de la connexion internet');
-	if (!navigator.onLine) {
-		logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
-		alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
-		setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
-	} else {
-		logger.info('L\'application est bien connectée à internet');
-		let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
-		let loader = document.createElement('div');
-		let errorMsg = document.createElement('label');
+  /** Check internet connection*/
+  logger.info('Test de la connexion internet');
+  if (!navigator.onLine) {
+    logger.error(`L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet`);
+    alert("L'application ne peut pas télécharger de fichier audio sans une liaison à internet. Veuillez vérifier votre connexion internet");
+    setTimeout(function () { $('#musicUrl').val(''); }, 1);//obliger de mettre un setTimeout pour que le champ texte se vide
+  } else {
+    logger.info('L\'application est bien connectée à internet');
+    let modal = $('#listeMusic').find('div.modal-body.scrollbar-success');
+    let loader = document.createElement('div');
+    let errorMsg = document.createElement('label');
 
-		const {
-			clipboard
-		} = require('electron');
+    const {
+      clipboard
+    } = require('electron');
 
-		let url = clipboard.readText();
-		let xhr = new XMLHttpRequest();
+    let url = clipboard.readText();
+    let xhr = new XMLHttpRequest();
 
-		Music.getDownloadLink(url, link => {
-			if (link == null) {
-				showError(modal, errorMsg);
-				return
-			}
+    Music.getDownloadLink(url, link => {
+      if (link == null) {
+        showError(modal, errorMsg);
+        return
+      }
 
-			try {
-				xhr.open('GET', link, true);
-			} catch (e) {
-				showError(modal, errorMsg);
-			}
-			xhr.responseType = 'blob';
-			xhr.onload = function (e) {
+      try {
+        xhr.open('GET', link, true);
+      } catch (e) {
+        showError(modal, errorMsg);
+      }
+      xhr.responseType = 'blob';
+      xhr.onload = function (e) {
 
-				if (this.status == 200) {
-					let blob = this.response; // get binary data as a response
-					let contentType = xhr.getResponseHeader("content-type");
-					console.log(contentType);
+        if (this.status == 200) {
+          let blob = this.response; // get binary data as a response
+          let contentType = xhr.getResponseHeader("content-type");
+          console.log(contentType);
 
-					if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
-						// get filename
-						let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
-						filename = filename.replace('filename="', '');
-						filename = filename.replace('.mp3"', '.mp3');
+          if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
+            // get filename
+            let filename = xhr.getResponseHeader("content-disposition").split(";")[1];
+            filename = filename.replace('filename="', '');
+            filename = filename.replace('.mp3"', '.mp3');
 
-						// save file in folder projet/download
-						let fileReader = new FileReader();
-						fileReader.onload = function () {
-							fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
+            // save file in folder projet/download
+            let fileReader = new FileReader();
+            fileReader.onload = function () {
+              fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
 
-							$(loader, errorMsg).remove();
-							$('#closeModalListeMusic').on('click',); // close modal add music
-						};
-						fileReader.readAsArrayBuffer(blob);
+              $(loader, errorMsg).remove();
+              $('#closeModalListeMusic').on('click',); // close modal add music
+            };
+            fileReader.readAsArrayBuffer(blob);
 
-						ajouterChampSon(filename, link);
-					} else {
-						showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
-					}
-				} else {
-					// request failed
-					showError(modal, errorMsg);
-				}
-			};
+            ajouterChampSon(filename, link);
+          } else {
+            showError(modal, errorMsg, "Le fichier n'est pas un fichier audio");
+          }
+        } else {
+          // request failed
+          showError(modal, errorMsg);
+        }
+      };
 
-			xhr.onloadstart = function (e) {
-				console.log('load start');
-				$(loader).addClass('loader');
-				$(modal).find('.errorLoader').remove();
-				$(modal).prepend(loader); // show loader when request progress
-			};
+      xhr.onloadstart = function (e) {
+        console.log('load start');
+        $(loader).addClass('loader');
+        $(modal).find('.errorLoader').remove();
+        $(modal).prepend(loader); // show loader when request progress
+      };
 
-			xhr.onerror = function (e) {
-				showError(modal, errorMsg);
-			};
+      xhr.onerror = function (e) {
+        showError(modal, errorMsg);
+      };
 
-			xhr.send();
-		});
-	}
+      xhr.send();
+    });
+  }
 }
 
 /** Fonction pour ajouter au bon endroit le fichier audio */
 function ajouterChampSon(nom, url) {
-	let id_input = "";
-	if (myP5.lastNodeClickedType == "question") {
-		id_input = "input_node_question";
-	}
-	else {
-		if (myP5.lastNodeClickedType == "text") {
-			id_input = "input_node_description";
-		}
-	}
-	document.getElementById(id_input).value = nom;
-	document.getElementById(id_input).name = url;
-	for (let i = 0; i < myP5.nodeArray.length; i++) {
-		if (myP5.nodeArray[i].clicked) {
-			myP5.nodeArray[i].saveAudioModification();
-		}
-	}
+  let id_input = "";
+  if (myP5.lastNodeClickedType == "question") {
+    id_input = "input_node_question";
+  }
+  else {
+    if (myP5.lastNodeClickedType == "text") {
+      id_input = "input_node_description";
+    }
+  }
+  document.getElementById(id_input).value = nom;
+  document.getElementById(id_input).name = url;
+  for (let i = 0; i < myP5.nodeArray.length; i++) {
+    if (myP5.nodeArray[i].clicked) {
+      myP5.nodeArray[i].saveAudioModification();
+    }
+  }
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
-	console.trace('error ');
-	$(modal).find('.loader').remove();
-	$(errorMsg).text(message);
-	$(errorMsg).css('color', '#f35b6a');
-	$(errorMsg).addClass('errorLoader');
-	$(modal).prepend(errorMsg); // add error message
+  console.trace('error ');
+  $(modal).find('.loader').remove();
+  $(errorMsg).text(message);
+  $(errorMsg).css('color', '#f35b6a');
+  $(errorMsg).addClass('errorLoader');
+  $(modal).prepend(errorMsg); // add error message
 }
 
 //fonction appeler pour réinitialiser le sérious game
 function deleteGame() {
-	myP5.remove();
-	myP5 = new p5(sketch);
-	logger.info("Réinitialisation de la page Sérious Game");
+  myP5.remove();
+  myP5 = new p5(sketch);
+  logger.info("Réinitialisation de la page Sérious Game");
 }
 
 $("#generateSG").on('click', function () {
-	let qr = myP5.generateJson();
+  let qr = myP5.generateJson();
 
-	// Ajout métadonnées
-	let qrMetaData = myP5.generateMetadata();
+  // Ajout métadonnées
+  let qrMetaData = myP5.generateMetadata();
 
-	qr.setQrCodeMetadata(qrMetaData);
+  qr.setQrCodeMetadata(qrMetaData);
 
-	facade = new FacadeController();
-	if (myP5.checkCorrectGeneration()) {
-		facade.genererQRCode(document.getElementById("qrView"), qr);
-		logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
-	}
+  facade = new FacadeController();
+  if (myP5.checkCorrectGeneration()) {
+    facade.genererQRCode(document.getElementById("qrView"), qr);
+    logger.info(`Génération de QR Code de SeriousGame ${JSON.stringify(projet.qrcode)}`);
+  }
 });
 
 /** Permet de sauvegarder l'image du QR code sur l'ordinateur */
 $("#saveQRCode").on('click', function () {
-	console.log(dialog);
+  console.log(dialog);
 
-	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
-	 * Cela retourne le path du fichier
-	 */
-	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
-	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
+  /** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
+   * Cela retourne le path du fichier
+   */
+  let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
+  logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
 
-	if (dir_path !== undefined) {
+  if (dir_path !== undefined) {
 
-		let img = document.querySelector('#qrView img');
-		let imgData;
+    let img = document.querySelector('#qrView img');
+    let imgData;
 
-		if (img != null) {
-			imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
-			let buf = Buffer.from(imgData, 'base64');
+    if (img != null) {
+      imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
+      let buf = Buffer.from(imgData, 'base64');
 
-			fs.writeFile(dir_path, buf, 'base64', function (err) {
-				if (err) {
-					logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
-				} else {
-					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}`);
-				}
-			})
-		}
-	}
-	logger.info("Exportation du QRCode");
+      fs.writeFile(dir_path, buf, 'base64', function (err) {
+        if (err) {
+          logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
+        } else {
+          logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}`);
+        }
+      })
+    }
+  }
+  logger.info("Exportation du QRCode");
 });
 
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
 $("#infos-serious-game").on('click', function () {
-	remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
-	$("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+  remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
+  $("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });

@@ -36,6 +36,10 @@ const { setTimeout } = require('timers');
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
 
+function getNormalizePath(pathToNormalize) {
+  logger.info('Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
+  return (path.resolve(pathToNormalize)).replaceAll(' ', '%20');
+}
 
 /** Import de $ comme appel à jQuery */
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
