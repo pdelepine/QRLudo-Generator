@@ -89,6 +89,7 @@ class SGQuestionNode extends SGNode {
 		// Ajout de l'audio
 		this.btn_add_audio = myP5.createButton('Audio');
 		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl btn-audio');
+		this.btn_add_audio.style('margin-right:5px;')
 		this.btn_add_audio.id('btn_add_audio_question');
 		this.btn_add_audio.attribute('data-target', '#listeMusic');
 		this.btn_add_audio.attribute('data-toggle', 'modal');
