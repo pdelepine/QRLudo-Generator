@@ -24,7 +24,7 @@ class FacadeController {
 
   /**
    * Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre
-   * @param {*} divImg 
+   * @param {*} divImg
    * @param {Object} qrcode, Objet contenant un attribut (Object) `qrcode` qui sera tranformé en JSon pour la génération
    */
   genererQRCode(divImg, qrcode) {
