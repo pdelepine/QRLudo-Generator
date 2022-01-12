@@ -34,8 +34,6 @@ const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger()
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
 
-console.log('Root : ' + root);
-
 function getNormalizePath(pathToNormalize) {
   logger.info('Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
   return (path.resolve(pathToNormalize)).replaceAll(' ', '%20');
