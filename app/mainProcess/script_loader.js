@@ -34,15 +34,12 @@ const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger()
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
 
-console.log('Root : ' + root);
-
 function getNormalizePath(pathToNormalize) {
   logger.info('Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
   return (path.resolve(pathToNormalize)).replaceAll(' ', '%20');
 }
 
 /** Import de $ comme appel à jQuery */
-logger.info('Test si require fonctionne : ' + require(root + "/rendererProcess/utils/jquery/jquery.min.js"));
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js");
