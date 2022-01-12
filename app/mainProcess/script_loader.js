@@ -40,7 +40,6 @@ function getNormalizePath(pathToNormalize) {
 }
 
 /** Import de $ comme appel à jQuery */
-logger.info('Test si require fonctionne : ' + require(root + "/rendererProcess/utils/jquery/jquery.min.js"));
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery.qrcode.min.js");
 require(root + "/rendererProcess/utils/jquery/jquery-qrcode-0.14.0.min.js");
