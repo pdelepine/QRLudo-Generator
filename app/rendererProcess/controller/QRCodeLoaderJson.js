@@ -105,7 +105,16 @@ class QRCodeLoaderJson {
         break;
 
       case "ExerciceReconnaissanceVocaleQCM":
-        qrcode = new QRCodeQCM(qr.name, qr.data, qr.lettreReponseVocale, qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
+        let questions = [];
+        for (let question of qr.questions) {
+          let answers = [];
+          for (let answer of question['question'].reponses) {
+            answers.push(new ReponseQCM(answer[0], answer[1], answer[2]));
+          }
+          questions.push(new QuestionQCM(question['question'].id, question['question'].textQuestion, answers));
+        }
+
+        qrcode = new ProjetQCM(questions, qr.textBonneReponse, qr.textMauvaiseReponse);
         break;
 
       case "ExerciceReconnaissanceVocaleQuestionOuverte":

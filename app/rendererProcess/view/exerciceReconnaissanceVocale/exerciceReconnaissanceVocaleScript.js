@@ -213,6 +213,12 @@ $(document).ready(function () {
 
 var compteurReponse = { 1: 1 };
 var compteurQuestion = 1;
+/**
+ * Fonction quirajoute les éléments html d'une réponse pour une question d'id @param question_id
+ * @param {String} contenu valeur de l'input de la réponse
+ * @param {Boolean} isBonneRep booléen de l'état checked de la checkbox
+ * @param {Integer} question_id Id de la question à laquelle est rattaché la réponse
+ */
 function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id = 1) {
   compteurReponse[question_id]++;
   logger.info('Ajout d\'une nouvelle réponse au QR Code QCM de l\'exercice à reconnaissance vocale');
@@ -245,8 +251,8 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id = 
     let container = $("#reponseContainerQuestion" + question_id);
     container.append(reponse);
 
-    $("#reponse" + compteurReponse[question_id]).val(contenu);
-    $("#gridCheck" + compteurReponse[question_id]).prop('checked', isBonneRep);
+    $('#question' + question_id + 'Reponse' + compteurReponse[question_id]).val(contenu);
+    $('#gridCheckQuestion' + question_id + 'Reponse' + compteurReponse[question_id]).prop('checked', isBonneRep);
 
     store.set("nbReponse", compteurReponse[question_id]);
   }
@@ -663,7 +669,7 @@ function enregistrement() {
 
 
 
-/** une fonction pour le cahrgement des question et leurs reponses de store et les bonne + mauvais reponses de QCM */
+/** une fonction pour le chargement des question et leurs reponses de store et les bonne + mauvais reponses de QCM */
 function chargementOngletQcm() {
   // le chargement des question
   for (i = 1; i <= store.get("compteurQuestion"); ++i) {

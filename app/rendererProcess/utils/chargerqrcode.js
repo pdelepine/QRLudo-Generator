@@ -28,127 +28,126 @@ function importQRCodeImport(filename) {
     facade.importQRCode(blob, drawQRCodeImport);
   }
   xhr.send();
-
 }
 
 /** fonction permettant de recréer visuellement un qr code */
 function drawQRCodeImport(qrcode) {
+  try {
+    if (qrcode.getType() == 'unique' || qrcode.getType() == 'xl') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Unique, basculement sur onglet QR Unique');
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/uniqueQr/unique.html"), function () {
 
-  if (qrcode.getType() == 'unique' || qrcode.getType() == 'xl') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Unique, basculement sur onglet QR Unique');
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/uniqueQr/unique.html"), function () {
+        /** restaurer la couleur du qrcode */
+        $('input#qrColor').val(qrcode.getColor());
+        /** restaurer le nom du qrcode */
+        $('input#qrName').val(qrcode.getName());
 
-      /** restaurer la couleur du qrcode */
-      $('input#qrColor').val(qrcode.getColor());
-      /** restaurer le nom du qrcode */
-      $('input#qrName').val(qrcode.getName());
+        store.set(`titreUnique`, qrcode.getName());
+        isImportationQRUnique = true;
 
-      store.set(`titreUnique`, qrcode.getName());
-      isImportationQRUnique = true;
+        $('#preview, #empty').attr('disabled', false);
+        drawQRCodeData(qrcode);
+        logger.info('chargerqrcode.drawQRCodeImport | Import réussi du QR Unique');
+      });
+      //TODO Changer ici en multiple quand le type sera bien défini
+    } else if (qrcode.getType() == 'ensemble') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Multiple, basculement sur onglet QR Multiple');
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/multipleQr/multiple.html"), function () {
+        /** restaurer la couleur du qrcode */
+        $('input#qrColor').val(qrcode.getColor());
+        /** restaurer le nom du qrcodemultiple */
+        $('input#qrName').val(qrcode.getName());
 
-      $('#preview, #empty').attr('disabled', false);
-      drawQRCodeData(qrcode);
-    });
-    //TODO Changer ici en multiple quand le type sera bien défini
-  } else if (qrcode.getType() == 'ensemble') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Multiple, basculement sur onglet QR Multiple');
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/multipleQr/multiple.html"), function () {
-      /** restaurer la couleur du qrcode */
-      $('input#qrColor').val(qrcode.getColor());
-      /** restaurer le nom du qrcodemultiple */
-      $('input#qrName').val(qrcode.getName());
+        controllerMultiple.setQRCodeMultiple(qrcode);
 
-      controllerMultiple.setQRCodeMultiple(qrcode);
+        $('#preview, #empty').attr('disabled', false);
+        drawQRCodeMultipleUnique(qrcode);
+        $('#txtDragAndDrop').remove();
+        logger.info('chargerqrcode.drawQRCodeImport | Import réussi du QR Multiple');
+      });
 
-      $('#preview, #empty').attr('disabled', false);
-      drawQRCodeMultipleUnique(qrcode);
-      $('#txtDragAndDrop').remove();
-    });
+    } else if (qrcode.getType() == 'question') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice QR Code, basculement sur onglet QR Exercice QR Code');
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html"), function () {
+        console.log(qrcode.qrcode);
+        if (typeof qrcode.getName() === 'string') {
+          $("#newQuestionText").val(qrcode.getName());
+        } else {
+          audioSource = "Question";
+          ajouterChampSon(qrcode.qrcode.text_question.name, qrcode.qrcode.text_question.url);
+        }
 
-  } else if (qrcode.getType() == 'question') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice QR Code, basculement sur onglet QR Exercice QR Code');
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html"), function () {
-      console.log(qrcode.qrcode);
-      if (typeof qrcode.getName() === 'string') {
-        $("#newQuestionText").val(qrcode.getName());
-      } else {
-        audioSource = "Question";
-        ajouterChampSon(qrcode.qrcode.text_question.name, qrcode.qrcode.text_question.url);
-      }
+        if (typeof qrcode.getGoodAnswer() === 'string') {
+          $("#newBonneReponseText").val(qrcode.getGoodAnswer());
+        } else {
+          audioSource = "BonneReponse";
+          ajouterChampSon(qrcode.qrcode.text_bonne_reponse.name, qrcode.qrcode.text_bonne_reponse.url);
+        }
 
-      if (typeof qrcode.getGoodAnswer() === 'string') {
-        $("#newBonneReponseText").val(qrcode.getGoodAnswer());
-      } else {
-        audioSource = "BonneReponse";
-        ajouterChampSon(qrcode.qrcode.text_bonne_reponse.name, qrcode.qrcode.text_bonne_reponse.url);
-      }
+        if (typeof qrcode.getBadAnswer() === 'string') {
+          $("#newMauvaiseReponseText").val(qrcode.getBadAnswer());
+        } else {
+          audioSource = "MauvaiseReponse";
+          ajouterChampSon(qrcode.qrcode.text_mauvaise_reponse.name, qrcode.qrcode.text_mauvaise_reponse.url);
+        }
 
-      if (typeof qrcode.getBadAnswer() === 'string') {
-        $("#newMauvaiseReponseText").val(qrcode.getBadAnswer());
-      } else {
-        audioSource = "MauvaiseReponse";
-        ajouterChampSon(qrcode.qrcode.text_mauvaise_reponse.name, qrcode.qrcode.text_mauvaise_reponse.url);
-      }
+        $("#newNbMinimalBonneReponse").val(qrcode.getMinAnswer());
+        logger.info('chargerqrcode.drawQRCodeImport | Import réussi du QR Exercice QR Code');
+      });
+    } else if (qrcode.getType() == 'ExerciceReconnaissanceVocaleQCM') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice Reconnaissance Vocale QCM, basculement sur onglet QR Exercice Reconnaissance Vocale QCM');
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), function () {
 
-      $("#newNbMinimalBonneReponse").val(qrcode.getMinAnswer());
-    });
-  } else if (qrcode.getType() == 'ExerciceReconnaissanceVocaleQCM') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice Reconnaissance Vocale QCM, basculement sur onglet QR Exercice Reconnaissance Vocale QCM');
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), function () {
-      $("#questionOuverteOnglet").removeClass("active");
-      $("#onglet-QuesOuverte").removeClass("active");
-      $("#questionQCMOnglet").addClass("active");
-      $("#onglet-QCM").addClass("active");
-      $("#QuestionQCM").val(qrcode.getName());
-      if (qrcode.getLettreReponseVocale()) {
-        $("#reponseParIdentifiant").prop("checked", true);
-      }
-      $("#MessageBonnereponseQCM").val(qrcode.getGoodAnswer());
-      $("#MessageMauvaisereponseQCM").val(qrcode.getBadAnswer());
-      isImportationExerciceRecoVocaleQCM = true;
-      drawQRCodeDataRecVocale(qrcode);
-      store.set("sousOnglet", "qcm");
-    });
-  } else if (qrcode.getType() == 'ExerciceReconnaissanceVocaleQuestionOuverte') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice Reconnaissance Vocale question ouverte, basculement sur onglet QR Exercice Reconnaissance Vocale question ouverte');
+        drawQRCodeDataRecVocale(qrcode);
+        store.set("sousOnglet", "qcm");
+        logger.info(`chargerqrcode.drawQRCodeImport | Import réussi du QR Exercice Reconnaissance Vocale QCM`);
+      });
+    } else if (qrcode.getType() == 'ExerciceReconnaissanceVocaleQuestionOuverte') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice Reconnaissance Vocale question ouverte, basculement sur onglet QR Exercice Reconnaissance Vocale question ouverte');
 
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), function () {
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), function () {
 
-      if (typeof qrcode.getName() === 'string') {
-        $("#Question").val(qrcode.getName());
-      } else {
-        chamgementAudioSource('Question');
-        ajouterChampSon(qrcode.getName().name, qrcode.getName().url);
-      }
+        if (typeof qrcode.getName() === 'string') {
+          $("#Question").val(qrcode.getName());
+        } else {
+          chamgementAudioSource('Question');
+          ajouterChampSon(qrcode.getName().name, qrcode.getName().url);
+        }
 
-      $("#Bonnereponse").val(qrcode.getReponse());
+        $("#Bonnereponse").val(qrcode.getReponse());
 
-      if (typeof qrcode.getGoodAnswer() === 'string') {
-        $("#MessageBonnereponse").val(qrcode.getGoodAnswer());
-      } else {
-        chamgementAudioSource('MessageBonnereponse');
-        ajouterChampSon(qrcode.getGoodAnswer().name, qrcode.getGoodAnswer().url);
-      }
+        if (typeof qrcode.getGoodAnswer() === 'string') {
+          $("#MessageBonnereponse").val(qrcode.getGoodAnswer());
+        } else {
+          chamgementAudioSource('MessageBonnereponse');
+          ajouterChampSon(qrcode.getGoodAnswer().name, qrcode.getGoodAnswer().url);
+        }
 
-      if (typeof qrcode.getBadAnswer() === 'string') {
-        $("#MessageMauvaisereponse").val(qrcode.getBadAnswer().name);
-      } else {
-        chamgementAudioSource('MessageMauvaisereponse');
-        ajouterChampSon(qrcode.getBadAnswer().name, qrcode.getBadAnswer().url);
-      }
+        if (typeof qrcode.getBadAnswer() === 'string') {
+          $("#MessageMauvaisereponse").val(qrcode.getBadAnswer().name);
+        } else {
+          chamgementAudioSource('MessageMauvaisereponse');
+          ajouterChampSon(qrcode.getBadAnswer().name, qrcode.getBadAnswer().url);
+        }
 
-      store.set("sousOnglet", "question_ouverte");
-    });
-  } else if (qrcode.getType() == 'SeriousGameScenario') {
-    logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Serious Game, basculement sur onglet QR Serious Game');
+        store.set("sousOnglet", "question_ouverte");
+        logger.info('chargerqrcode.drawQRCodeImport | Import réussi d\'un QR Exercice Reconnaissance Vocale question ouverte');
+      });
+    } else if (qrcode.getType() == 'SeriousGameScenario') {
+      logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Serious Game, basculement sur onglet QR Serious Game');
 
-    $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/seriousGame/seriousGame.html"), function () {
-      $("#projectId").val(qrcode.getName());
-      $("#textAreaIntro").val(qrcode.getIntro());
-      $("#textAreaFin").val(qrcode.getEnd());
-      var projet = new ProjetSeriousGame(qrcode.getName(), qrcode.getQuestionQRCode(), qrcode.getQuestionRecoVocale());
-      drawQRCodeSeriousGameEnigma(qrcode);
-    });
+      $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/seriousGame/seriousGame.html"), function () {
+        $("#projectId").val(qrcode.getName());
+        $("#textAreaIntro").val(qrcode.getIntro());
+        $("#textAreaFin").val(qrcode.getEnd());
+        var projet = new ProjetSeriousGame(qrcode.getName(), qrcode.getQuestionQRCode(), qrcode.getQuestionRecoVocale());
+        drawQRCodeSeriousGameEnigma(qrcode);
+
+        logger.info('chargerqrcode.drawQRCodeImport | Import réussi du QR Serious Game');
+      });
+    }
+  } catch (e) {
+    logger.error(`chargerqrcode.drawQRCodeImport | Problème lors de l'importation du QR code type : ${qrcode.getType()}\n${e}`);
   }
 }
 
@@ -198,23 +197,66 @@ function drawQRCodeMultipleUnique(qrcode) {
   // recuperationQrCodeUnique(qrcode);
 }
 
-/** recréer les inputs d'un qrcode RecVocal */
+/**
+ * Reconstruit la page de la question à reconnaissance vocale QCM
+ * @param {ProjetQCM} qrcode instance de ProjetQCM contenant les donnée du QR code
+ */
 function drawQRCodeDataRecVocale(qrcode) {
-  let data = qrcode.getData();
-  console.log(data);
-  for (var i = 0; i < data.length; i++) {
-    console.log(i);
-    var reponse = new ReponseVocale(data[i][0], data[i][1], data[i][2])
-    if (i == 0) {
-      $("#reponseinitiale").val(reponse.getTextQuestion());
-      if (reponse.getEstBonneReponse()) {
-        $("#gridCheck1").prop("checked", true);
+  // Basculement vers l'onglet QCM
+  $("#questionOuverteOnglet").removeClass("active");
+  $("#onglet-QuesOuverte").removeClass("active");
+  $("#questionQCMOnglet").addClass("active");
+  $("#onglet-QCM").addClass("active");
+
+  if (qrcode.getQuestions()) {
+    // Parcours des questions du projet et ajout des questions sur la page
+    for (let i = 0; i < qrcode.getQuestions().length; i++) {
+      // Ajout des questions manquantes sur la page. 1 est déjà présente mais vide
+      if (i > 0) ajouterNouvelleQuestion(false);
+
+      const question = document.getElementById("textQuestion" + (i + 1));
+      if (qrcode.getQuestions()[i].getTextQuestion().type === 'text') {
+        question.value = qrcode.getQuestions()[i].getTextQuestion().text;
+      } else {
+        question.value = qrcode.getQuestions()[i].getTextQuestion().name;
+        question.name = qrcode.getQuestions()[i].getTextQuestion().url;
+        question.disabled = true;
+      }
+
+      // Ajout des réponses de la question
+      if (qrcode.getQuestions()[i].getReponses()) {
+        for (let j = 0; j < qrcode.getQuestions()[i].getReponses().length; j++) {
+          // Ajout des réponses manquantes de la question. 1 est déjà présente mais vide
+          if (j > 0) {
+            ajouterNouvelleReponse(qrcode.getQuestions()[i].getReponses()[j].getReponse(), qrcode.getQuestions()[i].getReponses()[j].getIsGoodAnswer(), i + 1);
+          } else {
+            $('#question' + (i + 1) + 'Reponse' + (j + 1)).val(qrcode.getQuestions()[i].getReponses()[j].getReponse());
+            $('#gridCheckQuestion' + (i + 1) + 'Reponse' + (j + 1)).prop('checked', qrcode.getQuestions()[i].getReponses()[j].getIsGoodAnswer());
+          }
+        }
       }
     }
-    else {
-      ajouterNouvelleReponse(reponse.getTextQuestion(), reponse.getEstBonneReponse())
-    }
   }
+
+  // Message de bonne réponse, test s'il s'agit d'un texte ou d'un audio
+  if (qrcode.getTextBonneReponse().type === 'text') {
+    $("#MessageBonnereponseQCM").val(qrcode.getTextBonneReponse().text);
+  } else {
+    $("#MessageBonnereponseQCM").val(qrcode.getTextBonneReponse().name);
+    $("#MessageBonnereponseQCM").attr('name', qrcode.getTextBonneReponse().url);
+    $("#MessageBonnereponseQCM").attr('disabled', true);
+  }
+
+  // Message de mauvaise réponse, test s'il s'agit d'un texte ou d'un audio
+  if (qrcode.getTextMauvaiseReponse().type === 'text') {
+    $("#MessageMauvaisereponseQCM").val(qrcode.getTextMauvaiseReponse().text);
+  } else {
+    $("#MessageMauvaisereponseQCM").val(qrcode.getTextMauvaiseReponse().name);
+    $("#MessageMauvaisereponseQCM").attr('name', qrcode.getTextMauvaiseReponse().url);
+    $("#MessageMauvaisereponseQCM").attr('disabled', true);
+  }
+  SetProgressBar('QCM');
+  isImportationExerciceRecoVocaleQCM = true;
 }
 
 /** recréer les inputs d'un qrcode Scenario Serious Game */
