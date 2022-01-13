@@ -209,22 +209,14 @@ $("#genererQestion").on('click', function () {
   }
   let bonneReponse = document.getElementById('newBonneReponseText');
   if (bonneReponse.value.substring(bonneReponse.value.length - 3, bonneReponse.value.length) == "mp3") {
-    bonneReponse = {
-      type: 'music',
-      name: bonneReponse.value,
-      url: bonneReponse.name
-    }
+    bonneReponse = bonneReponse.name
   }
   else {
     bonneReponse = bonneReponse.value;
   }
   let mauvaiseReponse = document.getElementById('newMauvaiseReponseText');
   if (mauvaiseReponse.value.substring(mauvaiseReponse.value.length - 3, mauvaiseReponse.value.length) == "mp3") {
-    mauvaiseReponse = {
-      type: 'music',
-      name: mauvaiseReponse.value,
-      url: mauvaiseReponse.name
-    }
+    mauvaiseReponse = mauvaiseReponse.name
   }
   else {
     mauvaiseReponse = mauvaiseReponse.value
@@ -235,7 +227,7 @@ $("#genererQestion").on('click', function () {
   // if ((question.text !== "" || question.name !== "") && (bonneReponse.text !== "" || bonneReponse.name !== "") && (mauvaiseReponse.text !=="" || mauvaiseReponse.name !== "") && nbMinBoneReponse !== "")
 
   //On verifie si le texte de la question n'est pas vide
-  if ((question || question.name) && (bonneReponse || bonneReponse.name) && (mauvaiseReponse || mauvaiseReponse.name) && nbMinBoneReponse !== "") {
+  if (question && bonneReponse && mauvaiseReponse && nbMinBoneReponse !== "") {
     let nouvQuestion = new Question(question, bonneReponse, mauvaiseReponse, [], nbMinBoneReponse, qrColor);
     document.getElementById("newMauvaiseReponseText").disabled = true;
     document.getElementById("newQuestionText").disabled = true;

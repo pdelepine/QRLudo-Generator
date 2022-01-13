@@ -164,7 +164,7 @@ $('#preview').on('click', e => {
   let qrData = [];
 
   for (let data of document.getElementsByClassName("form-control qrData")) {
-    if (data.name.substr(0, 5) == 'https') {
+    if (data.name.substr(0, 5) == 'https' || data.name.substr(0, 4) == 'https') {
       let dataAudio = {
         type: 'music',
         url: data.name,
@@ -626,7 +626,7 @@ function ajouterChampSon(nom, url) {
   var inputSon = document.createElement('div');
   inputSon.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class='fa fa-pause align-self-center icon-player'></i>
       <!-- <input type='text' id='${url}' name='AudioName' class='form-control qrData' value='${nom}' readonly>  -->
-    <textarea id='${url}' class='form-control qrData'  name='AudioName'  maxlength='1240'  readonly>${nom}'</textarea>
+    <textarea id='textarea${numZoneCourante}' class='form-control qrData'  name='${url}'  maxlength='1240'  readonly>${nom}</textarea>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success legendeQR-close-btn align-self-center' onclick='supprimerChampLegende(this,${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>

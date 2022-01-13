@@ -117,46 +117,25 @@ function genererJsonQuestionOuverte(){
   questionQCM = null;
   var questionText = document.getElementById("Question");
   if (questionText.value.substring(questionText.value.length - 3, questionText.value.length) == "mp3") {
-    questionText = {
-      type: 'music',
-      name: questionText.value,
-      url: questionText.name
-    }
+    questionText = questionText.name
   }
   else{
-    questionText = {
-      type: 'text',
-      text: questionText.value
-    }
+    questionText = questionText.value
   }
   var reponseText = $("#Bonnereponse").val();
   var messageBonneReponse = document.getElementById("MessageBonnereponse");
   if (messageBonneReponse.value.substring(messageBonneReponse.value.length - 3, messageBonneReponse.value.length) == "mp3") {
-    messageBonneReponse = {
-      type: 'music',
-      name: messageBonneReponse.value,
-      url: messageBonneReponse.name
-    }
+    messageBonneReponse = messageBonneReponse.name
   }
   else{
-    messageBonneReponse = {
-      type: 'text',
-      text: messageBonneReponse.value
-    }
+    messageBonneReponse = messageBonneReponse.value
   }
   var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse");
   if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
-    messageMauvaiseReponse = {
-      type: 'music',
-      name: messageMauvaiseReponse.value,
-      url: messageMauvaiseReponse.name
-    }
+    messageMauvaiseReponse = messageMauvaiseReponse.name
   }
   else{
-    messageMauvaiseReponse = {
-      type: 'text',
-      text: messageMauvaiseReponse.value
-    }
+    messageMauvaiseReponse = messageMauvaiseReponse.value
   }
 
   if(questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {
