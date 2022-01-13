@@ -619,7 +619,9 @@ $("#infos-exercice-reco-vocale").on('click', function () {
 
 
 
-
+/**
+ * Remplie les différents champs de la page à l'aide des valeurs du store correspondante
+ */
 function enregistrement() {
 
   if (!store.get(`sousOnglet`) || store.get(`sousOnglet`) == "question_ouverte") {
@@ -744,6 +746,11 @@ $("#questionQCMOnglet").on('click', function () {
 
 var audioSource = "";
 
+/**
+ * Fonction qui change la valeur de audioSource
+ * Cette valeur est utilisé par la fonction ajouterChampSon
+ * @param {*} source l'id du textarea voulant être remplie par un audio
+ */
 function chamgementAudioSource(source) {
   audioSource = source;
 }
@@ -830,7 +837,12 @@ function getMusicFromUrl() {
   }
 }
 
-/** Fonction pour ajouter au bon endroit le fichier audio */
+/**
+ * Fonction qui va remplir le texteArea concerné par la valeur de $audioSource
+ * avec comme value = nom et name = url
+ * @param {String} nom nom du fichier audio
+ * @param {String} url url du lien de l'audio
+ */
 function ajouterChampSon(nom, url) {
   let textArea = document.getElementById(audioSource);
   textArea.value = nom;

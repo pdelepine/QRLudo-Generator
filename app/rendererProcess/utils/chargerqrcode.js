@@ -111,15 +111,37 @@ function drawQRCodeImport(qrcode) {
     });
   } else if (qrcode.getType() == 'ExerciceReconnaissanceVocaleQuestionOuverte') {
     logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice Reconnaissance Vocale question ouverte, basculement sur onglet QR Exercice Reconnaissance Vocale question ouverte');
+
     $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceReconnaissanceVocale/exerciceReconnaissanceVocale.html"), function () {
-      $("#Question").val(qrcode.getName());
+
+      if (typeof qrcode.getName() === 'string') {
+        $("#Question").val(qrcode.getName());
+      } else {
+        chamgementAudioSource('Question');
+        ajouterChampSon(qrcode.getName().name, qrcode.getName().url);
+      }
+
       $("#Bonnereponse").val(qrcode.getReponse());
-      $("#MessageBonnereponse").val(qrcode.getGoodAnswer());
-      $("#MessageMauvaisereponse").val(qrcode.getBadAnswer());
+
+      if (typeof qrcode.getGoodAnswer() === 'string') {
+        $("#MessageBonnereponse").val(qrcode.getGoodAnswer());
+      } else {
+        chamgementAudioSource('MessageBonnereponse');
+        ajouterChampSon(qrcode.getGoodAnswer().name, qrcode.getGoodAnswer().url);
+      }
+
+      if (typeof qrcode.getBadAnswer() === 'string') {
+        $("#MessageMauvaisereponse").val(qrcode.getBadAnswer().name);
+      } else {
+        chamgementAudioSource('MessageMauvaisereponse');
+        ajouterChampSon(qrcode.getBadAnswer().name, qrcode.getBadAnswer().url);
+      }
+
       store.set("sousOnglet", "question_ouverte");
     });
   } else if (qrcode.getType() == 'SeriousGameScenario') {
     logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Serious Game, basculement sur onglet QR Serious Game');
+
     $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/seriousGame/seriousGame.html"), function () {
       $("#projectId").val(qrcode.getName());
       $("#textAreaIntro").val(qrcode.getIntro());

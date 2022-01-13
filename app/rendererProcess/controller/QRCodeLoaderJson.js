@@ -109,7 +109,7 @@ class QRCodeLoaderJson {
         break;
 
       case "ExerciceReconnaissanceVocaleQuestionOuverte":
-        qrcode = new QRCodeQuestionOuverte(qr.name, qr.data, qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
+        qrcode = new QRCodeQuestionOuverte(qr.text_question, qr.data[0], qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
         break;
 
       case "SeriousGame":
