@@ -525,11 +525,14 @@ $("#saveQRCode").on('click', e => {
 function viderChamps() {
   if (document.getElementById('questionOuverteOnglet').classList.contains('active')) {
     $('#Question').val('');
+    $('#Question').attr('name', '');
     document.getElementById('Question').disabled = false;
     $('#Bonnereponse').val('');
     $('#MessageBonnereponse').val('');
+    $('#MessageBonnereponse').attr('name', '');
     document.getElementById('MessageBonnereponse').disabled = false;
     $('#MessageMauvaisereponse').val('');
+    $('#MessageMauvaisereponse').attr('name', '');
     document.getElementById('MessageMauvaisereponse').disabled = false;
 
     deleteStore(`Question`);
