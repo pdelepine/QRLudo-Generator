@@ -47,27 +47,27 @@ class QuestionQCM {
   }
 
   getId() {
-    return this.id;
+    return this.question.id;
   }
 
   setId(newId) {
-    this.id = newId;
+    this.question.id = newId;
   }
 
   getTextQuestion() {
-    return this.textQuestion;
+    return this.question.textQuestion;
   }
 
   setTextQuestion(newTextQuestion) {
-    this.textQuestion = newTextQuestion;
+    this.question.textQuestion = newTextQuestion;
   }
 
   getReponses() {
-    return this.reponses;
+    return this.question.reponses;
   }
 
   setReponses(newReponses) {
-    this.reponses = newReponses;
+    this.question.reponses = newReponses;
   }
 }
 /**
