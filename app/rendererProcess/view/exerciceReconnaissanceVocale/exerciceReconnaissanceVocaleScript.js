@@ -120,10 +120,7 @@ function genererJsonQuestionOuverte() {
     questionText = questionText.name
   }
   else {
-    questionText = {
-      type: 'text',
-      text: questionText.value
-    }
+    questionText = questionText.value
   }
   var reponseText = $("#Bonnereponse").val();
   var messageBonneReponse = document.getElementById("MessageBonnereponse");
@@ -131,20 +128,14 @@ function genererJsonQuestionOuverte() {
     messageBonneReponse = messageBonneReponse.name
   }
   else {
-    messageBonneReponse = {
-      type: 'text',
-      text: messageBonneReponse.value
-    }
+    messageBonneReponse = messageBonneReponse.value
   }
   var messageMauvaiseReponse = document.getElementById("MessageMauvaisereponse");
   if (messageMauvaiseReponse.value.substring(messageMauvaiseReponse.value.length - 3, messageMauvaiseReponse.value.length) == "mp3") {
     messageMauvaiseReponse = messageMauvaiseReponse.name
   }
   else {
-    messageMauvaiseReponse = {
-      type: 'text',
-      text: messageMauvaiseReponse.value
-    }
+    messageMauvaiseReponse = messageMauvaiseReponse.value
   }
 
   if (questionText !== "" && reponseText !== "" && messageBonneReponse !== "" && messageMauvaiseReponse !== "") {

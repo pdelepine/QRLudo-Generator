@@ -198,11 +198,7 @@ function addReponseLine(reponse) {
 $("#genererQestion").on('click', function () {
   let question = document.getElementById('newQuestionText');
   if (question.value.substring(question.value.length - 3, question.value.length) == "mp3") {
-    question = {
-      type: 'music',
-      name: question.value,
-      url: question.name
-    }
+    question = question.name
   }
   else {
     question = question.value
