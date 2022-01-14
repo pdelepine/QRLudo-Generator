@@ -112,7 +112,7 @@ class FacadeController {
       image.src = exifModified;
       $(divImg).prepend(image);
 
-      logger.info('FacadeController.genererQRCode | Génération du QR code résussi');
+      logger.info(`FacadeController.genererQRCode | Génération du QR code résussi ${JSON.stringify(qrcode)}`);
       $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');
