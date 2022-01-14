@@ -64,7 +64,7 @@ class SGQuestionNode extends SGNode {
 		input_name.parent('displayQuestionZone');
 		input_name.attribute('placeholder', 'Nom de la question')
 		// Si le champ name est vide on l'affiche en rouge
-		if(this.containError && this.name == "")
+		if (this.containError && this.name == "")
 			input_name.style('border: 2px solid red');
 
 		// Partie question
@@ -83,7 +83,7 @@ class SGQuestionNode extends SGNode {
 		input_question.attribute('placeholder', 'Texte de la question')
 		input_question.parent('div_question');
 		// Si le champ question est vide on l'affiche en rouge
-		if(this.containError && this.question == "")
+		if (this.containError && this.question == "")
 			input_question.style('border: 2px solid red');
 
 		// Ajout de l'audio
@@ -119,7 +119,7 @@ class SGQuestionNode extends SGNode {
 			input_answer.attribute('placeholder', 'Texte de la réponse')
 			input_answer.parent('div_answer_' + (i + 1));
 
-			if(this.containError && this.answers[i] == "")
+			if (this.containError && this.answers[i] == "")
 				input_answer.style('border: 2px solid red');
 
 			let btn_delete_answer = myP5.createButton('');
@@ -237,7 +237,7 @@ class SGQuestionNode extends SGNode {
 				self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
 			}
 		}
-		if(self.name != "" && self.question != "")
+		if (self.name != "" && self.question != "")
 			self.containError = false;
 	}
 
@@ -258,19 +258,19 @@ class SGQuestionNode extends SGNode {
 			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
-		else if(this.containError) {
+		else if (this.containError) {
 			myP5.stroke('red')
 			myP5.fill(235);
 		}
 		else
 			myP5.fill(235);
-		if(this.name != ""){
-			if((myP5.textWidth(this.name) * 3) > 100)
+		if (this.name != "") {
+			if ((myP5.textWidth(this.name) * 3) > 100)
 				this.w = myP5.textWidth(this.name) * 3;
 			else
 				this.w = 100;
 			this.entryDot.setPositionX(this.w / 2);
-			if(this.answers.length == 1){
+			if (this.answers.length == 1) {
 				this.exitDots[0].setPositionX(this.w / 2);
 			}
 			else {
