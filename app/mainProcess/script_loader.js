@@ -37,7 +37,7 @@ const { setTimeout } = require('timers');
 const store = remoteElectron.getGlobal('sharedObject').store;
 
 function getNormalizePath(pathToNormalize) {
-  logger.info('Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
+  logger.info('script_loader.getNormalizePath | Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
   return (path.resolve(pathToNormalize)).replaceAll(' ', '%20');
 }
 

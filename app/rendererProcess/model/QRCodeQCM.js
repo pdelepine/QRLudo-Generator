@@ -1,6 +1,6 @@
- /**
-  * classe permettant de créer une réponse
-  */
+/**
+ * classe permettant de créer une réponse
+ */
 class ReponseQCM {
   /**
    * 
@@ -8,7 +8,7 @@ class ReponseQCM {
    * @param {} reponse valeur de la réponse
    * @param {} isGoodAnswer true si c'est la bonne réponse à la question; false sinon
    */
-  constructor(id, reponseText = "", isGoodAnswer = false){
+  constructor(id, reponseText = "", isGoodAnswer = false) {
     this.reponse = {
       id: id,
       reponseText: reponseText,
@@ -16,18 +16,18 @@ class ReponseQCM {
     };
   }
 
-  getId(){
+  getId() {
     return this.reponse.id;
   }
 
-  getReponse(){
+  getReponse() {
     return this.reponse.reponseText;
   }
 
-  getIsGoodAnswer(){
+  getIsGoodAnswer() {
     return this.reponse.isGoodAnswer;
   }
- }
+}
 /**
  * classe permettant de créer une question
  */
@@ -38,7 +38,7 @@ class QuestionQCM {
    * @param {} textQuestion la question
    * @param {} reponses tableau de ReponseQCM
    */
-  constructor(id, textQuestion = "", reponses = []){
+  constructor(id, textQuestion = "", reponses = []) {
     this.question = {
       id: id,
       textQuestion: textQuestion,
@@ -46,30 +46,30 @@ class QuestionQCM {
     };
   }
 
-  getId(){
-    return this.id;
+  getId() {
+    return this.question.id;
   }
 
-  setId(newId){
-    this.id=newId;
+  setId(newId) {
+    this.question.id = newId;
   }
 
-  getTextQuestion(){
-    return this.textQuestion;
+  getTextQuestion() {
+    return this.question.textQuestion;
   }
 
-  setTextQuestion(newTextQuestion){
-    this.textQuestion=newTextQuestion;
+  setTextQuestion(newTextQuestion) {
+    this.question.textQuestion = newTextQuestion;
   }
 
-  getReponses(){
-    return this.reponses;
+  getReponses() {
+    return this.question.reponses;
   }
 
-  setReponses(newReponses){
-    this.reponses=newReponses;
+  setReponses(newReponses) {
+    this.question.reponses = newReponses;
   }
- }
+}
 /**
  * Classe permettant de créer un projet de QCM
  */
@@ -80,13 +80,13 @@ class ProjetQCM {
    * @param {} textBonneReponse le message de bonne réponse 
    * @param {} textMauvaiseReponse le message de mauvaise réponse
    */
-  constructor(questions = [], textBonneReponse = "", textMauvaiseReponse = ""){
-    var dataString="";
-        for (let i = 0; i < questions.length; i++) {
-            dataString += questions[i];
-        }
+  constructor(questions = [], textBonneReponse = "", textMauvaiseReponse = "") {
+    var dataString = "";
+    for (let i = 0; i < questions.length; i++) {
+      dataString += questions[i];
+    }
     var md5Value = MDFiveConverter.convert(dataString);
-    
+
     this.qrcode = {
       id: md5Value,
       type: "ExerciceReconnaissanceVocaleQCM",
@@ -96,38 +96,42 @@ class ProjetQCM {
     };
   }
 
-  getId(){
+  getId() {
     return this.qrcode.id;
   }
 
-  getQuestions(){
+  getType() {
+    return this.qrcode.type;
+  }
+
+  getQuestions() {
     return this.qrcode.questions;
   }
 
-  getQuestionFromId(id){
-    for(let i = 0 ; i < this.qrcode.questions.length; i++){
-      if(this.qrcode.questions[i].id == id){
-          return this.qrcode.questions[i];
+  getQuestionFromId(id) {
+    for (let i = 0; i < this.qrcode.questions.length; i++) {
+      if (this.qrcode.questions[i].id == id) {
+        return this.qrcode.questions[i];
       }
-  }
-  return null;
+    }
+    return null;
   }
 
-  getTextBonneReponse(){
+  getTextBonneReponse() {
     return this.qrcode.textBonneReponse;
   }
 
-  getTextMauvaiseReponse(){
+  getTextMauvaiseReponse() {
     return this.qrcode.textMauvaiseReponse;
   }
 
   getDataString() {
     return JSON.stringify(this.qrcode);
   }
- }
+}
 
-  module.exports = {
-    ProjetQCM,
-    QuestionQCM,
-    ReponseQCM  
-  };
+module.exports = {
+  ProjetQCM,
+  QuestionQCM,
+  ReponseQCM
+};
