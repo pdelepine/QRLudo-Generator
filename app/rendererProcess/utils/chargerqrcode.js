@@ -133,14 +133,12 @@ function drawQRCodeImport(qrcode) {
         store.set("sousOnglet", "question_ouverte");
         logger.info('chargerqrcode.drawQRCodeImport | Import réussi d\'un QR Exercice Reconnaissance Vocale question ouverte');
       });
-    } else if (qrcode.getType() == 'SeriousGameScenario') {
+    } else if (qrcode.getType() == 'SeriousGame') {
       logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Serious Game, basculement sur onglet QR Serious Game');
 
       $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/seriousGame/seriousGame.html"), function () {
-        $("#projectId").val(qrcode.getName());
-        $("#textAreaIntro").val(qrcode.getIntro());
-        $("#textAreaFin").val(qrcode.getEnd());
-        var projet = new ProjetSeriousGame(qrcode.getName(), qrcode.getQuestionQRCode(), qrcode.getQuestionRecoVocale());
+
+        deleteGame();
         drawQRCodeSeriousGameEnigma(qrcode);
 
         logger.info('chargerqrcode.drawQRCodeImport | Import réussi du QR Serious Game');
