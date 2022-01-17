@@ -1137,8 +1137,11 @@ $("#saveQRCode").on('click', function () {
 	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
 	 * Cela retourne le path du fichier
 	 */
-	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
-	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
+	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'], filters: [
+		{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
+		{ name: 'All Files', extensions: ['*'] }
+	  ] });
+	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}.jpeg`);
 
 	if (dir_path !== undefined) {
 
@@ -1149,11 +1152,11 @@ $("#saveQRCode").on('click', function () {
 			imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
 			let buf = Buffer.from(imgData, 'base64');
 
-			fs.writeFile(dir_path, buf, 'base64', function (err) {
+			fs.writeFile(dir_path + '.jpeg', buf, 'base64', function (err) {
 				if (err) {
 					logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
 				} else {
-					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}`);
+					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}.jpeg`);
 				}
 			})
 		}
