@@ -48,13 +48,13 @@ class FacadeController {
           qrcode.qrcode.version = '3';
           break;
         case "ExerciceReconnaissanceVocaleQCM":
-          qrcode.qrcode.version = '6';
+          qrcode.qrcode.version = '5';
           break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
           break;
         case "SeriousGame":
-          qrcode.qrcode.version = '6';
+          qrcode.qrcode.version = '5';
           break;
         default:
           logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
