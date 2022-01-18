@@ -75,7 +75,8 @@ class FacadeController {
           qr = new QRious({
             mime: "image/jpeg",
             size: 400,
-            value: gzippedQR
+            value: gzippedQR,
+            foreground: $('#qrColor').val()
           });
         } else {
           logger.info('FacadeController.genererQRCode | Génération du QR code sans compression');
@@ -83,7 +84,8 @@ class FacadeController {
           qr = new QRious({
             mime: "image/jpeg",
             size: 400,
-            value: qrcode.getDataString()
+            value: qrcode.getDataString(),
+            foreground: $('#qrColor').val()
           });
         }
       } catch (exception) {
