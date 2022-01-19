@@ -30,12 +30,15 @@ const piexif = require('piexifjs');
 const fs = require('fs');
 const remoteElectron = require('electron').remote;
 const logger = remoteElectron.getGlobal('sharedObject').loggerShared.getLogger();
-logger.info('Le chemin est ' + require.resolve('qrcode'));
 const { setTimeout } = require('timers');
 
 /** Déclaration du store permettant la continuité entre les differents onglets */
 const store = remoteElectron.getGlobal('sharedObject').store;
 
+function getNormalizePath(pathToNormalize) {
+  logger.info('script_loader.getNormalizePath | Transformation du chemin en : ' + (path.resolve(pathToNormalize)).replaceAll(' ', '%20'));
+  return (path.resolve(pathToNormalize)).replaceAll(' ', '%20');
+}
 
 /** Import de $ comme appel à jQuery */
 window.$ = window.jQuery = require(root + "/rendererProcess/utils/jquery/jquery.min.js");
@@ -169,7 +172,5 @@ const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode
 // Instanciate object
 let controllerMultiple = new ControllerMultiple();
 
-const jsQR = require("jsqr");
-const Jimp = require('jimp');
 const QRious = require('qrious');
 const zlib = require('zlib');

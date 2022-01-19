@@ -10,9 +10,9 @@
  * 2018
  **/
 
- /**
-  * BAH Marouwane
-  * 2019
+/**
+ * BAH Marouwane
+ * 2019
 **/
 
 const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveConverter.js`);
@@ -24,7 +24,7 @@ class Projet {
   /** Constructeur d'un Projet */
   constructor(nom = "No_Name", questions = [], reponses = []) {
     /** Génération de l'id unique */
-    var dataString =  nom;
+    var dataString = nom;
     for (let i = 0; i < questions.length; i++) {
       dataString += questions[i];
     }
@@ -59,14 +59,14 @@ class Projet {
    * On supprime aussi la reponse dans la question
    * @param  {} reponseId
    */
-  removeReponse(reponseId){
-    for(let reponse of this.projet.reponses){
-      if(reponse.qrcode.id == reponseId){
+  removeReponse(reponseId) {
+    for (let reponse of this.projet.reponses) {
+      if (reponse.qrcode.id == reponseId) {
         var index = this.projet.reponses.indexOf(reponse);
         this.projet.reponses.splice(index, 1);
       }
     }
-    if(this.projet.question != null) {
+    if (this.projet.question != null) {
       this.projet.question.removeReponse(reponseId);
     }
   }
@@ -74,8 +74,8 @@ class Projet {
   removeReponseFromQuestion(reponseId, questionId) {
     this.removeReponse(reponseId);
 
-    for(let question of this.projet.questions){
-      if(question.getId() == questionId) {
+    for (let question of this.projet.questions) {
+      if (question.getId() == questionId) {
         question.removeReponse(reponseId);
       }
     }
@@ -84,13 +84,13 @@ class Projet {
    * On supprime egalement les reponses de la question
    * @param  {} questionId
    */
-  removeQuestion(questionId){
-    for(let question of this.projet.questions){
-      if(question.qrcode.id == questionId){
+  removeQuestion(questionId) {
+    for (let question of this.projet.questions) {
+      if (question.qrcode.id == questionId) {
         var index = this.projet.questions.indexOf(question);
         this.projet.questions.splice(index, 1);
 
-        for(let reponse of question.qrcode.data) {
+        for (let reponse of question.qrcode.data) {
           this.removeReponseFromQuestion(reponse.id, question.qrcode.id);
         }
       }
@@ -140,8 +140,8 @@ class Projet {
   }
 
   getReponsesFromQuestion(reponseId, questionId) {
-    for(let question of this.projet.questions){
-      if(question.getId() == questionId) {
+    for (let question of this.projet.questions) {
+      if (question.getId() == questionId) {
         return question.getReponses();
       }
     }
@@ -163,7 +163,7 @@ class Question {
       id: new Date().getTime(),
       text_question: title,
       data: reponsesUIDs,
-      nb_min_reponses : nombreMinReponse,
+      nb_min_reponses: nombreMinReponse,
       type: "question",
       color: color,
       text_bonne_reponse: bonneReponse,
@@ -183,31 +183,31 @@ class Question {
     return this.qrcode.text_question;
   }
 
-  setName(name){
+  setName(name) {
     this.qrcode.text_question = name;
   }
 
-  getGoodAnswer(){
+  getGoodAnswer() {
     return this.qrcode.text_bonne_reponse
   }
 
-  setGoodAnswer(reponse){
+  setGoodAnswer(reponse) {
     this.qrcode.text_bonne_reponse = reponse
   }
 
-  getBadAnswer(){
+  getBadAnswer() {
     return this.qrcode.text_mauvaise_reponse
   }
 
-  setBadAnswer(reponse){
+  setBadAnswer(reponse) {
     this.qrcode.text_mauvaise_reponse = reponse
   }
 
-  getMinAnswer(){
+  getMinAnswer() {
     return this.qrcode.nb_min_reponses
   }
 
-  setMinAnswer(minimum){
+  setMinAnswer(minimum) {
     this.qrcode.nb_min_reponses = minimum
   }
 
@@ -219,11 +219,11 @@ class Question {
     return this.qrcode.color;
   }
 
-  setColor(color){
+  setColor(color) {
     this.qrcode.color = color;
   }
 
-  getType(){
+  getType() {
     return this.qrcode.type;
   }
 
@@ -231,9 +231,9 @@ class Question {
     return this.qrcode.data[indice];
   }
 
-  getReponseById(reponseUid){
-    for(let rep of this.qrcode.data){
-      if(rep.id == reponseUid){
+  getReponseById(reponseUid) {
+    for (let rep of this.qrcode.data) {
+      if (rep.id == reponseUid) {
         return rep;
       }
     }
@@ -243,8 +243,8 @@ class Question {
   addData(element) {
     this.qrcode.data.push(element);
   }
-  addReponse(reponseUid, message='') {
-    if(message===''){
+  addReponse(reponseUid, message = '') {
+    if (message === '') {
       var settings = require("electron-settings");
       message = settings.get("defaultBonneReponse")
     }
@@ -253,20 +253,20 @@ class Question {
   }
 
 
-  removeReponse(reponseUid){
-    for(let rep of this.qrcode.data){
-      if(rep == reponseUid){
+  removeReponse(reponseUid) {
+    for (let rep of this.qrcode.data) {
+      if (rep == reponseUid) {
         var index = this.qrcode.data.indexOf(rep);
         this.qrcode.data.splice(index, 1);
       }
     }
   }
 
-  removeAllReponses(){
+  removeAllReponses() {
     this.qrcode.data = [];
   }
 
-  setMessage(reponseUid, message){
+  setMessage(reponseUid, message) {
     for (let r of this.qrcode.data) {
       if (r.id === reponseUid) {
         r.message = message;
@@ -299,9 +299,9 @@ class Reponse {
   }
 
   setData(data) {
-      for ( var i=0; i<= data.length; ++i){
-        this.qrcode.data=data[i];
-      }
+    for (var i = 0; i <= data.length; ++i) {
+      this.qrcode.data = data[i];
+    }
   }
 
   getId() {
@@ -316,11 +316,11 @@ class Reponse {
     return this.qrcode.color;
   }
 
-  setColor(color){
+  setColor(color) {
     this.qrcode.color = color;
   }
 
-  getType(){
+  getType() {
     return this.qrcode.type;
   }
 

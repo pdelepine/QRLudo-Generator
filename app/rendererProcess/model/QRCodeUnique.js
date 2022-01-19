@@ -56,9 +56,9 @@ class QRCodeUnique {
   setColor(color) {
     this.qrcode.color = color;
   }
-  
+
   getData(index = null) {
-    if(index === 0){
+    if (index === 0) {
       // console.log("le zero");
       return this.qrcode.data[0]; // return data at index
     }

@@ -360,6 +360,7 @@ var sketch = function (p) {
 			p.diagramOffsetX = p.mouseX;
 			p.diagramOffsetY = p.mouseY;
 
+			/** Mode suppression */
 			if (p.isErasing) {
 				/** Le premier lien survolé est supprimé */
 				for (let i = 0; i < p.linkArray.length; i++) {
@@ -393,7 +394,8 @@ var sketch = function (p) {
 				}
 			}
 
-			/** Crée un lien dynamique depuis l'exitDot qui est survolé par la souris
+			/**
+			 * Mode création de lien dynamique depuis l'exitDot qui est survolé par la souris
 			 * Ce lien sera attaché à la souris jusqu'à ce qu'on relâche le clic droit sur un entryDot où annule la création de lien
 			 */
 			if (p.creatingLink) {
@@ -410,7 +412,7 @@ var sketch = function (p) {
 				p.linkArray = p.linkArray.filter(l => (l.type !== 'dynamic'));
 			}
 
-			/** Crée un node si la souris ne survole rien (node, link or palette) et que le booléen de création de node `hoveringNode`= true */
+			/** Mode création de node si la souris ne survole rien (node, link or palette) et que le booléen de création de node `hoveringNode`= true */
 			if (p.hoveringNode && p.mouseX > p.paletteWidth) {
 				let mouseIsOnNodes = p.nodeArray.filter(n => n.isMouseHover() || n.dragging);
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
@@ -430,6 +432,12 @@ var sketch = function (p) {
 					p.switchButtonState(p.CursorState.SELECTION);
 					p.getCursor();
 				}
+			}
+
+			/** Si clique sur aucun node à l'intérieur du canvas, on enlève l'état clicked des node */
+			for (i = 0; i < p.nodeArray.length; ++i) {
+				if (!p.nodeArray[i].isMouseHover() && p.hoveringCanvas)
+					p.nodeArray[i].clicked = false;
 			}
 		}
 		if (p.mouseButton === p.RIGHT) {
@@ -1131,8 +1139,11 @@ $("#saveQRCode").on('click', function () {
 	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
 	 * Cela retourne le path du fichier
 	 */
-	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'] });
-	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}`);
+	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'], filters: [
+		{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
+		{ name: 'All Files', extensions: ['*'] }
+	  ] });
+	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}.jpeg`);
 
 	if (dir_path !== undefined) {
 
@@ -1143,11 +1154,11 @@ $("#saveQRCode").on('click', function () {
 			imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
 			let buf = Buffer.from(imgData, 'base64');
 
-			fs.writeFile(dir_path, buf, 'base64', function (err) {
+			fs.writeFile(dir_path + '.jpeg', buf, 'base64', function (err) {
 				if (err) {
 					logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
 				} else {
-					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}`);
+					logger.info(`Serious Game | Sauvegarde de l'image réussi : ${dir_path}.jpeg`);
 				}
 			})
 		}
@@ -1158,7 +1169,7 @@ $("#saveQRCode").on('click', function () {
 //pour ouvrir la page info.html quand on clique sur le bouton info du haut
 $("#infos-serious-game").on('click', function () {
 	remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
-	$("#charger-page").load(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html"));
+	$("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
 
 function SetProgressBar(projetSeriousGame) {

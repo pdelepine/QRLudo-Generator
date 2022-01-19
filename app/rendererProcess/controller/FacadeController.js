@@ -24,7 +24,7 @@ class FacadeController {
 
   /**
    * Génère une image QRCode à partir d'un objet QRCode dans le div passé en paramètre
-   * @param {*} divImg 
+   * @param {*} divImg
    * @param {Object} qrcode, Objet contenant un attribut (Object) `qrcode` qui sera tranformé en JSon pour la génération
    */
   genererQRCode(divImg, qrcode) {
@@ -48,13 +48,13 @@ class FacadeController {
           qrcode.qrcode.version = '3';
           break;
         case "ExerciceReconnaissanceVocaleQCM":
-          qrcode.qrcode.version = '6';
+          qrcode.qrcode.version = '5';
           break;
         case "ExerciceReconnaissanceVocaleQuestionOuverte":
           qrcode.qrcode.version = '4';
           break;
         case "SeriousGame":
-          qrcode.qrcode.version = '6';
+          qrcode.qrcode.version = '5';
           break;
         default:
           logger.error('Le type de qrcode n\'est pas pris en compte : ' + qrcode.qrcode.type);
@@ -75,7 +75,8 @@ class FacadeController {
           qr = new QRious({
             mime: "image/jpeg",
             size: 400,
-            value: gzippedQR
+            value: gzippedQR,
+            foreground: $('#qrColor').val()
           });
         } else {
           logger.info('FacadeController.genererQRCode | Génération du QR code sans compression');
@@ -83,7 +84,8 @@ class FacadeController {
           qr = new QRious({
             mime: "image/jpeg",
             size: 400,
-            value: qrcode.getDataString()
+            value: qrcode.getDataString(),
+            foreground: $('#qrColor').val()
           });
         }
       } catch (exception) {
@@ -112,7 +114,7 @@ class FacadeController {
       image.src = exifModified;
       $(divImg).prepend(image);
 
-      logger.info('FacadeController.genererQRCode | Génération du QR code résussi');
+      logger.info(`FacadeController.genererQRCode | Génération du QR code résussi ${JSON.stringify(qrcode)}`);
       $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');

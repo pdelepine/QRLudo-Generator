@@ -219,7 +219,7 @@
 <!--Panel -> zone pour afficher le QrCode produit -->
 <div class="col-sm-4 card" id="qr-zone">
     <script>
-        $("#qr-zone").load(path.join(__dirname.match('.*app')[0],"/rendererProcess/components/zoneQrCode/QR-zone.html"));
+        $("#qr-zone").load(getNormalizePath(path.join(__dirname.match('.*app')[0],"/rendererProcess/components/zoneQrCode/QR-zone.html")));
     </script>
 </div>
 

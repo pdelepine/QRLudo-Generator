@@ -57,7 +57,7 @@ class SGTextNode extends SGNode {
 		input_description.attribute('placeholder', 'Texte du champ à lire')
 		// Si champ vide on met le champ en rouge
 		if(this.containError && this.description == "")
-			input_description.style('border: 1px solid red');
+			input_description.style('border: 2px solid red');
 
 		/** Create the button to add an audio file */
 		this.btn_add_audio = myP5.createButton('Audio');

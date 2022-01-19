@@ -64,7 +64,7 @@ function createWindow() {
   /** Autoriser le redimensionnement de la fenêtre */ 
   mainWindow.setResizable(true); 
   /** On charge le fichier html principal de l'application */ 
-  mainWindow.loadFile(__dirname + '/index.html');
+  mainWindow.loadFile(path.normalize(__dirname + '/index.html'));
 
   log4js.getLogger().info('Démarrage de QRLudo Générator');
   /*
@@ -87,6 +87,10 @@ app.whenReady().then(() => {
     if(BrowserWindow.getAllWindows.length === 0) createWindow();
   });
 });
+
+log4js.getLogger().info(`Le dossier courant de l'application est : ${ app.getAppPath() }`);
+log4js.getLogger().info(`Le fichier exécutable courant est : ${ app.getPath("exe") }`);
+log4js.getLogger().info(`Le Crash dumps est : ${ app.getPath("crashDumps") }`);
 /** 
  * Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
  * pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte
@@ -139,11 +143,11 @@ app.on('window-all-closed', () => {
 });
 
 app.on('render-process-gone', (evt, webcontent, details) => {
-  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ evt }\nwebcontent = ${ webcontent }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\nwebcontent = ${ JSON.stringify(webcontent) }\ndetails = ${ JSON.stringify(details) }`);
 });
 
 app.on('child-process-gone', (evt, details) => {
-  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ evt }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\ndetails = ${ JSON.stringify(details) }`);
 });
 
 log4js.getLogger().info(`Le dossier courant de l'application ${ app.getAppPath() }`);

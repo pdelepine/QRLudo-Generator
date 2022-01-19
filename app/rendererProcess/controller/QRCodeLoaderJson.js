@@ -38,6 +38,8 @@ class QRCodeLoaderJson {
       let new_dataString = exifObj['Exif'][piexif.ExifIFD.UserComment];
       logger.info(`QRCodeLoaderJson.loadImage | Métadonnées lues dans le champ UserComment \n${new_dataString}`);
 
+      // Si l'ancienne manière de stocker les metadonnées est présente, on l'utilise
+      // Sinon on utilise la nouvelle
       if (!old_dataUtf8) {
         if (new_dataString) {
           dataRead = new_dataString;
@@ -56,7 +58,7 @@ class QRCodeLoaderJson {
 
   /**
    * Transforme le string du JSON du QR code et renvoie la classe du QR code construit
-   * @param {String} qrcodeString 
+   * @param {String} qrcodeString
    * @param {Function} callback la fonction à qui on passe le QRCode généré
    */
   static convertJSONStringToQR(qrcodeString, callback) {
@@ -90,10 +92,10 @@ class QRCodeLoaderJson {
         break;
 
       case "question":
-        qrcode = new Question(qr.name, qr.data, qr.color);
+        qrcode = new Question(qr.text_question, qr.data, qr.color);
         qrcode.setId(qr.id);
         qrcode.setMinAnswer(qr.nb_min_reponses);
-        qrcode.setGoodAnswer(qr.text_bonne_reponse[0]);
+        qrcode.setGoodAnswer(qr.text_bonne_reponse);
         qrcode.setBadAnswer(qr.text_mauvaise_reponse);
         break;
 
@@ -103,11 +105,20 @@ class QRCodeLoaderJson {
         break;
 
       case "ExerciceReconnaissanceVocaleQCM":
-        qrcode = new QRCodeQCM(qr.name, qr.data, qr.lettreReponseVocale, qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
+        let questions = [];
+        for (let question of qr.questions) {
+          let answers = [];
+          for (let answer of question['question'].reponses) {
+            answers.push(new ReponseQCM(answer[0], answer[1], answer[2]));
+          }
+          questions.push(new QuestionQCM(question['question'].id, question['question'].textQuestion, answers));
+        }
+
+        qrcode = new ProjetQCM(questions, qr.textBonneReponse, qr.textMauvaiseReponse);
         break;
 
       case "ExerciceReconnaissanceVocaleQuestionOuverte":
-        qrcode = new QRCodeQuestionOuverte(qr.name, qr.data, qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
+        qrcode = new QRCodeQuestionOuverte(qr.text_question, qr.data[0], qr.text_bonne_reponse, qr.text_mauvaise_reponse, qr.color);
         break;
 
       case "SeriousGame":
