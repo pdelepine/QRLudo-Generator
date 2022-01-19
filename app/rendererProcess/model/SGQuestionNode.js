@@ -158,7 +158,6 @@ class SGQuestionNode extends SGNode {
 		this.btn_discard_modification.parent('div_btn');
 
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
-		this.btn_save_modification.id('saveModificationQuestion')
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
 		this.btn_save_modification.parent('div_btn');

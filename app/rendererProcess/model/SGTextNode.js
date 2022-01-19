@@ -38,7 +38,7 @@ class SGTextNode extends SGNode {
 		input_name.class('text-titre-input input-lg');
 		input_name.attribute('placeholder', 'Nom de la forme')
 		// Si champ vide on met le champ en rouge
-		if(this.containError && this.name == "")
+		if (this.containError && this.name == "")
 			input_name.style('border: 2px solid red');
 		/** Create an input related to the text to play (audio) */
 		let txt_Description = myP5.createElement('label', "Champ texte à lire :");
@@ -56,7 +56,7 @@ class SGTextNode extends SGNode {
 		input_description.class('description-serious-input input-lg');
 		input_description.attribute('placeholder', 'Texte du champ à lire')
 		// Si champ vide on met le champ en rouge
-		if(this.containError && this.description == "")
+		if (this.containError && this.description == "")
 			input_description.style('border: 2px solid red');
 
 		/** Create the button to add an audio file */
@@ -84,7 +84,6 @@ class SGTextNode extends SGNode {
 
 		/** Create a button to save all the modifications */
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
-		this.btn_save_modification.id('saveModificationText')
 		this.btn_save_modification.mousePressed(() => { SGTextNode.saveModification(self); });
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.parent('div_btn');
@@ -109,10 +108,10 @@ class SGTextNode extends SGNode {
 
 		// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
 		if (document.getElementById('input_node_description').name != null) {
-			if(self.description.substring(self.description.length - 3, self.description.length) == "mp3")
+			if (self.description.substring(self.description.length - 3, self.description.length) == "mp3")
 				self.url = document.getElementById('input_node_description').name;
 		}
-		if(self.name != "" && self.description != "")
+		if (self.name != "" && self.description != "")
 			self.containError = false;
 		SetProgressBar(myP5.generateJson());
 	}
@@ -134,14 +133,14 @@ class SGTextNode extends SGNode {
 			myP5.strokeWeight(10);
 		else if (this.isMouseHover())
 			myP5.fill(100);
-		else if(this.containError) {
+		else if (this.containError) {
 			myP5.stroke('red')
 			myP5.fill(235);
 		}
 		else
 			myP5.fill(235);
-		if(this.name != "") {
-			if((myP5.textWidth(this.name) * 2) > 100)
+		if (this.name != "") {
+			if ((myP5.textWidth(this.name) * 2) > 100)
 				this.w = myP5.textWidth(this.name) * 2;
 			else
 				this.w = 100;
