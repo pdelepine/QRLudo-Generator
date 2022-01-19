@@ -266,22 +266,13 @@ class SGQuestionNode extends SGNode {
 		}
 		else
 			myP5.fill(235);
-<<<<<<< HEAD
-		if(this.name != "") {
-			if((myP5.textWidth(this.name) * 3) > 100)
-=======
 		if (this.name != "") {
 			if ((myP5.textWidth(this.name) * 3) > 100)
->>>>>>> a21368e358a10be7c8d8d7797af9f83b8aadf4ae
 				this.w = myP5.textWidth(this.name) * 3;
 			else
 				this.w = 100;
 			this.entryDot.setPositionX(this.w / 2);
-<<<<<<< HEAD
-			if(this.answers.length == 1) {
-=======
 			if (this.answers.length == 1) {
->>>>>>> a21368e358a10be7c8d8d7797af9f83b8aadf4ae
 				this.exitDots[0].setPositionX(this.w / 2);
 			}
 			else {
