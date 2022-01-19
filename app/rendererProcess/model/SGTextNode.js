@@ -84,6 +84,7 @@ class SGTextNode extends SGNode {
 
 		/** Create a button to save all the modifications */
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
+		this.btn_save_modification.id('saveModificationText')
 		this.btn_save_modification.mousePressed(() => { SGTextNode.saveModification(self); });
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.parent('div_btn');
@@ -113,6 +114,7 @@ class SGTextNode extends SGNode {
 		}
 		if(self.name != "" && self.description != "")
 			self.containError = false;
+		SetProgressBar(myP5.generateJson());
 	}
 
 	saveAudioModification() {
@@ -138,7 +140,7 @@ class SGTextNode extends SGNode {
 		}
 		else
 			myP5.fill(235);
-		if(this.name != ""){
+		if(this.name != "") {
 			if((myP5.textWidth(this.name) * 2) > 100)
 				this.w = myP5.textWidth(this.name) * 2;
 			else
