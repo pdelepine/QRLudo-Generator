@@ -315,14 +315,12 @@ var sketch = function (p) {
 	p.createQuestionNode = function () {
 		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'questionNode';
-		//zoneQuestion();
 	}
 
 	/** Fonction qui déclenche la création de TextNode */
 	p.createTextNode = function () {
 		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'textNode';
-		//zoneText();
 	}
 
 	/** Fonction qui dessine l'encadré pour la création des noeuds */
@@ -366,6 +364,7 @@ var sketch = function (p) {
 				for (let i = 0; i < p.linkArray.length; i++) {
 					if (p.linkArray[i].isMouseHover()) {
 						p.linkArray.splice(i, 1);
+						SetProgressBar(myP5.generateJson());
 						return;
 					}
 				}
@@ -377,6 +376,7 @@ var sketch = function (p) {
 							return !(l.node1 === p.nodeArray[i] || l.node2 === p.nodeArray[i]);
 						});
 						p.nodeArray.splice(i, 1);
+						SetProgressBar(myP5.generateJson());
 						return;
 					}
 				}
@@ -405,6 +405,7 @@ var sketch = function (p) {
 					if (!exitDotAlreadyLinked) {
 						p.creatingLink = true;
 						p.linkArray.push(link);
+						SetProgressBar(myP5.generateJson());
 					}
 				}));
 			} else {
@@ -428,6 +429,7 @@ var sketch = function (p) {
 							break;
 						default:
 					}
+					SetProgressBar(myP5.generateJson());
 					p.hoveringNode = false;
 					p.switchButtonState(p.CursorState.SELECTION);
 					p.getCursor();
@@ -451,6 +453,7 @@ var sketch = function (p) {
 					if (!exitDotAlreadyLinked) {
 						p.creatingLink = true;
 						p.linkArray.push(link);
+						SetProgressBar(myP5.generateJson());
 					}
 				}));
 			}
@@ -500,8 +503,8 @@ var sketch = function (p) {
 					p.linkArray = p.linkArray.filter(function (l) {
 						return !(l.node1 === p.nodeArray[i] || l.node2 === p.nodeArray[i]);
 					});
-					deleteFromProgress(p.nodeArray[i])
 					p.nodeArray.splice(i, 1);
+					SetProgressBar(myP5.generateJson());
 					return;
 				}
 			}
@@ -985,6 +988,8 @@ var sketch = function (p) {
 // Test pour savoir s'il existait déjà un sketch myP5 du SeriousGame
 if (typeof myP5 === 'undefined') {
 	var myP5 = new p5(sketch);
+
+	SetProgressBar(myP5.generateJson());
 } else {
 	// On récupère les données de l'ancien sketch
 	let metadata = { qrcodeMetaData: myP5.generateMetadata() };
@@ -997,6 +1002,8 @@ if (typeof myP5 === 'undefined') {
 
 	// On reconstruit l'ancien sketch sur le nouveau
 	drawQRCodeSeriousGameEnigma(metadata);
+
+	SetProgressBar(myP5.generateJson());
 }
 
 /** Fonction pour ajouter un fichier audio */
@@ -1139,10 +1146,12 @@ $("#saveQRCode").on('click', function () {
 	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
 	 * Cela retourne le path du fichier
 	 */
-	let dir_path = dialog.showSaveDialogSync({ title: 'Enregistrer une image', properties: ['openFile'], filters: [
-		{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
-		{ name: 'All Files', extensions: ['*'] }
-	  ] });
+	let dir_path = dialog.showSaveDialogSync({
+		title: 'Enregistrer une image', properties: ['openFile'], filters: [
+			{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
+			{ name: 'All Files', extensions: ['*'] }
+		]
+	});
 	logger.info(`Serious Game | Le serious Game sera sauvegardé à l'emplacement suivant : ${dir_path}.jpeg`);
 
 	if (dir_path !== undefined) {
@@ -1174,20 +1183,18 @@ $("#infos-serious-game").on('click', function () {
 
 function SetProgressBar(projetSeriousGame) {
 	//progress bar gestion
-    let total = 0;
-    let nombreCaratereMAX = 2500;
-	if(projetSeriousGame.getDataString().length.length > 120) {
-		JsonCompressor.compress(projetSeriousGame.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
-		total += gzippedQR.length
-	}
-	else {
-		total += projetSeriousGame.getDataString().length
-	}
-    let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
-    //mise ajour des données sur le progress bar
-    $("#progressbarId").attr('aria-valuenow', totalSeted);
-    $("#progressbarId").attr("style", "width:" + totalSeted + "%");
-    $("#progressbarId").text(totalSeted + "%");
-    //FIN progress bar gestion
-    return total;
+	let total = 0;
+	let nombreCaratereMAX = 2500;
+
+	let gzippedQR;
+	JsonCompressor.compress(projetSeriousGame.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
+	total += gzippedQR.length;
+
+	let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+	//mise ajour des données sur le progress bar
+	$("#progressbarId").attr('aria-valuenow', totalSeted);
+	$("#progressbarId").attr("style", "width:" + totalSeted + "%");
+	$("#progressbarId").text(totalSeted + "%");
+	//FIN progress bar gestion
+	return total;
 }
