@@ -143,11 +143,11 @@ app.on('window-all-closed', () => {
 });
 
 app.on('render-process-gone', (evt, webcontent, details) => {
-  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ evt }\nwebcontent = ${ webcontent }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\nwebcontent = ${ JSON.stringify(webcontent) }\ndetails = ${ JSON.stringify(details) }`);
 });
 
 app.on('child-process-gone', (evt, details) => {
-  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ evt }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\ndetails = ${ JSON.stringify(details) }`);
 });
 
 log4js.getLogger().info(`Le dossier courant de l'application ${ app.getAppPath() }`);
