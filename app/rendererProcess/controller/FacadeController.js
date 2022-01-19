@@ -65,12 +65,12 @@ class FacadeController {
       try {
         // Si la taille du string représentant le Qrcode dépasse 120 caractères, on compresse le string avant de le tranformer
         if (qrcode.getDataString().length > 120) {
-          logger.info('FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux');
+          logger.info('FacadeController.genererQRCode | Génération du QR code avec compression car il est trop volumineux. Length : ' + qrcode.getDataString().length);
 
           let gzippedQR;
           // Compression du QR Code
           JsonCompressor.compress(qrcode.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
-          logger.info(`FacadeController.genererQRCode | Compressed data : \n${gzippedQR}`);
+          logger.info(`FacadeController.genererQRCode | Data compressed ! Length: ${gzippedQR.length}, data: \n${gzippedQR}`);
 
           qr = new QRious({
             mime: "image/jpeg",
@@ -93,8 +93,12 @@ class FacadeController {
       }
 
       // Transformation de l'objet qrcode en dataURL
-      let qrdata = qr.toDataURL();
-      console.log('Data JPEG ' + qrdata);
+      let qrdata = '';
+      try {
+        qrdata = qr.toDataURL();
+      } catch (e) {
+        logger.error(`FacadeController.genererQRCode | Problème lors de la conversion en dataURL du qr code : ${JSON.stringify(e)}`);
+      }
 
       // Création de l'exif
       let exif = {};
@@ -114,11 +118,11 @@ class FacadeController {
       image.src = exifModified;
       $(divImg).prepend(image);
 
-      logger.info(`FacadeController.genererQRCode | Génération du QR code résussi ${JSON.stringify(qrcode)}`);
+      //logger.info(`FacadeController.genererQRCode | Génération du QR code résussi ! DataURL du QR code : ${JSON.stringify(exifModified)}`);
       $('#saveQRCode, #listenField').attr('disabled', false);
     } catch (e) {
       logger.error('Problème dans la fonction genererQRCode du FacadeController');
-      logger.error(e);
+      logger.error(JSON.stringify(e));
     }
   }
 
