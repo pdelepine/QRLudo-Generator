@@ -158,6 +158,7 @@ class SGQuestionNode extends SGNode {
 		this.btn_discard_modification.parent('div_btn');
 
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
+		this.btn_save_modification.id('saveModificationQuestion')
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
 		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
 		this.btn_save_modification.parent('div_btn');
@@ -239,6 +240,7 @@ class SGQuestionNode extends SGNode {
 		}
 		if (self.name != "" && self.question != "")
 			self.containError = false;
+		SetProgressBar(myP5.generateJson());
 	}
 
 	saveAudioModification() {
@@ -264,13 +266,22 @@ class SGQuestionNode extends SGNode {
 		}
 		else
 			myP5.fill(235);
+<<<<<<< HEAD
+		if(this.name != "") {
+			if((myP5.textWidth(this.name) * 3) > 100)
+=======
 		if (this.name != "") {
 			if ((myP5.textWidth(this.name) * 3) > 100)
+>>>>>>> a21368e358a10be7c8d8d7797af9f83b8aadf4ae
 				this.w = myP5.textWidth(this.name) * 3;
 			else
 				this.w = 100;
 			this.entryDot.setPositionX(this.w / 2);
+<<<<<<< HEAD
+			if(this.answers.length == 1) {
+=======
 			if (this.answers.length == 1) {
+>>>>>>> a21368e358a10be7c8d8d7797af9f83b8aadf4ae
 				this.exitDots[0].setPositionX(this.w / 2);
 			}
 			else {

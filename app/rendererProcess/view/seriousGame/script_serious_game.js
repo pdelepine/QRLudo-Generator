@@ -315,12 +315,14 @@ var sketch = function (p) {
 	p.createQuestionNode = function () {
 		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'questionNode';
+		//zoneQuestion();
 	}
 
 	/** Fonction qui déclenche la création de TextNode */
 	p.createTextNode = function () {
 		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'textNode';
+		//zoneText();
 	}
 
 	/** Fonction qui dessine l'encadré pour la création des noeuds */
@@ -352,7 +354,6 @@ var sketch = function (p) {
 
 	/** Fonction appelé lors d'un appuie d'un bouton de la souris */
 	p.mousePressed = function () {
-
 		if (p.mouseButton === p.LEFT) {
 			p.initX = p.translateX;
 			p.initY = p.translateY;
@@ -499,6 +500,7 @@ var sketch = function (p) {
 					p.linkArray = p.linkArray.filter(function (l) {
 						return !(l.node1 === p.nodeArray[i] || l.node2 === p.nodeArray[i]);
 					});
+					deleteFromProgress(p.nodeArray[i])
 					p.nodeArray.splice(i, 1);
 					return;
 				}
@@ -1049,7 +1051,7 @@ function getMusicFromUrl() {
 							fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
 
 							$(loader, errorMsg).remove();
-							$('#closeModalListeMusic').on('click',); // close modal add music
+							$('#closeModalListeMusic').on('click'); // close modal add music
 						};
 						fileReader.readAsArrayBuffer(blob);
 
@@ -1169,3 +1171,23 @@ $("#infos-serious-game").on('click', function () {
 	remoteElectron.getGlobal('sharedObject').ongletAideActif = 'seriousGame'
 	$("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
+
+function SetProgressBar(projetSeriousGame) {
+	//progress bar gestion
+    let total = 0;
+    let nombreCaratereMAX = 2500;
+	if(projetSeriousGame.getDataString().length.length > 120) {
+		JsonCompressor.compress(projetSeriousGame.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
+		total += gzippedQR.length
+	}
+	else {
+		total += projetSeriousGame.getDataString().length
+	}
+    let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
+    //mise ajour des données sur le progress bar
+    $("#progressbarId").attr('aria-valuenow', totalSeted);
+    $("#progressbarId").attr("style", "width:" + totalSeted + "%");
+    $("#progressbarId").text(totalSeted + "%");
+    //FIN progress bar gestion
+    return total;
+}
