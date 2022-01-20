@@ -90,19 +90,19 @@ class SGTextNode extends SGNode {
 
 	}
 
+	/** Discard all modifications : delete the div and create it again with previous values */
 	static discardModification(self) {
-		/** Discard all modifications : delete the div and create it again with previous values */
 		self.emptyQuestionZone();
 		self.displayQuestionZone();
 	}
 
+	/** Add an audio file */
 	static addAudio(self) {
-		/** Add an audio file */
 		myP5.setLastNodeClickedType("text");
 	}
 
+	/** Save all modifications into the class attributes */
 	static saveModification(self) {
-		/** Save all modifications into the class attributes */
 		self.name = document.getElementById('input_node_name').value;
 		self.description = document.getElementById('input_node_description').value;
 
@@ -116,8 +116,8 @@ class SGTextNode extends SGNode {
 		SetProgressBar(myP5.generateJson());
 	}
 
+	/** Fonction appelée quand un fichier audio est ajouté */
 	saveAudioModification() {
-		/** Fonction appelée quand un fichier audio est ajouté */
 		const self = this;
 		SGTextNode.saveModification(self);
 	}
@@ -155,6 +155,18 @@ class SGTextNode extends SGNode {
 		myP5.textFont('Helvetica');
 		myP5.text(this.name, this.x + this.w / 2 - (myP5.textWidth(this.name) / 2), this.y + this.h / 1.8);
 		myP5.pop();
+	}
+
+	/** Return a copy of the Node */
+	clone() {
+		let nodecopy = new SGTextNode(this.x, this.y, this.w, this.h);
+
+		nodecopy.description = this.description;
+
+		nodecopy.name = this.name;
+		nodecopy.url = this.url;
+
+		return nodecopy;
 	}
 
 }

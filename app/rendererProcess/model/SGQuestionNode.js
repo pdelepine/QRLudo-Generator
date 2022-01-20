@@ -288,6 +288,23 @@ class SGQuestionNode extends SGNode {
 		myP5.text(this.name, this.x + this.w / 2 - (myP5.textWidth(this.name) / 2), this.y - this.h / 4);
 		myP5.pop();
 	}
+
+	/** Return a copy of the Node */
+	clone() {
+		let nodecopy = new SGQuestionNode(this.x, this.y, this.w, this.h);
+
+		nodecopy.question = this.question;
+
+		nodecopy.name = this.name;
+		nodecopy.url = this.url;
+
+		nodecopy.answers = [...this.answers];
+		for (let i = 1; i < this.answers.length; i++) {
+			nodecopy.exitDots.push(new SGDot(nodecopy, nodecopy.w / 2, 0, [231, 10, 2], true));
+		}
+
+		return nodecopy;
+	}
 }
 
 module.exports = {

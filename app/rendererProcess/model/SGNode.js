@@ -158,6 +158,12 @@ class SGNode {
 			}
 		}
 	}
+
+	/** Return a copy of the Node */
+	clone() {
+		let nodecopy = new SGNode(this.x, this.y, this.w, this.h);
+		return nodecopy;
+	}
 }
 
 module.exports = {

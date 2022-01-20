@@ -468,6 +468,20 @@ var sketch = function (p) {
 				}
 			}
 
+			/** Mode duplication de node */
+			if (p.isDuplicating) {
+				p.nodeArray.forEach(n => {
+					if (n.isMouseHover() || n.isMouseHoveringDots()) {
+						let newNode = n.clone();
+						newNode.x += 10;
+						newNode.y += 10;
+
+						p.nodeArray.push(newNode);
+						return;
+					}
+				});
+			}
+
 			/** Si clique sur aucun node à l'intérieur du canvas, on enlève l'état clicked des node */
 			for (i = 0; i < p.nodeArray.length; ++i) {
 				if (!p.nodeArray[i].isMouseHover() && p.hoveringCanvas)
