@@ -26,6 +26,9 @@ var sketch = function (p) {
 	/** Le bouton de création de liens */
 	p.buttonCreateLink;
 
+	/** Le bouton de duplication de node */
+	p.buttonDuplicateNode;
+
 	/** Le bouton pour activer la suppression des formes et liens */
 	p.buttonEraser;
 
@@ -93,13 +96,17 @@ var sketch = function (p) {
 	/** Booléen de contrôle de l'action de suppression */
 	p.isErasing = false;
 
+	/** Booléen de contrôle de la duplication de node */
+	p.isDuplicating = false;
+
 	/** Un enum sur les différents états du curseur */
 	p.CursorState = Object.freeze({
 		SELECTION: Symbol("selection"),
 		DISPLACEMENT: Symbol("displacement"),
 		CREATENODE: Symbol("createnode"),
 		CREATELINK: Symbol("createlink"),
-		ERASING: Symbol("erasing")
+		ERASING: Symbol("erasing"),
+		DUPLICATING: Symbol("duplicating")
 	});
 
 	/** Mutateur des coordonnées du dernier click */
@@ -170,7 +177,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de création de lien */
 		p.buttonCreateLink = p.createButton('');
 		p.buttonCreateLink.id('btn-create-link');
-		p.buttonCreateLink.position(- 65, - p.seriousGameCanvas.height + 80, 'relative');
+		p.buttonCreateLink.position(- 65, - p.seriousGameCanvas.height + 100, 'relative');
 		p.buttonCreateLink.size(40);
 		p.buttonCreateLink.attribute('title', 'Créer un lien');
 		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.switchButtonState(p.CursorState.CREATELINK); p.getCursor(); })
@@ -182,10 +189,25 @@ var sketch = function (p) {
 		p.iconLink.style('color', '#000000');
 		p.iconLink.size(20);
 
+		/** Déclaration du bouton de duplication */
+		p.buttonDuplicateNode = p.createButton('');
+		p.buttonDuplicateNode.id('btn-copy');
+		p.buttonDuplicateNode.position(- 105, - p.seriousGameCanvas.height + 160, 'relative');
+		p.buttonDuplicateNode.size(40);
+		p.buttonDuplicateNode.attribute('title', 'Dupliquer');
+		p.buttonDuplicateNode.mousePressed(() => { p.isDuplicating = !p.isDuplicating; p.switchButtonState(p.CursorState.DUPLICATING); p.getCursor(); });
+		p.buttonDuplicateNode.parent('seriousGameDiagram');
+		/** L'icône pour le bouton de duplication */
+		p.iconDuplicate = p.createElement('i');
+		p.iconDuplicate.class('fa fa-copy');
+		p.iconDuplicate.parent('btn-copy');
+		p.iconDuplicate.style('color', '#000000');
+		p.iconDuplicate.size(20);
+
 		/** Déclaration du bouton de suppression */
 		p.buttonEraser = p.createButton('');
 		p.buttonEraser.id('btn-eraser');
-		p.buttonEraser.position(- 105, - p.seriousGameCanvas.height + 120, 'relative');
+		p.buttonEraser.position(- 145, - p.seriousGameCanvas.height + 200, 'relative');
 		p.buttonEraser.size(40);
 		p.buttonEraser.attribute('title', 'Supprimer');
 		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.switchButtonState(p.CursorState.ERASING); p.getCursor(); });
@@ -200,7 +222,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de sélection */
 		p.buttonMouseSelection = p.createButton('');
 		p.buttonMouseSelection.id('btn-mouse-selection');
-		p.buttonMouseSelection.position(-145, - p.seriousGameCanvas.height + 160, 'relative');
+		p.buttonMouseSelection.position(-185, - p.seriousGameCanvas.height + 260, 'relative');
 		p.buttonMouseSelection.size(40);
 		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
 		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.switchButtonState(p.CursorState.SELECTION); p.getCursor(); });
@@ -215,7 +237,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de déplacement */
 		p.buttonMouseDisplacement = p.createButton('');
 		p.buttonMouseDisplacement.id('btn-mouse-displacement');
-		p.buttonMouseDisplacement.position(-185, - p.seriousGameCanvas.height + 200, 'relative');
+		p.buttonMouseDisplacement.position(-225, - p.seriousGameCanvas.height + 300, 'relative');
 		p.buttonMouseDisplacement.size(40);
 		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
 		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.switchButtonState(p.CursorState.DISPLACEMENT); });
@@ -408,6 +430,16 @@ var sketch = function (p) {
 						SetProgressBar(myP5.generateJson());
 					}
 				}));
+
+				// Suppression du lien dynamique si on clique sur aucun node
+				let isHoverNode = false;
+				p.nodeArray.forEach(n => {
+					if (n.isMouseHover() || n.isMouseHoveringDots()) isHoverNode = true;
+				});
+				if (!isHoverNode) {
+					// Annule la création des liens dynamiques
+					p.linkArray = p.linkArray.filter(l => (l.type !== 'dynamic'));
+				}
 			} else {
 				// Annule la création des liens dynamiques
 				p.linkArray = p.linkArray.filter(l => (l.type !== 'dynamic'));
@@ -527,6 +559,8 @@ var sketch = function (p) {
 			p.cursor('e-resize');
 		} else if (p.hoveringNode) {
 			p.cursor(p.CROSS);
+		} else if (p.isDuplicating) {
+			p.cursor('copy');
 		} else if (p.isMovingDiagram) {
 			p.cursor(p.MOVE);
 		} else {
@@ -573,10 +607,17 @@ var sketch = function (p) {
 		} else {
 			p.buttonCreateLink.removeClass('bg-success');
 		}
+
+		// Bouton pour dupliquer un node
+		if (p.isDuplicating) {
+			p.buttonDuplicateNode.addClass('bg-success');
+		} else {
+			p.buttonDuplicateNode.removeClass('bg-success');
+		}
 	}
 
 	/**
-	 * Activer / désactiver les actions de la souris différentes de celle du state
+	 * Désactiver les actions de la souris différentes de celle du state
 	 * @param {p.CursorState} state qui est activé, tous les autres seront désactivés
 	 */
 	p.switchButtonState = function (state) {
@@ -585,23 +626,34 @@ var sketch = function (p) {
 				p.creatingLink = false;
 				p.isErasing = false;
 				p.isMovingDiagram = false;
+				p.isDuplicating = false;
 				break;
 			case p.CursorState.CREATELINK:
 				p.hoveringNode = false;
 				p.isErasing = false;
 				p.isMovingDiagram = false;
+				p.isDuplicating = false;
 				break;
 			case p.CursorState.SELECTION:
 				p.hoveringNode = false;
 				p.isErasing = false;
 				p.creatingLink = false;
+				p.isDuplicating = false;
 				break;
 			case p.CursorState.DISPLACEMENT:
 				p.hoveringNode = false;
 				p.isErasing = false;
 				p.creatingLink = false;
+				p.isDuplicating = false;
 				break;
 			case p.CursorState.ERASING:
+				p.hoveringNode = false;
+				p.creatingLink = false;
+				p.isMovingDiagram = false;
+				p.isDuplicating = false;
+				break;
+			case p.CursorState.DUPLICATING:
+				p.isErasing = false;
 				p.hoveringNode = false;
 				p.creatingLink = false;
 				p.isMovingDiagram = false;
