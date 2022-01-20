@@ -1233,6 +1233,10 @@ $("#infos-serious-game").on('click', function () {
 	$("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
 
+/**
+ * Update de la bar de progression selon la taille du ProjetSeriousGame passé en paramètre
+ * @param {ProjetSeriousGame} projetSeriousGame
+ */
 function SetProgressBar(projetSeriousGame) {
 	//progress bar gestion
 	let total = 0;
@@ -1247,6 +1251,4 @@ function SetProgressBar(projetSeriousGame) {
 	$("#progressbarId").attr('aria-valuenow', totalSeted);
 	$("#progressbarId").attr("style", "width:" + totalSeted + "%");
 	$("#progressbarId").text(totalSeted + "%");
-	//FIN progress bar gestion
-	return total;
 }
