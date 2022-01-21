@@ -167,6 +167,8 @@ const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
 const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
 const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
 const { SGQuestionQCMNode } = require(`${root}/rendererProcess/model/SGQuestionQCMNode`);
+const { SGQuestionQONode } = require(`${root}/rendererProcess/model/SGQuestionQONode`);
+const { SGQuestionQRNode } = require(`${root}/rendererProcess/model/SGQuestionQRNode`);
 
 
 // Instanciate object
