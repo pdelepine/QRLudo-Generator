@@ -1,5 +1,6 @@
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
 class SGQuestionQCMNode extends SGNode {
+	static strokeColor = '#005700';
 	/**
 	 * @param {number} x coordinate
 	 * @param {number} y coordinate
@@ -55,7 +56,7 @@ class SGQuestionQCMNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
-		let txt_Title = myP5.createElement('label', "Nom de la question :");
+		let txt_Title = myP5.createElement('label', "Nom de la question QCM :");
 		txt_Title.class('titre-serious-label');
 		txt_Title.parent('displayQuestionZone');
 		let input_name = myP5.createInput(this.name);
@@ -251,7 +252,7 @@ class SGQuestionQCMNode extends SGNode {
 	/** Draw the node */
 	display() {
 		myP5.push();
-		myP5.stroke('#005700');
+		myP5.stroke(SGQuestionQCMNode.strokeColor);
 		myP5.strokeWeight(4);
 		if (this.dragging || this.clicked)
 			myP5.fill(80);
