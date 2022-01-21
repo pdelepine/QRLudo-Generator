@@ -17,8 +17,14 @@ var sketch = function (p) {
 	/** Variable sur la taille de la palette */
 	p.paletteWidth = 70;
 
-	/** Le bouton de création de question */
-	p.buttonCreateQuestion;
+	/** Le bouton de création de question QCM */
+	p.buttonCreateQuestionQCM;
+
+	/** Le bouton de création de question QO*/
+	p.buttonCreateQuestionQO;
+
+	/** Le bouton de création de question QR*/
+	p.buttonCreateQuestionQR;
 
 	/** Le bouton de création de champ de texte */
 	p.buttonCreateTextNode;
@@ -68,11 +74,16 @@ var sketch = function (p) {
 	/** État pour la création de noeud suivant la souris */
 	p.hoveringNode = false;
 
-	/** Type de node qui va être crée :
-	 * QuestionQCMNode = questionNode
-	 * TextNode = textNode
-	 */
+	/** Type de node qui va être créé, valeur parmi p.NodeType */
 	p.creatingNodeType = null;
+
+	/** Un enum sur les différents type de node */
+	p.NodeType = Object.freeze({
+		TextNode: Symbol('textNode'),
+		QCMNode: Symbol('qcmNode'),
+		QONode: Symbol('qoNode'),
+		QRNode: Symbol('qrNode')
+	});
 
 	/** Booléen de contrôle pour la création des liens */
 	p.creatingLink = false;
@@ -116,8 +127,8 @@ var sketch = function (p) {
 		p.lastNodeClickedType = type;
 	}
 
+	/** Modifie les coordonnées du dernier clic */
 	p.setLastClick = function (x, y) {
-		/** Modifie les coordonnées du dernier clic */
 		p.lastClickX = x;
 		p.lastClickY = y;
 	}
@@ -142,20 +153,6 @@ var sketch = function (p) {
 		p.translateX = p.initX;
 		p.translateY = p.initY;
 
-		/** First & Second Node integration */
-		/*
-		let node1 = new SGTextNode(100, 100, 100, 80);
-		let node2 = new SGQuestionQCMNode(200, 200, 100, 80);
-		p.nodeArray.push(node1);
-		p.nodeArray.push(node2);
-		*/
-		/** Link creation between the to Node */
-		/*
-		let link1 = new SGLink(node1, node1.exitDots[0], node2, node2.entryDot);
-		link1.type = 'static';
-		p.linkArray.push(link1);
-		*/
-
 		/** Déclaration du bouton de création de TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
 		p.buttonCreateTextNode.position(15, - p.seriousGameCanvas.height, 'relative');
@@ -167,17 +164,54 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
 		/** Déclaration du bouton de création de QuestionQCMNode */
-		p.buttonCreateQuestion = p.createButton('?');
-		p.buttonCreateQuestion.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
-		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
-		p.buttonCreateQuestion.size(40);
-		p.buttonCreateQuestion.attribute('title', 'Créer une question');
-		p.buttonCreateQuestion.parent("seriousGameDiagram");
+		p.buttonCreateQuestionQCM = p.createButton('');
+		p.buttonCreateQuestionQCM.id('btn-create-QCM');
+		p.buttonCreateQuestionQCM.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
+		p.buttonCreateQuestionQCM.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQCM.size(40);
+		p.buttonCreateQuestionQCM.attribute('title', 'Créer une question QCM');
+		p.buttonCreateQuestionQCM.parent("seriousGameDiagram");
+		/** L'icône pour le bouton de création de QuestionQCMNode */
+		p.iconQCM = p.createElement('i');
+		p.iconQCM.class('fa fa-list');
+		p.iconQCM.parent('btn-create-QCM');
+		p.iconQCM.style('color', '#000000');
+		p.iconQCM.size(20);
+
+		/** Déclaration du bouton de création de QuestionQONode */
+		p.buttonCreateQuestionQO = p.createButton('');
+		p.buttonCreateQuestionQO.id('btn-create-QO');
+		p.buttonCreateQuestionQO.position(- 65, -p.seriousGameCanvas.height + 80, 'relative');
+		p.buttonCreateQuestionQO.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQO.size(40);
+		p.buttonCreateQuestionQO.attribute('title', 'Créer une question ouverte');
+		p.buttonCreateQuestionQO.parent("seriousGameDiagram");
+		/** L'icône pour le bouton de création de QuestionQONode */
+		p.iconQO = p.createElement('i');
+		p.iconQO.class('fa fa-microphone');
+		p.iconQO.parent('btn-create-QO');
+		p.iconQO.style('color', '#000000');
+		p.iconQO.size(20);
+
+		/** Déclaration du bouton de création de QuestionQRNode */
+		p.buttonCreateQuestionQR = p.createButton('');
+		p.buttonCreateQuestionQR.id('btn-create-QR');
+		p.buttonCreateQuestionQR.position(- 105, -p.seriousGameCanvas.height + 120, 'relative');
+		p.buttonCreateQuestionQR.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQR.size(40);
+		p.buttonCreateQuestionQR.attribute('title', 'Créer une question QR code');
+		p.buttonCreateQuestionQR.parent("seriousGameDiagram");
+		/** L'icône pour le bouton de création de QuestionQRNode */
+		p.iconQR = p.createElement('i');
+		p.iconQR.class('fa fa-qrcode');
+		p.iconQR.parent('btn-create-QR');
+		p.iconQR.style('color', '#000000');
+		p.iconQR.size(20);
 
 		/** Déclaration du bouton de création de lien */
 		p.buttonCreateLink = p.createButton('');
 		p.buttonCreateLink.id('btn-create-link');
-		p.buttonCreateLink.position(- 65, - p.seriousGameCanvas.height + 100, 'relative');
+		p.buttonCreateLink.position(- 145, - p.seriousGameCanvas.height + 180, 'relative');
 		p.buttonCreateLink.size(40);
 		p.buttonCreateLink.attribute('title', 'Créer un lien');
 		p.buttonCreateLink.mousePressed(() => { p.creatingLink = !p.creatingLink; p.switchButtonState(p.CursorState.CREATELINK); p.getCursor(); })
@@ -192,7 +226,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de duplication */
 		p.buttonDuplicateNode = p.createButton('');
 		p.buttonDuplicateNode.id('btn-copy');
-		p.buttonDuplicateNode.position(- 105, - p.seriousGameCanvas.height + 160, 'relative');
+		p.buttonDuplicateNode.position(- 185, - p.seriousGameCanvas.height + 240, 'relative');
 		p.buttonDuplicateNode.size(40);
 		p.buttonDuplicateNode.attribute('title', 'Dupliquer');
 		p.buttonDuplicateNode.mousePressed(() => { p.isDuplicating = !p.isDuplicating; p.switchButtonState(p.CursorState.DUPLICATING); p.getCursor(); });
@@ -207,7 +241,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de suppression */
 		p.buttonEraser = p.createButton('');
 		p.buttonEraser.id('btn-eraser');
-		p.buttonEraser.position(- 145, - p.seriousGameCanvas.height + 200, 'relative');
+		p.buttonEraser.position(- 225, - p.seriousGameCanvas.height + 280, 'relative');
 		p.buttonEraser.size(40);
 		p.buttonEraser.attribute('title', 'Supprimer');
 		p.buttonEraser.mousePressed(() => { p.isErasing = !p.isErasing; p.switchButtonState(p.CursorState.ERASING); p.getCursor(); });
@@ -222,7 +256,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de sélection */
 		p.buttonMouseSelection = p.createButton('');
 		p.buttonMouseSelection.id('btn-mouse-selection');
-		p.buttonMouseSelection.position(-185, - p.seriousGameCanvas.height + 260, 'relative');
+		p.buttonMouseSelection.position(-265, - p.seriousGameCanvas.height + 340, 'relative');
 		p.buttonMouseSelection.size(40);
 		p.buttonMouseSelection.attribute('title', 'Outil de sélection');
 		p.buttonMouseSelection.mousePressed(() => { p.isMovingDiagram = false; p.switchButtonState(p.CursorState.SELECTION); p.getCursor(); });
@@ -237,7 +271,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de déplacement */
 		p.buttonMouseDisplacement = p.createButton('');
 		p.buttonMouseDisplacement.id('btn-mouse-displacement');
-		p.buttonMouseDisplacement.position(-225, - p.seriousGameCanvas.height + 300, 'relative');
+		p.buttonMouseDisplacement.position(-305, - p.seriousGameCanvas.height + 380, 'relative');
 		p.buttonMouseDisplacement.size(40);
 		p.buttonMouseDisplacement.attribute('title', 'Outil de déplacement du dessin');
 		p.buttonMouseDisplacement.mousePressed(() => { p.isMovingDiagram = true; p.getCursor(); p.switchButtonState(p.CursorState.DISPLACEMENT); });
@@ -331,6 +365,15 @@ var sketch = function (p) {
 		p.textFont('Helvetica');
 		//p.text("Palette", 45, 25);
 		p.pop();
+	}
+
+	/**
+	 * Fonction qui déclenche la création de node
+	 * @param {p.NodeType} nodeType Le type de node qui va être créé
+	 */
+	p.createNode = function (nodeType) {
+		p.hoveringNode = !p.hoveringNode;
+		p.creatingNodeType = nodeType;
 	}
 
 	/** Fonction qui déclenche la création de QuestionQCMNode */
@@ -604,14 +647,14 @@ var sketch = function (p) {
 		// Boutons pour créer les questions et les textes
 		if (p.hoveringNode) {
 			if (p.creatingNodeType === 'questionNode') {
-				p.buttonCreateQuestion.addClass('bg-success');
+				p.buttonCreateQuestionQCM.addClass('bg-success');
 				p.buttonCreateTextNode.removeClass('bg-success');
 			} else {
-				p.buttonCreateQuestion.removeClass('bg-success');
+				p.buttonCreateQuestionQCM.removeClass('bg-success');
 				p.buttonCreateTextNode.addClass('bg-success');
 			}
 		} else {
-			p.buttonCreateQuestion.removeClass('bg-success');
+			p.buttonCreateQuestionQCM.removeClass('bg-success');
 			p.buttonCreateTextNode.removeClass('bg-success');
 		}
 
