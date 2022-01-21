@@ -274,16 +274,16 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
     textNodes.push(qrTextNode);
   }
 
-  // Création SGQuestionNode
+  // Création SGQuestionQCMNode
   for (let questionNode of qrcodeMetadata.questionNodes) {
-    let qrQuestionNode = new SGQuestionNode(questionNode.x, questionNode.y, 100, 80);
+    let qrQuestionNode = new SGQuestionQCMNode(questionNode.x, questionNode.y, 100, 80);
     qrQuestionNode.name = questionNode.name;
     qrQuestionNode.url = questionNode.url;
     qrQuestionNode.question = questionNode.textQuestion;
 
     for (let i = 0; i < questionNode.reponses.length; i++) {
       // Il y a de base une réponse vide (avec son Dot) dans le questionNode, on utilise la fonction addAnswer pour ajouter une réponse et SGDot
-      if (i !== 0) SGQuestionNode.addAnswer(qrQuestionNode);
+      if (i !== 0) SGQuestionQCMNode.addAnswer(qrQuestionNode);
       qrQuestionNode.answers[i] = questionNode.reponses[i].text;
     }
 

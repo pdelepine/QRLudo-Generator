@@ -69,7 +69,7 @@ var sketch = function (p) {
 	p.hoveringNode = false;
 
 	/** Type de node qui va être crée :
-	 * QuestionNode = questionNode
+	 * QuestionQCMNode = questionNode
 	 * TextNode = textNode
 	 */
 	p.creatingNodeType = null;
@@ -145,7 +145,7 @@ var sketch = function (p) {
 		/** First & Second Node integration */
 		/*
 		let node1 = new SGTextNode(100, 100, 100, 80);
-		let node2 = new SGQuestionNode(200, 200, 100, 80);
+		let node2 = new SGQuestionQCMNode(200, 200, 100, 80);
 		p.nodeArray.push(node1);
 		p.nodeArray.push(node2);
 		*/
@@ -166,7 +166,7 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.style('font-weight', 'bold');
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
-		/** Déclaration du bouton de création de QuestionNode */
+		/** Déclaration du bouton de création de QuestionQCMNode */
 		p.buttonCreateQuestion = p.createButton('?');
 		p.buttonCreateQuestion.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
 		p.buttonCreateQuestion.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
@@ -333,7 +333,7 @@ var sketch = function (p) {
 		p.pop();
 	}
 
-	/** Fonction qui déclenche la création de QuestionNode */
+	/** Fonction qui déclenche la création de QuestionQCMNode */
 	p.createQuestionNode = function () {
 		p.hoveringNode = !p.hoveringNode;
 		p.creatingNodeType = 'questionNode';
@@ -452,7 +452,7 @@ var sketch = function (p) {
 				if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
 					switch (p.creatingNodeType) {
 						case 'questionNode':
-							let newNode1 = new SGQuestionNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
+							let newNode1 = new SGQuestionQCMNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
 							p.nodeArray.push(newNode1);
 							break;
 						case 'textNode':
@@ -677,14 +677,17 @@ var sketch = function (p) {
 		}
 	}
 
-	/** une fonction pour generer le Json de SG en utilisant les p.nodeArray et p.linkArray*/
+	/**
+	 * Une fonction qui retourne le projet de SG contenant le JSON en utilisant les p.nodeArray et p.linkArray
+	 * @returns {ProjetSeriousGame}
+	*/
 	p.generateJson = function () {
 		let questionNodes = [];
 		let textNodes = [];
 		let textNodesJson = [];
 		let questionNodesJson = [];
 
-		//mettre les questionNodes dans un array et les textNodes dans un autre
+		// mettre les questionNodes dans un array et les textNodes dans un autre
 		for (i = 0; i < p.nodeArray.length; ++i) {
 			if (p.nodeArray[i] instanceof SGTextNode) {
 				textNodes.push(p.nodeArray[i]);
@@ -701,7 +704,7 @@ var sketch = function (p) {
 			for (z = 0; z < p.linkArray.length; ++z) {
 				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 					next_node = p.linkArray[z].node2;
-					if (next_node instanceof SGQuestionNode)
+					if (next_node instanceof SGQuestionQCMNode)
 						exitLink = p.linkArray[z].node2.name;
 					else
 						exitLink = p.linkArray[z].node2.name;
@@ -709,15 +712,16 @@ var sketch = function (p) {
 				}
 			}
 			let textObject;
+			// On regarde s'il s'agit d'un audio
 			if (text.substring(text.length - 3, text.length) == "mp3")
 				textObject = {
-					type: "music",
+					type: "M",
 					name: text,
 					url: textNodes[i].url
 				}
 			else {
 				textObject = {
-					type: "text",
+					type: "T",
 					text: text
 				}
 			}
@@ -741,27 +745,28 @@ var sketch = function (p) {
 					}
 				}
 				let reponse = {
-					text: text,
-					exitLink: exitLink
+					txt: text,
+					ext: exitLink
 				}
 				reponses.push(reponse);
 			}
 
 			let textQuestionObject;
+			// On regarde s'il s'agit d'un audio
 			if (textQuestion.substring(textQuestion.length - 3, textQuestion.length) == "mp3")
 				textQuestionObject = {
-					type: "music",
+					type: "M",
 					name: textQuestion,
 					url: questionNodes[i].url
 				}
 			else {
 				textQuestionObject = {
-					type: "text",
-					text: textQuestion
+					type: "T",
+					txt: textQuestion
 				}
 			}
 
-			let questionNode = new QuestionNode(name, textQuestionObject, reponses);
+			let questionNode = new QuestionQCMNode(name, textQuestionObject, reponses);
 			questionNodesJson.push(questionNode);
 		}
 
@@ -987,7 +992,7 @@ var sketch = function (p) {
 			for (let z = 0; z < p.linkArray.length; ++z) {
 				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 					next_node = p.linkArray[z].node2;
-					if (next_node instanceof SGQuestionNode)
+					if (next_node instanceof SGQuestionQCMNode)
 						exitLink = p.linkArray[z].node2.name;
 					else
 						exitLink = p.linkArray[z].node2.name;
@@ -998,11 +1003,11 @@ var sketch = function (p) {
 			// Transformation du textNode
 			let textNode = {
 				name: textNodes[i].name,
-				text: textNodes[i].description,
+				txt: textNodes[i].description,
 				url: textNodes[i].url,
 				x: textNodes[i].x,
 				y: textNodes[i].y,
-				exitLink: exitLink
+				ext: exitLink
 			}
 			textNodesJSON.push(textNode);
 		}
@@ -1021,17 +1026,17 @@ var sketch = function (p) {
 					exitLink = next_node.name;
 				}
 				let reponse = {
-					text: text,
-					exitLink: exitLink
+					txt: text,
+					ext: exitLink
 				}
 				listeReponses.push(reponse);
 			}
 
 			let questionNode = {
 				name: questionNodes[i].name,
-				textQuestion: questionNodes[i].question,
+				txt: questionNodes[i].question,
 				url: questionNodes[i].url,
-				reponses: listeReponses,
+				rep: listeReponses,
 				x: questionNodes[i].x,
 				y: questionNodes[i].y
 			};

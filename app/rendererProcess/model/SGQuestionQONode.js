@@ -1,5 +1,5 @@
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
-class SGQuestionNode extends SGNode {
+class SGQuestionQONode extends SGNode {
 	/**
 	 * @param {number} x coordinate
 	 * @param {number} y coordinate
@@ -93,7 +93,7 @@ class SGQuestionNode extends SGNode {
 		this.btn_add_audio.id('btn_add_audio_question');
 		this.btn_add_audio.attribute('data-target', '#listeMusic');
 		this.btn_add_audio.attribute('data-toggle', 'modal');
-		this.btn_add_audio.mousePressed(() => { SGQuestionNode.addAudio(self); });
+		this.btn_add_audio.mousePressed(() => { SGQuestionQONode.addAudio(self); });
 		this.btn_add_audio.parent('div_question');
 		let icon_audio = myP5.createElement('i');
 		icon_audio.class('fa fa-music');
@@ -125,7 +125,7 @@ class SGQuestionNode extends SGNode {
 			let btn_delete_answer = myP5.createButton('');
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
-			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
+			btn_delete_answer.mousePressed(() => SGQuestionQONode.deleteAnswer(self, i));
 			btn_delete_answer.parent('div_answer_' + (i + 1));
 			let icon_trash = myP5.createElement('i');
 			icon_trash.class('fa fa-trash');
@@ -140,7 +140,7 @@ class SGQuestionNode extends SGNode {
 			this.btn_add_answer = myP5.createButton('Ajouter une réponse ')
 			this.btn_add_answer.id('btn_add_answer')
 			this.btn_add_answer.class('btn btn-outline-success align-self-center btn_add_answer');
-			this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
+			this.btn_add_answer.mousePressed(() => { SGQuestionQONode.addAnswer(self); });
 			this.btn_add_answer.parent('btn_add_answer_div');
 			let icon_plus = myP5.createElement('i');
 			icon_plus.class('fas fa-plus-square');
@@ -154,22 +154,22 @@ class SGQuestionNode extends SGNode {
 
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_discard_modification.mousePressed(() => { SGQuestionNode.discardModification(self); });
+		this.btn_discard_modification.mousePressed(() => { SGQuestionQONode.discardModification(self); });
 		this.btn_discard_modification.parent('div_btn');
 
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
+		this.btn_save_modification.mousePressed(() => { SGQuestionQONode.saveModification(self); });
 		this.btn_save_modification.parent('div_btn');
 
 	}
 
 	/**
 	 * Ajoute un champ réponse dans la zone d'affichage, une réponse vide dans la liste answers de self et replace les exitDot
-	 * @param {SGQuestionNode} self, l'instance SGQuestionNode qui s'affiche dans la zone
+	 * @param {SGQuestionQONode} self, l'instance SGQuestionQONode qui s'affiche dans la zone
 	 */
 	static addAnswer(self) {
-		SGQuestionNode.saveModification(self);
+		SGQuestionQONode.saveModification(self);
 
 		if (self.answers.length < 5) {
 			self.answers.push("");
@@ -184,12 +184,12 @@ class SGQuestionNode extends SGNode {
 	}
 	/**
 	 * Supprime une réponse de la zone Question ainsi que les ExitDot
-	 * @param {SGQuestionNode} self , l'instance SGQuestionNode qui s'affiche dans la zone
+	 * @param {SGQuestionQONode} self , l'instance SGQuestionQONode qui s'affiche dans la zone
 	 * @param {integer} indice , l'indice de la réponse dans la liste answers de self
 	 */
 	static deleteAnswer(self, indice) {
 		// Sauvegarde des modifications en cours avant de supprimer la réponse
-		SGQuestionNode.saveModification(self);
+		SGQuestionQONode.saveModification(self);
 
 		if (self.answers.length >= 1) {
 			self.answers.splice(indice, 1);
@@ -245,7 +245,7 @@ class SGQuestionNode extends SGNode {
 	saveAudioModification() {
 		/** Fonction appelée quand un fichier audio est ajouté */
 		const self = this;
-		SGQuestionNode.saveModification(self);
+		SGQuestionQONode.saveModification(self);
 	}
 
 	/** Draw the node */
@@ -291,7 +291,7 @@ class SGQuestionNode extends SGNode {
 
 	/** Return a copy of the Node */
 	clone() {
-		let nodecopy = new SGQuestionNode(this.x, this.y, this.w, this.h);
+		let nodecopy = new SGQuestionQONode(this.x, this.y, this.w, this.h);
 
 		nodecopy.question = this.question;
 
@@ -308,5 +308,5 @@ class SGQuestionNode extends SGNode {
 }
 
 module.exports = {
-	SGQuestionNode
+	SGQuestionQONode
 };

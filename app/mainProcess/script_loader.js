@@ -158,7 +158,7 @@ const { ProjetQCM,
 
 const { ProjetSeriousGame,
   TextNode,
-  QuestionNode, } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
+  QuestionQCMNode, } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
 
@@ -166,7 +166,7 @@ const { SGDot } = require(`${root}/rendererProcess/model/SGDot`);
 const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
 const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
 const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
-const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode`);
+const { SGQuestionQCMNode } = require(`${root}/rendererProcess/model/SGQuestionQCMNode`);
 
 
 // Instanciate object
