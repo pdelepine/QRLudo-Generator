@@ -1,5 +1,6 @@
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
 class SGQuestionQRNode extends SGNode {
+	static strokeColor = 'blue';
 	/**
 	 * @param {number} x coordinate
 	 * @param {number} y coordinate
@@ -55,7 +56,7 @@ class SGQuestionQRNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
-		let txt_Title = myP5.createElement('label', "Nom de la question :");
+		let txt_Title = myP5.createElement('label', "Nom de la question QR :");
 		txt_Title.class('titre-serious-label');
 		txt_Title.parent('displayQuestionZone');
 		let input_name = myP5.createInput(this.name);
@@ -121,6 +122,15 @@ class SGQuestionQRNode extends SGNode {
 
 			if (this.containError && this.answers[i] == "")
 				input_answer.style('border: 2px solid red');
+
+			let btn_get_qrunique = myP5.createButton('');
+			btn_get_qrunique.class('btn btn-outline-success btn-unique-xl btn-audio');
+			btn_get_qrunique.id('btn_get_qrunique_' + (i + 1));
+			btn_get_qrunique.mousePressed(() => SGQuestionQRNode.getFileQRUnique(self, i));
+			btn_get_qrunique.parent('div_answer_' + (i + 1));
+			let icon_qrcode = myP5.createElement('i');
+			icon_qrcode.class('fa fa-qrcode');
+			icon_qrcode.parent('btn_get_qrunique_' + (i + 1));
 
 			let btn_delete_answer = myP5.createButton('');
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
@@ -216,8 +226,8 @@ class SGQuestionQRNode extends SGNode {
 		}
 	}
 
+	/** Add an audio file */
 	static addAudio(self) {
-		/** Add an audio file */
 		myP5.setLastNodeClickedType("question");
 	}
 
@@ -242,6 +252,78 @@ class SGQuestionQRNode extends SGNode {
 		SetProgressBar(myP5.generateJson());
 	}
 
+	static getFileQRUnique(self, answersIndice) {
+		let promise = dialog.showOpenDialog({
+			title: 'Sélectionner un QR Unique', properties: ['openFile'], filters: [
+				{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
+				{ name: 'All Files', extensions: ['*'] }
+			]
+		}).then(result => {
+			if (result === undefined) return;
+
+			console.log(result);
+
+			fs.readFile(result.filePaths[0], { encoding: 'base64' }, (err, data) => {
+				if (err) {
+					alert("Une erreur s'est produit en voulant lire le fichier :" + err.message);
+					return;
+				}
+
+				// Récupération des métadonnées
+
+				let exifObj = piexif.load('data:image/jpeg;base64,' + data);
+				logger.info(`SGQuestionQRNode.getFileQRUnique | exifObj \n${JSON.stringify(exifObj)}`);
+
+				// On lit l'ancienne manière de sauvegarder les métadonnées, le champ `0th`
+				let old_dataUtf8 = exifObj["0th"][700];
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Métadonnées lues dans le champ 0th \n${old_dataUtf8}`);
+
+				// On lit la nouvelle manière de sauvegarder les métadonnées, le champ `UserComment`
+				let new_dataString = exifObj['Exif'][piexif.ExifIFD.UserComment];
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Métadonnées lues dans le champ UserComment \n${new_dataString}`);
+
+				// Si l'ancienne manière de stocker les metadonnées est présente, on l'utilise
+				// Sinon on utilise la nouvelle
+				if (!old_dataUtf8) {
+					if (new_dataString) {
+						dataRead = new_dataString;
+					}
+				} else {
+					dataRead = QRCodeLoaderJson.UTF8ArraytoString(old_dataUtf8);
+				}
+
+				// Transformation du string contenant le qrcode en qrcode
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Essaie tranformation des données`);
+				let qrcode;
+				let qr;
+
+				if (qrcodeString.charAt(0) === '{') {
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données non compressée, parsing du Json`);
+
+					qr = JSON.parse(qrcodeString);
+
+				} else {
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données compressée, décompression des données avant parsing du Json`);
+
+					let dezippedData;
+					JsonCompressor.decompress(filename, (data) => dezippedData = data);
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données décompressée ${dezippedData}`)
+					qr = JSON.parse(dezippedData);
+				}
+
+				if (qr.type === 'unique') {
+					SGQuestionQRNode.setAnswer(self, {name: qr.name, id: qr.id});
+				} else {
+					alert("Le qr code donné n'est pas un qr code unique");
+				}
+			});
+		});
+	}
+
+	static setAnswer(self, answer) {
+
+	}
+
 	saveAudioModification() {
 		/** Fonction appelée quand un fichier audio est ajouté */
 		const self = this;
@@ -251,7 +333,7 @@ class SGQuestionQRNode extends SGNode {
 	/** Draw the node */
 	display() {
 		myP5.push();
-		myP5.stroke('#005700');
+		myP5.stroke(SGQuestionQRNode.strokeColor);
 		myP5.strokeWeight(4);
 		if (this.dragging || this.clicked)
 			myP5.fill(80);
