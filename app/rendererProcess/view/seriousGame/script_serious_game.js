@@ -156,7 +156,7 @@ var sketch = function (p) {
 		/** Déclaration du bouton de création de TextNode */
 		p.buttonCreateTextNode = p.createButton('T');
 		p.buttonCreateTextNode.position(15, - p.seriousGameCanvas.height, 'relative');
-		p.buttonCreateTextNode.mousePressed(() => { p.createTextNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateTextNode.mousePressed(() => { p.createNode(p.NodeType.TextNode); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateTextNode.size(40);
 		p.buttonCreateTextNode.attribute('title', 'Créer un texte');
 		p.buttonCreateTextNode.style('font-family', '"Times New Roman", Times, serif');
@@ -167,7 +167,7 @@ var sketch = function (p) {
 		p.buttonCreateQuestionQCM = p.createButton('');
 		p.buttonCreateQuestionQCM.id('btn-create-QCM');
 		p.buttonCreateQuestionQCM.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
-		p.buttonCreateQuestionQCM.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQCM.mousePressed(() => { p.createNode(p.NodeType.QCMNode); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateQuestionQCM.size(40);
 		p.buttonCreateQuestionQCM.attribute('title', 'Créer une question QCM');
 		p.buttonCreateQuestionQCM.parent("seriousGameDiagram");
@@ -182,7 +182,7 @@ var sketch = function (p) {
 		p.buttonCreateQuestionQO = p.createButton('');
 		p.buttonCreateQuestionQO.id('btn-create-QO');
 		p.buttonCreateQuestionQO.position(- 65, -p.seriousGameCanvas.height + 80, 'relative');
-		p.buttonCreateQuestionQO.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQO.mousePressed(() => { p.createNode(p.NodeType.QONode); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateQuestionQO.size(40);
 		p.buttonCreateQuestionQO.attribute('title', 'Créer une question ouverte');
 		p.buttonCreateQuestionQO.parent("seriousGameDiagram");
@@ -197,7 +197,7 @@ var sketch = function (p) {
 		p.buttonCreateQuestionQR = p.createButton('');
 		p.buttonCreateQuestionQR.id('btn-create-QR');
 		p.buttonCreateQuestionQR.position(- 105, -p.seriousGameCanvas.height + 120, 'relative');
-		p.buttonCreateQuestionQR.mousePressed(() => { p.createQuestionNode(); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
+		p.buttonCreateQuestionQR.mousePressed(() => { p.createNode(p.NodeType.QRNode); p.switchButtonState(p.CursorState.CREATENODE); p.getCursor(); });
 		p.buttonCreateQuestionQR.size(40);
 		p.buttonCreateQuestionQR.attribute('title', 'Créer une question QR code');
 		p.buttonCreateQuestionQR.parent("seriousGameDiagram");
@@ -376,18 +376,6 @@ var sketch = function (p) {
 		p.creatingNodeType = nodeType;
 	}
 
-	/** Fonction qui déclenche la création de QuestionQCMNode */
-	p.createQuestionNode = function () {
-		p.hoveringNode = !p.hoveringNode;
-		p.creatingNodeType = 'questionNode';
-	}
-
-	/** Fonction qui déclenche la création de TextNode */
-	p.createTextNode = function () {
-		p.hoveringNode = !p.hoveringNode;
-		p.creatingNodeType = 'textNode';
-	}
-
 	/** Fonction qui dessine l'encadré pour la création des noeuds */
 	p.displayCreateNode = function () {
 		if (p.hoveringNode) {
@@ -494,15 +482,24 @@ var sketch = function (p) {
 				let mouseIsOnLinks = p.linkArray.filter(l => l.isMouseHover());
 				if (mouseIsOnNodes.length + mouseIsOnLinks.length === 0) {
 					switch (p.creatingNodeType) {
-						case 'questionNode':
-							let newNode1 = new SGQuestionQCMNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
-							p.nodeArray.push(newNode1);
+						case p.NodeType.TextNode:
+							p.nodeArray.push(new SGTextNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80));
 							break;
-						case 'textNode':
-							let newNode2 = new SGTextNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80);
-							p.nodeArray.push(newNode2);
+
+						case p.NodeType.QCMNode:
+							p.nodeArray.push(new SGQuestionQCMNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80));
 							break;
+
+						case p.NodeType.QONode:
+							p.nodeArray.push(new SGQuestionQONode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80));
+							break;
+
+						case p.NodeType.QRNode:
+							p.nodeArray.push(new SGQuestionQRNode((p.mouseX - p.translateX) / p.zoom, (p.mouseY - p.translateY) / p.zoom, 100, 80));
+							break;
+
 						default:
+							logger.error(`script_serious_game | Type de node inconnu`);
 					}
 					SetProgressBar(myP5.generateJson());
 					p.hoveringNode = false;
@@ -646,15 +643,42 @@ var sketch = function (p) {
 
 		// Boutons pour créer les questions et les textes
 		if (p.hoveringNode) {
-			if (p.creatingNodeType === 'questionNode') {
-				p.buttonCreateQuestionQCM.addClass('bg-success');
-				p.buttonCreateTextNode.removeClass('bg-success');
-			} else {
-				p.buttonCreateQuestionQCM.removeClass('bg-success');
-				p.buttonCreateTextNode.addClass('bg-success');
+			switch (p.creatingNodeType) {
+				case p.NodeType.TextNode:
+					p.buttonCreateQuestionQCM.removeClass('bg-success');
+					p.buttonCreateQuestionQO.removeClass('bg-success');
+					p.buttonCreateQuestionQR.removeClass('bg-success');
+					p.buttonCreateTextNode.addClass('bg-success');
+					break;
+
+				case p.NodeType.QCMNode:
+					p.buttonCreateQuestionQCM.addClass('bg-success');
+					p.buttonCreateQuestionQO.removeClass('bg-success');
+					p.buttonCreateQuestionQR.removeClass('bg-success');
+					p.buttonCreateTextNode.removeClass('bg-success');
+					break;
+
+				case p.NodeType.QONode:
+					p.buttonCreateQuestionQCM.removeClass('bg-success');
+					p.buttonCreateQuestionQO.addClass('bg-success');
+					p.buttonCreateQuestionQR.removeClass('bg-success');
+					p.buttonCreateTextNode.removeClass('bg-success');
+					break;
+
+				case p.NodeType.QRNode:
+					p.buttonCreateQuestionQCM.removeClass('bg-success');
+					p.buttonCreateQuestionQO.removeClass('bg-success');
+					p.buttonCreateQuestionQR.addClass('bg-success');
+					p.buttonCreateTextNode.removeClass('bg-success');
+					break;
+
+				default:
+					logger.error(`script_serious_game | Type de node inconnu`);
 			}
 		} else {
 			p.buttonCreateQuestionQCM.removeClass('bg-success');
+			p.buttonCreateQuestionQO.removeClass('bg-success');
+			p.buttonCreateQuestionQR.removeClass('bg-success');
 			p.buttonCreateTextNode.removeClass('bg-success');
 		}
 
