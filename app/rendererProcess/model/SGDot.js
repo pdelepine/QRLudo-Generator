@@ -43,8 +43,25 @@ class SGDot {
 					myP5.text("pas de réponse", this.nodeToAttach.x + this.x + 7, this.nodeToAttach.y + this.y - 21);
 				}
 				else {
-					myP5.rect(this.nodeToAttach.x + this.x, this.nodeToAttach.y + this.y - 40, myP5.textWidth(this.nodeToAttach.answers[this.id_answer]) + 12, 30, 10);
-					myP5.text(this.nodeToAttach.answers[this.id_answer], this.nodeToAttach.x + this.x + 7, this.nodeToAttach.y + this.y - 21);
+					let dotText = '';
+					// La réponse peut être un string simple ou un objet {name:, id:}
+					if (typeof this.nodeToAttach.answers[this.id_answer] === "string") {
+						if (this.nodeToAttach.answers[this.id_answer] == "") {
+							dotText = 'pas de réponse';
+						} else {
+							dotText = this.nodeToAttach.answers[this.id_answer];
+						}
+						dotText = this.nodeToAttach.answers[this.id_answer];
+					} else {
+						if (this.nodeToAttach.answers[this.id_answer].name == "") {
+							dotText = 'pas de réponse';
+						} else {
+							dotText = this.nodeToAttach.answers[this.id_answer].name;
+						}
+					}
+
+					myP5.rect(this.nodeToAttach.x + this.x, this.nodeToAttach.y + this.y - 40, myP5.textWidth(dotText) + 12, 30, 10);
+					myP5.text(dotText, this.nodeToAttach.x + this.x + 7, this.nodeToAttach.y + this.y - 21);
 				}
 				myP5.pop();
 			}
