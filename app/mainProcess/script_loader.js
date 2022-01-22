@@ -158,7 +158,7 @@ const { ProjetQCM,
 
 const { ProjetSeriousGame,
   TextNode,
-  QuestionQCMNode, } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
+  QuestionNode } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
 
