@@ -125,14 +125,16 @@ class TextNode {
 /**
  * Classe permettant la création d'objet Json pour les question nodes
  */
-class QuestionQCMNode {
+class QuestionNode {
     /**
      * @param {} name = "No_Name"
+     * @param {String} type = M, Q ou O pour QCM, QR, QO
      * @param {} textQuestion = Contient le texte de la question
      * @param {} reponses = Contient la liste des réponses à la question
      */
 
-    constructor(name = "No_Name", textQuestion = {}, reponses = []) {
+    constructor(name = "No_Name", type, textQuestion = {}, reponses = []) {
+        this.type = type;
         this.name = name;
         this.txt = textQuestion;
         this.rep = reponses;
@@ -163,9 +165,8 @@ class QuestionQCMNode {
     }
 }
 
-
 module.exports = {
     ProjetSeriousGame,
     TextNode,
-    QuestionQCMNode
+    QuestionNode
 };
