@@ -14,7 +14,7 @@ class SGQuestionQONode extends SGNode {
 		this.name = "";
 		this.url = "";
 		this.question = "";
-		this.answers = [""];
+		this.answers = ["Autre*"];
 		this.btn_add_answer = null;
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
@@ -116,21 +116,24 @@ class SGQuestionQONode extends SGNode {
 
 			let input_answer = myP5.createInput(this.answers[i]);
 			input_answer.id('input_node_answer_' + (i + 1));
-			input_answer.class('text-titre-input input-lg')
-			input_answer.attribute('placeholder', 'Texte de la réponse')
+			input_answer.class('text-titre-input input-lg');
+			input_answer.attribute('placeholder', 'Texte de la réponse');
 			input_answer.parent('div_answer_' + (i + 1));
+			if (i === 0) input_answer.attribute('disabled', true);
 
 			if (this.containError && this.answers[i] == "")
 				input_answer.style('border: 2px solid red');
 
-			let btn_delete_answer = myP5.createButton('');
-			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
-			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
-			btn_delete_answer.mousePressed(() => SGQuestionQONode.deleteAnswer(self, i));
-			btn_delete_answer.parent('div_answer_' + (i + 1));
-			let icon_trash = myP5.createElement('i');
-			icon_trash.class('fa fa-trash');
-			icon_trash.parent('btn_delete_answer_' + (i + 1));
+			if (i !== 0) {
+				let btn_delete_answer = myP5.createButton('');
+				btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
+				btn_delete_answer.id('btn_delete_answer_' + (i + 1));
+				btn_delete_answer.mousePressed(() => SGQuestionQONode.deleteAnswer(self, i));
+				btn_delete_answer.parent('div_answer_' + (i + 1));
+				let icon_trash = myP5.createElement('i');
+				icon_trash.class('fa fa-trash');
+				icon_trash.parent('btn_delete_answer_' + (i + 1));
+			}
 		}
 
 		if (this.answers.length < 5) {
