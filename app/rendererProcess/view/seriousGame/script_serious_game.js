@@ -163,7 +163,7 @@ var sketch = function (p) {
 		p.buttonCreateTextNode.style('font-weight', 'bold');
 		p.buttonCreateTextNode.parent("seriousGameDiagram");
 
-		/** Déclaration du bouton de création de QuestionQCMNode */
+		/** Déclaration du bouton de création de QuestionNode */
 		p.buttonCreateQuestionQCM = p.createButton('');
 		p.buttonCreateQuestionQCM.id('btn-create-QCM');
 		p.buttonCreateQuestionQCM.position(- 25, -p.seriousGameCanvas.height + 40, 'relative');
@@ -171,7 +171,7 @@ var sketch = function (p) {
 		p.buttonCreateQuestionQCM.size(40);
 		p.buttonCreateQuestionQCM.attribute('title', 'Créer une question QCM');
 		p.buttonCreateQuestionQCM.parent("seriousGameDiagram");
-		/** L'icône pour le bouton de création de QuestionQCMNode */
+		/** L'icône pour le bouton de création de QuestionNode */
 		p.iconQCM = p.createElement('i');
 		p.iconQCM.class('fa fa-list');
 		p.iconQCM.parent('btn-create-QCM');
@@ -800,10 +800,19 @@ var sketch = function (p) {
 		for (i = 0; i < questionNodes.length; ++i) {
 			let name = questionNodes[i].name;
 			let textQuestion = questionNodes[i].question;
+
+			if (questionNodes[i] instanceof SGQuestionQCMNode) {
+				typeNode = 'M';
+			} else if (questionNodes[i] instanceof SGQuestionQRNode) {
+				typeNode = 'Q';
+			} else {
+				typeNode = 'O';
+			}
+
 			let reponses = [];
 
 			for (j = 0; j < questionNodes[i].answers.length; ++j) {
-				let text = questionNodes[i].answers[j];
+
 				let exitLink = "";
 				for (z = 0; z < p.linkArray.length; ++z) {
 					if (questionNodes[i].exitDots[j].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && questionNodes[i].exitDots[j].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
@@ -811,10 +820,20 @@ var sketch = function (p) {
 						exitLink = next_node.name;
 					}
 				}
-				let reponse = {
-					txt: text,
-					ext: exitLink
+
+				let reponse;
+				if (typeNode === 'Q') {
+					reponse = {
+						txt: questionNodes[i].answers[j].id,
+						ext: exitLink
+					}
+				} else {
+					reponse = {
+						txt: questionNodes[i].answers[j],
+						ext: exitLink
+					}
 				}
+
 				reponses.push(reponse);
 			}
 
@@ -833,7 +852,7 @@ var sketch = function (p) {
 				}
 			}
 
-			let questionNode = new QuestionQCMNode(name, textQuestionObject, reponses);
+			let questionNode = new QuestionNode(name, typeNode, textQuestionObject, reponses);
 			questionNodesJson.push(questionNode);
 		}
 
@@ -1059,10 +1078,7 @@ var sketch = function (p) {
 			for (let z = 0; z < p.linkArray.length; ++z) {
 				if (textNodes[i].exitDots[0].getPositionX() == p.linkArray[z].node1Dot.getPositionX() && textNodes[i].exitDots[0].getPositionY() == p.linkArray[z].node1Dot.getPositionY()) {
 					next_node = p.linkArray[z].node2;
-					if (next_node instanceof SGQuestionQCMNode)
-						exitLink = p.linkArray[z].node2.name;
-					else
-						exitLink = p.linkArray[z].node2.name;
+					exitLink = next_node.name;
 					break;
 				}
 			}
@@ -1099,8 +1115,18 @@ var sketch = function (p) {
 				listeReponses.push(reponse);
 			}
 
+			let typeNode = '';
+			if (questionNodes[i] instanceof SGQuestionQCMNode) {
+				typeNode = 'M';
+			} else if (questionNodes[i] instanceof SGQuestionQRNode) {
+				typeNode = 'Q';
+			} else {
+				typeNode = 'O';
+			}
+
 			let questionNode = {
 				name: questionNodes[i].name,
+				type: typeNode,
 				txt: questionNodes[i].question,
 				url: questionNodes[i].url,
 				rep: listeReponses,

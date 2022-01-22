@@ -269,22 +269,37 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
     let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
     qrTextNode.name = textNode.name;
     qrTextNode.url = textNode.url;
-    qrTextNode.description = textNode.text;
+    qrTextNode.description = textNode.txt;
 
     textNodes.push(qrTextNode);
   }
 
   // Création SGQuestionQCMNode
   for (let questionNode of qrcodeMetadata.questionNodes) {
-    let qrQuestionNode = new SGQuestionQCMNode(questionNode.x, questionNode.y, 100, 80);
+    let qrQuestionNode;
+
+    switch (questionNode.type) {
+      case 'M':
+        qrQuestionNode = new SGQuestionQCMNode(questionNode.x, questionNode.y, 100, 80);
+        break;
+      case 'O':
+        qrQuestionNode = new SGQuestionQONode(questionNode.x, questionNode.y, 100, 80);
+        break;
+      case 'Q':
+        qrQuestionNode = new SGQuestionQRNode(questionNode.x, questionNode.y, 100, 80);
+        break;
+        default:
+          logger.error(`chargerqrcode.drawQRCodeSeriousGameEnigma | Le type : ${questionNode.type} n'est pas reconnu`);
+    }
+
     qrQuestionNode.name = questionNode.name;
     qrQuestionNode.url = questionNode.url;
-    qrQuestionNode.question = questionNode.textQuestion;
+    qrQuestionNode.question = questionNode.txt;
 
-    for (let i = 0; i < questionNode.reponses.length; i++) {
+    for (let i = 0; i < questionNode.rep.length; i++) {
       // Il y a de base une réponse vide (avec son Dot) dans le questionNode, on utilise la fonction addAnswer pour ajouter une réponse et SGDot
       if (i !== 0) SGQuestionQCMNode.addAnswer(qrQuestionNode);
-      qrQuestionNode.answers[i] = questionNode.reponses[i].text;
+      qrQuestionNode.answers[i] = questionNode.rep[i].txt;
     }
 
     questionNodes.push(qrQuestionNode);
@@ -292,7 +307,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
 
   // Création des liens des textNode
   for (let textNode of qrcodeMetadata.textNodes) {
-    let next_node = textNode.exitLink;
+    let next_node = textNode.ext;
     if (next_node) {
       // Recherche si lier à un textNode
       textNodes.forEach(n => {
@@ -322,8 +337,8 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   // Création des liens des questionNode
   for (let questionNode of qrcodeMetadata.questionNodes) {
     // On parcourt les réponses du questionNode
-    for (let i = 0; i < questionNode.reponses.length; i++) {
-      let next_node = questionNode.reponses[i].exitLink;
+    for (let i = 0; i < questionNode.rep.length; i++) {
+      let next_node = questionNode.rep[i].ext;
 
       if (next_node) {
         // Recherche si la réponse est liée à un textNode
