@@ -146,6 +146,7 @@ function drawQRCodeImport(qrcode) {
     }
   } catch (e) {
     logger.error(`chargerqrcode.drawQRCodeImport | Problème lors de l'importation du QR code type : ${qrcode.getType()}\n${e}`);
+    alert('Un problème est survenu lors de l\'importation du QR code');
   }
 }
 
@@ -347,7 +348,6 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
           if (n.name === next_node) {
             questionNodes.forEach(n2 => {
               if (n2.name === questionNode.name) {
-                console.log(`Dot${n2.exitDots[i]}`);
                 let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
                 linkArray.push(link);
               }
@@ -360,7 +360,6 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
           if (n.name === next_node) {
             questionNodes.forEach(n2 => {
               if (n2.name === questionNode.name) {
-                console.log(n2.exitDots[i]);
                 let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
                 linkArray.push(link);
               }
