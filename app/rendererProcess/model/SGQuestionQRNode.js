@@ -206,6 +206,9 @@ class SGQuestionQRNode extends SGNode {
 
 		if (self.answers.length >= 1) {
 			self.answers.splice(indice, 1);
+			// Suppression du lien relié au SGDOt
+			myP5.linkArray = myP5.linkArray.filter(l => l.node1Dot !== self.exitDots[indice]);
+			
 			self.exitDots.splice(indice, 1);
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
