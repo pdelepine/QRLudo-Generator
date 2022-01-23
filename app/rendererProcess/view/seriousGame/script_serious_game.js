@@ -288,7 +288,6 @@ var sketch = function (p) {
 		p.sliderZoom.input(() => {
 			p.sliderNotPressed = false; 									//met à faux quand on utilise le slider
 			p.zoom = (p.sliderZoom.value() / 100); 							//change la valeur de p.zoom en fonction de la valeur du slider
-			console.log(`Zoom ${p.zoom}`);
 		});
 		p.sliderZoom.mouseReleased(() => { p.sliderNotPressed = true; }); 	//remet à vrai quand on arrête d'utiliser le slider
 		p.sliderZoom.parent("seriousGameDiagram");
@@ -301,8 +300,6 @@ var sketch = function (p) {
 	p.draw = function () {
 		// On dessine la couleur du fond
 		p.background("#e1f1ff");
-		/*console.log(`Mouse x ${mouseX} y ${mouseY}`);
-		console.log(`Zoom ${p.zoom}`);*/
 
 		p.push();
 		// Déplacement du diagramme lorsque que l'état est activé
@@ -600,7 +597,6 @@ var sketch = function (p) {
 	/** Fonction qui redimensionne le diagramme selon la taille de la fenêtre */
 	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
-		console.log(p.parentDiv.width + " " + p.parentDiv.height);
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
 		p.sliderZoom.position(p.seriousGameCanvas.position().x + p.seriousGameCanvas.size().width - 170, p.seriousGameCanvas.position().y + p.seriousGameCanvas.size().height - 20);
 	}
@@ -1208,7 +1204,6 @@ function getMusicFromUrl() {
 				if (this.status == 200) {
 					let blob = this.response; // get binary data as a response
 					let contentType = xhr.getResponseHeader("content-type");
-					console.log(contentType);
 
 					if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
 						// get filename
@@ -1237,7 +1232,7 @@ function getMusicFromUrl() {
 			};
 
 			xhr.onloadstart = function (e) {
-				console.log('load start');
+				logger.info(`script_seriousgame.getMusicFromUrl | Début de téléchargement de l'audio`);
 				$(loader).addClass('loader');
 				$(modal).find('.errorLoader').remove();
 				$(modal).prepend(loader); // show loader when request progress
@@ -1305,7 +1300,6 @@ $("#generateSG").on('click', function () {
 
 /** Permet de sauvegarder l'image du QR code sur l'ordinateur */
 $("#saveQRCode").on('click', function () {
-	console.log(dialog);
 
 	/** Ouvre une fenêtre de dialogue pour que l'utilisateur choisisse où sauvegarder son fichier ainsi que le nom du fichier à sauvegarder
 	 * Cela retourne le path du fichier

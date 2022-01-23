@@ -69,7 +69,6 @@ function drawQRCodeImport(qrcode) {
     } else if (qrcode.getType() == 'question') {
       logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice QR Code, basculement sur onglet QR Exercice QR Code');
       $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html"), function () {
-        console.log(qrcode.qrcode);
         if (typeof qrcode.getName() === 'string') {
           $("#newQuestionText").val(qrcode.getName());
         } else {
@@ -393,7 +392,7 @@ function restoreSavedMusic(data) {
     try {
       xhr.open('GET', music.url, true);
     } catch (e) {
-      console.log(e);
+      logger.error(`chargerqrcode.restoreSavedMusic | Problème lors de la récupération de l'audio`);
     }
 
     xhr.responseType = 'blob';
@@ -411,7 +410,7 @@ function restoreSavedMusic(data) {
             // fs.writeFileSync(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)));
             fs.writeFile(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)), (err) => {
               if (err) throw err;
-              console.log('The file has been saved!');
+              logger.info('chargerqrcode.restoreSavedMusic | The file has been saved!');
               nbMusic++;
               if (nbMusic == data.length) {
                 $(loader).remove();
@@ -421,16 +420,16 @@ function restoreSavedMusic(data) {
           };
           fileReader.readAsArrayBuffer(blob);
         } else {
-          console.log('restoreSavedMusic : error on download, le fichier n\'existe peut etre plus');
+          logger.error('chargerqrcode.restoreSavedMusic | error on download, le fichier n\'existe peut etre plus');
         }
       } else {
         // request failed
-        console.log('restoreSavedMusic : error on download, request fails');
+        logger.error('chargerqrcode.restoreSavedMusic | error on download, request fails');
       }
     };
 
     xhr.onerror = function (e) {
-      console.log('restoreSavedMusic : error ' + e);
+      logger.error('chargerqrcode.restoreSavedMusic | error ' + e);
     };
 
     xhr.send();

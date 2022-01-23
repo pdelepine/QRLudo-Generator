@@ -80,7 +80,6 @@ $(document).ready(function () {
         // console.log(string);
         info.innerHTML = string;
       }).catch(function (err) {
-        console.log(info.innerHTML);
         info.innerHTML = `Erreur`;
       });
       document.getElementById('elementsAudio').appendChild(info);
@@ -345,7 +344,6 @@ function saveQRCodeImage() {
   xhr.open('GET', data, true);
 
   xhr.onreadystatechange = function () {
-    console.log(xhr.readyState);
     if (xhr.readyState == xhr.DONE) {
       var filesaver = require('file-saver');
       //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un bolléen
@@ -443,7 +441,6 @@ function getMusicFromUrl() {
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
-  console.log('error ');
   $(modal).find('.loader').remove();
   $(errorMsg).text(message);
   $(errorMsg).css('color', '#f35b6a');

@@ -90,11 +90,11 @@ $(document).ready(function () {
     addReponseLine(new_rep);
 
     // console.log(new_rep_vocal);
-    console.log(projet.getQuestion());
-    console.log("--------------------");
-    console.log(projet.getReponses());
-    console.log("--------------------");
-    console.log(projet.getQuestion().getReponses());
+    // console.log(projet.getQuestion());
+    // console.log("--------------------");
+    // console.log(projet.getReponses());
+    // console.log("--------------------");
+    // console.log(projet.getQuestion().getReponses());
 
     verifNombreCaractere();
     return true;
@@ -378,7 +378,7 @@ dropZone.ondrop = function (e) {
         deleteStore("reponseColor" + numReponse);
         store.set("reponseColor" + numReponse, $("#qrColor").val());
 
-        console.log(qrData);
+        // console.log(qrData);
 
         //sortir de la fonction si la reponse existe déjà pour la question
         let existe = false;
@@ -448,8 +448,8 @@ function deleteReponse(button) {
 
   //retour a l'initiale quand toutes les reponses sont suprimées
   nombre_reponse--;
-  console.log(nombre_reponse);
-  console.log(projet.getQuestion());
+  // console.log(nombre_reponse);
+  // console.log(projet.getQuestion());
 
   if (nombre_reponse == 0) {
     txtDragAndDrop.setAttribute("id", "txtDragAndDrop");
@@ -572,7 +572,7 @@ function saveQRCodeImages(div, qrcode, directoryName) {
     if (err) {
       $("#questionsDivLabelsId").append("<div>" + err + "</div>");
     }
-    console.log('The file has been saved!');
+    logger.info('exerciceQrCodeScript.saveQRCodeImages | The file \'' + file_name + '\' has been saved!');
   });
 }
 
@@ -597,7 +597,7 @@ function saveQRCodeImage() {
 
     //Idem pour les réponses
     $.each(projet.getReponses(), function (id, reponse) {
-      console.log(reponse);
+      // console.log(reponse);
       let div = document.getElementById("qrView")
       facade.genererQRCode(div, reponse);
       saveQRCodeImages(div, reponse, dir_path);
@@ -710,7 +710,7 @@ function getMusicFromUrl() {
         if (this.status == 200) {
           let blob = this.response; // get binary data as a response
           let contentType = xhr.getResponseHeader("content-type");
-          console.log(contentType);
+          // console.log(contentType);
 
           if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
             // get filename
@@ -739,7 +739,7 @@ function getMusicFromUrl() {
       };
 
       xhr.onloadstart = function (e) {
-        console.log('load start');
+        // console.log('load start');
         $(loader).addClass('loader');
         $(modal).find('.errorLoader').remove();
         $(modal).prepend(loader); // show loader when request progress
@@ -781,7 +781,7 @@ function ajouterChampSon(nom, url) {
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
-  console.log('error ');
+  // console.log('error ');
   $(modal).find('.loader').remove();
   $(errorMsg).text(message);
   $(errorMsg).css('color', '#f35b6a');
@@ -805,7 +805,7 @@ $(document).ready(function () {
         // console.log(string);
         info.innerHTML = string;
       }).catch(function (err) {
-        console.log(info.innerHTML);
+        // console.log(info.innerHTML);
         info.innerHTML = `Erreur`;
       });
       document.getElementById('elementsAudio').appendChild(info);

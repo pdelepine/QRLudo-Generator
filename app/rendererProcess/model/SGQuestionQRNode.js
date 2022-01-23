@@ -208,7 +208,7 @@ class SGQuestionQRNode extends SGNode {
 			self.answers.splice(indice, 1);
 			// Suppression du lien relié au SGDOt
 			myP5.linkArray = myP5.linkArray.filter(l => l.node1Dot !== self.exitDots[indice]);
-			
+
 			self.exitDots.splice(indice, 1);
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
@@ -333,7 +333,7 @@ class SGQuestionQRNode extends SGNode {
 	}
 
 	static setAnswer(self, answerIndice, answer) {
-		console.log(answerIndice, JSON.stringify(answer));
+		//console.log(answerIndice, JSON.stringify(answer));
 		
 		document.getElementById('input_node_answer_' + (answerIndice + 1)).value = answer.name;
 		document.getElementById('input_node_answer_' + (answerIndice + 1)).name = answer.id;

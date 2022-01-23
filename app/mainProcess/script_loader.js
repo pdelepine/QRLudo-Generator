@@ -113,7 +113,6 @@ switch (process.platform) {
 
   default:
     logger.error('Le système d\'exploitation est inconnu');
-    console.log('Unknown operating system');
     break;
 }
 
