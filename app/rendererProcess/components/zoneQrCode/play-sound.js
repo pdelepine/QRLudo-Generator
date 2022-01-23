@@ -47,6 +47,7 @@ function createNewHowlSound(filepath) {
 //Permet de jouer un fichier mp3
 function playSound(soundName) {
   var data = getCurrentRead();
+  logger.info('playSound | Demande de lecture de l\'audio : ' + soundName);
   sound = createNewHowlSound(`${temp}/Download/${soundName}`);
   sound.play();
 }
@@ -71,8 +72,8 @@ function play() {
   //Si l'état n'est pas en pause, alors on commence une nouvelle lecture
   //Sinon on reprend là où la lecture s'était arrêtée
   if (!paused) {
-    if (getCurrentRead().name === 'AudioName') {
-      playSound(getCurrentRead().value.substring(0, getCurrentRead().value.length - 1));
+    if (getCurrentRead().name.includes('https')) {
+      playSound(getCurrentRead().value);
     }
     else if (getCurrentRead().name === 'legendeQR') {
       if (getCurrentRead().value !== '') {
