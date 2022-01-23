@@ -789,7 +789,7 @@ var sketch = function (p) {
 			else {
 				textObject = {
 					type: "T",
-					text: text
+					txt: text
 				}
 			}
 			let textNode = new TextNode(name, textObject, exitLink);
