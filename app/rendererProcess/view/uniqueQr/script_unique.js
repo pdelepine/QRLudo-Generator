@@ -403,6 +403,7 @@ function getMusicFromUrl() {
             // save file in folder projet/download
             let fileReader = new FileReader();
             fileReader.onload = function () {
+              logger.info(`script_unique.getMusicFromUrl | Sauvegarde du fichier audio à l'adresse : ${temp}/Download/${filename}`);
               fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
 
               $(loader, errorMsg).remove();
