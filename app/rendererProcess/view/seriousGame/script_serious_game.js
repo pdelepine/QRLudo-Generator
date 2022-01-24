@@ -1339,6 +1339,11 @@ $("#infos-serious-game").on('click', function () {
 	$("#charger-page").load(getNormalizePath(path.join(__dirname.match('.*app')[0], "/rendererProcess/view/aide/info.html")));
 });
 
+// Cacher les boutons pour lire les audio
+$().ready(function () {
+	$("#play-sound-div").hide();
+});
+
 /**
  * Update de la bar de progression selon la taille du ProjetSeriousGame passé en paramètre
  * @param {ProjetSeriousGame} projetSeriousGame
