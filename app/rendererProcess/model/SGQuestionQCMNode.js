@@ -11,10 +11,10 @@ class SGQuestionQCMNode extends SGNode {
 		super(x, y, w, h);
 		this.entryDot = new SGDot(this, this.w / 2, - this.h, [139, 186, 71], false);
 		this.exitDots = [new SGDot(this, this.w / 2, 0, [231, 10, 2], true)];
-		this.name = "";
-		this.url = "";
-		this.question = "";
-		this.answers = [""];
+		this.name = ""; // Nom du fichier audio de la question
+		this.url = ""; // Url de l'audio éventuel de la question
+		this.question = ""; // Le texte de la question
+		this.answers = [""]; // Liste des réponses
 		this.btn_add_answer = null;
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;

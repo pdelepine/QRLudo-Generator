@@ -122,7 +122,7 @@ class SGQuestionQRNode extends SGNode {
 			input_answer.attribute('disabled', true);
 			input_answer.parent('div_answer_' + (i + 1));
 
-			if (this.containError && this.answers[i] == "")
+			if (this.containError && (this.answers[i].name == "" || this.answers[i].id == ""))
 				input_answer.style('border: 2px solid red');
 
 			let btn_get_qrunique = myP5.createButton('');
