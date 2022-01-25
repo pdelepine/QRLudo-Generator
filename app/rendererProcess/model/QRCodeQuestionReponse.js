@@ -33,7 +33,7 @@ class Projet {
       dataString += reponses[i];
     }
 
-    console.log("Exercice QR " + dataString);
+    //console.log("Exercice QR " + dataString);
     var md5Value = MDFiveConverter.convert(dataString);
 
     this.projet = {

@@ -16,12 +16,12 @@ const mainStore = new Store();
 /** Ouvre la console développeur */
 require('electron-debug')({
   showDevTools: true
-}); 
+});
 
 let mainWindow;
 
 const log4js = require('log4js');
-/** Setup de 2 actions lors d'un log 
+/** Setup de 2 actions lors d'un log
  * console : réalise un console.log
  * toFile : enrengistre le log dans le fichier qrludogenerator.log
  */
@@ -49,11 +49,11 @@ function createWindow() {
   let height = display.bounds.height;
 
   mainWindow = new BrowserWindow({
-    width: width, /** on définit une taille pour notre fenêtre */ 
+    width: width, /** on définit une taille pour notre fenêtre */
     height: height,
     maximized: true,
     center: true,
-    frame: true, /** en faire une fenetre */ 
+    frame: true, /** en faire une fenetre */
     icon: path.join(__dirname.match(`.*app`)[0], '/rendererProcess/assets/images/qrludo-icon.png'),
     webPreferences: {
       nodeIntegration: true,
@@ -61,9 +61,9 @@ function createWindow() {
       enableRemoteModule: true
     }
   });
-  /** Autoriser le redimensionnement de la fenêtre */ 
-  mainWindow.setResizable(true); 
-  /** On charge le fichier html principal de l'application */ 
+  /** Autoriser le redimensionnement de la fenêtre */
+  mainWindow.setResizable(true);
+  /** On charge le fichier html principal de l'application */
   mainWindow.loadFile(path.normalize(__dirname + '/index.html'));
 
   log4js.getLogger().info('Démarrage de QRLudo Générator');
@@ -80,32 +80,32 @@ function createWindow() {
  */
 app.whenReady().then(() => {
   createWindow();
-  /** Sur macOS il est d'usage de recréer une fenêtre dans l'application quand 
-   * l'icône du dock est cliquée et qu'il n'y a pas d'autre fenêtre ouverte. 
+  /** Sur macOS il est d'usage de recréer une fenêtre dans l'application quand
+   * l'icône du dock est cliquée et qu'il n'y a pas d'autre fenêtre ouverte.
    */
-  app.on('activate', function() {
-    if(BrowserWindow.getAllWindows.length === 0) createWindow();
+  app.on('activate', function () {
+    if (BrowserWindow.getAllWindows.length === 0) createWindow();
   });
 });
 
-log4js.getLogger().info(`Le dossier courant de l'application est : ${ app.getAppPath() }`);
-log4js.getLogger().info(`Le fichier exécutable courant est : ${ app.getPath("exe") }`);
-log4js.getLogger().info(`Le Crash dumps est : ${ app.getPath("crashDumps") }`);
-/** 
+log4js.getLogger().info(`Le dossier courant de l'application est : ${app.getAppPath()}`);
+log4js.getLogger().info(`Le fichier exécutable courant est : ${app.getPath("exe")}`);
+log4js.getLogger().info(`Le Crash dumps est : ${app.getPath("crashDumps")}`);
+/**
  * Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
  * pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte
  * explicitement avec Cmd + Q.
  */
 app.on('window-all-closed', () => {
-  
+
   const fs = require('fs');
   const path = require('path');
   const { exec } = require('child_process');
 
   mainStore.clear();
-  
 
-  /** On supprime le dossier local QRLudo pour windows et linux */ 
+
+  /** On supprime le dossier local QRLudo pour windows et linux */
   switch (process.platform) {
     case 'win32':
       let temp = path.join(process.env.temp, 'QRLudo');
@@ -130,6 +130,7 @@ app.on('window-all-closed', () => {
       break;
 
     default:
+      log4js.getLogger(`Index.js | Système d'exploitation inconnue`);
       console.log('Unknown operating system');
       break;
   }
@@ -143,17 +144,12 @@ app.on('window-all-closed', () => {
 });
 
 app.on('render-process-gone', (evt, webcontent, details) => {
-  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\nwebcontent = ${ JSON.stringify(webcontent) }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus de rendu s'est arrêté involontairement :\nevent = ${JSON.stringify(evt)}\nwebcontent = ${JSON.stringify(webcontent)}\ndetails = ${JSON.stringify(details)}`);
 });
 
 app.on('child-process-gone', (evt, details) => {
-  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${ JSON.stringify(evt) }\ndetails = ${ JSON.stringify(details) }`);
+  log4js.getLogger().error(`Le processus fils s'est arrêté involontairement :\nevent = ${JSON.stringify(evt)}\ndetails = ${JSON.stringify(details)}`);
 });
-
-log4js.getLogger().info(`Le dossier courant de l'application ${ app.getAppPath() }`);
-log4js.getLogger().info(`Le fichier exécutable courant ${ app.getPath("exe") }`);
-log4js.getLogger().info(`Le Crash dumps ${ app.getPath("crashDumps") }`);
-
 
 /** Quitte l'application si on reçois l'event 'exitApp' venant du processus de rendu
  * Appeler lorsqu'on ne peut pas créer de répertoire dans script_loader
@@ -171,7 +167,7 @@ function deleteFolderRecursive(path) {
       /** Recursif */
       if (fs.lstatSync(curPath).isDirectory()) {
         deleteFolderRecursive(curPath);
-         /** Delete */
+        /** Delete */
       } else {
         fs.unlinkSync(curPath);
       }

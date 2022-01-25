@@ -98,7 +98,6 @@ function genererJsonQCM() {
     previewQRCodeQCM();
     // On affiche le qrCode
     $('#qrView').show();
-    console.log(JSON.stringify(projet.qrcode));
     logger.info(`Génération du QR Code QCM de l'exercice à reconnaissance vocale : ${JSON.stringify(projet.qrcode)}`);
   } else {
     messageInfos("Veuillez remplir tous les champs.", "danger");
@@ -142,8 +141,6 @@ function genererJsonQuestionOuverte() {
     questionOuverte = new QRCodeQuestionOuverte(questionText, reponseText, messageBonneReponse, messageMauvaiseReponse);
 
     initMessages();
-
-    console.log(questionOuverte.qrcode);
 
     // On génére le QrCode a afficher
     previewQRCodeQuestionOuverte();
@@ -580,16 +577,14 @@ function saveQRCodeImage(questionQCM, questionOuverte) {
 
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'blob';
-  console.log(data);
   xhr.open('GET', data, true);
 
   xhr.onreadystatechange = function () {
     if (xhr.readyState == xhr.DONE) {
       var filesaver = require('file-saver');
-      console.log(xhr.response);
-      //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un bolléen
+      //Dans les deux cas filsaver.saveAs renvoie rien qui s'apparente à un booléen
       if (filesaver.saveAs(xhr.response, qrcode.getId() + '.jpeg') == true) {
-        console.log(filesaver.saveAs(xhr.response, qrcode.getId() + '.jpeg').getName);
+        logger.info(`exerciceReconnaissanceVocaleScript.saveQRCodeImage | Le QR code a bien été enregistré`);
         messageInfos("Le QR code a bien été enregistré", "success"); //message a afficher en haut de la page
       }
 
@@ -781,7 +776,6 @@ function getMusicFromUrl() {
         if (this.status == 200) {
           let blob = this.response; // get binary data as a response
           let contentType = xhr.getResponseHeader("content-type");
-          console.log(contentType);
 
           if (contentType == 'audio/mpeg' || contentType == 'audio/mp3') {
             // get filename
@@ -810,7 +804,6 @@ function getMusicFromUrl() {
       };
 
       xhr.onloadstart = function (e) {
-        console.log('load start');
         $(loader).addClass('loader');
         $(modal).find('.errorLoader').remove();
         $(modal).prepend(loader); // show loader when request progress
@@ -847,7 +840,6 @@ function ajouterChampSon(nom, url) {
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
-  console.log('error ');
   $(modal).find('.loader').remove();
   $(errorMsg).text(message);
   $(errorMsg).css('color', '#f35b6a');
@@ -871,7 +863,7 @@ $(document).ready(function () {
         // console.log(string);
         info.innerHTML = string;
       }).catch(function (err) {
-        console.log(info.innerHTML);
+        logger.error(`exerciceReconnaissanceVocaleScript.$('button#showInfo') | Problème lors du chargement de la page audioinfo.html`);
         info.innerHTML = `Erreur`;
       });
       document.getElementById('elementsAudio').appendChild(info);

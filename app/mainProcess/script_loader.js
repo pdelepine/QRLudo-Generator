@@ -113,7 +113,6 @@ switch (process.platform) {
 
   default:
     logger.error('Le système d\'exploitation est inconnu');
-    console.log('Unknown operating system');
     break;
 }
 
@@ -158,7 +157,7 @@ const { ProjetQCM,
 
 const { ProjetSeriousGame,
   TextNode,
-  QuestionNode, } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
+  QuestionNode } = require(`${root}/rendererProcess/model/QRCodeSeriousGame`);
 
 const { QRCodeQuestionOuverte } = require(`${root}/rendererProcess/model/QRCodeQuestionOuverte`);
 
@@ -166,7 +165,9 @@ const { SGDot } = require(`${root}/rendererProcess/model/SGDot`);
 const { SGLink } = require(`${root}/rendererProcess/model/SGLink`);
 const { SGNode } = require(`${root}/rendererProcess/model/SGNode`);
 const { SGTextNode } = require(`${root}/rendererProcess/model/SGTextNode`);
-const { SGQuestionNode } = require(`${root}/rendererProcess/model/SGQuestionNode`);
+const { SGQuestionQCMNode } = require(`${root}/rendererProcess/model/SGQuestionQCMNode`);
+const { SGQuestionQONode } = require(`${root}/rendererProcess/model/SGQuestionQONode`);
+const { SGQuestionQRNode } = require(`${root}/rendererProcess/model/SGQuestionQRNode`);
 
 
 // Instanciate object

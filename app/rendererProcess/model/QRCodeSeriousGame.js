@@ -93,8 +93,8 @@ class TextNode {
 
     constructor(name = "No_Name", text = {}, exitLink = "") {
         this.name = name;
-        this.text = text;
-        this.exitLink = exitLink;
+        this.txt = text;
+        this.ext = exitLink;
     }
 
     setName(name) {
@@ -102,11 +102,11 @@ class TextNode {
     }
 
     setText(text) {
-        this.text = text;
+        this.txt = text;
     }
 
     setExitLink(exitLink) {
-        this.exitLink = exitLink;
+        this.ext = exitLink;
     }
 
     getName() {
@@ -114,11 +114,11 @@ class TextNode {
     }
 
     getText() {
-        return this.text;
+        return this.txt;
     }
 
     getExitLink() {
-        return this.exitLink;
+        return this.ext;
     }
 }
 
@@ -128,14 +128,16 @@ class TextNode {
 class QuestionNode {
     /**
      * @param {} name = "No_Name"
+     * @param {String} type = M, Q ou O pour QCM, QR, QO
      * @param {} textQuestion = Contient le texte de la question
      * @param {} reponses = Contient la liste des réponses à la question
      */
 
-    constructor(name = "No_Name", textQuestion = {}, reponses = []) {
+    constructor(name = "No_Name", type, textQuestion = {}, reponses = []) {
+        this.type = type;
         this.name = name;
-        this.textQuestion = textQuestion;
-        this.reponses = reponses;
+        this.txt = textQuestion;
+        this.rep = reponses;
     }
 
     setName(name) {
@@ -143,11 +145,11 @@ class QuestionNode {
     }
 
     setReponses(reponses) {
-        this.reponses = reponses;
+        this.rep = reponses;
     }
 
     setTextQuestion(textQuestion) {
-        this.textQuestion = textQuestion;
+        this.txt = textQuestion;
     }
 
     getName() {
@@ -155,14 +157,13 @@ class QuestionNode {
     }
 
     getReponses() {
-        return this.reponses;
+        return this.rep;
     }
 
     getTextQuestion() {
-        return this.textQuestion;
+        return this.txt;
     }
 }
-
 
 module.exports = {
     ProjetSeriousGame,

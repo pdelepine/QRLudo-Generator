@@ -8,10 +8,10 @@
 $(document).ready(function () {
   $('div.info-content').css('display', 'none');
 
-  $("#content a.nav-link").on('click',e => {
+  $("#content a.nav-link").on('click', e => {
     e.preventDefault();
     let element = e.target;
-    console.log('script_info.on(click, a.nav-link) : element '+ element);
+    //console.log('script_info.on(click, a.nav-link) : element ' + element);
     let tab = $(element).attr('href');
 
     $('a').attr('class', 'nav-item nav-link');
@@ -20,8 +20,8 @@ $(document).ready(function () {
     $(element).addClass('active');
     $(tab).addClass('active');
   });
-  
-  $('.tab-content').find('a').on('click',e => {
+
+  $('.tab-content').find('a').on('click', e => {
     let href = $(e.target).attr('href');
     let display = $(href).css('display');
 
@@ -32,13 +32,13 @@ $(document).ready(function () {
   });
 
 
-  $('.tab-content').find('a').on('mouseover',e => {                    
-    /* pour changer la couleur du lien quand on mouseover ce lien */  
+  $('.tab-content').find('a').on('mouseover', e => {
+    /* pour changer la couleur du lien quand on mouseover ce lien */
     $(e.target).css('color', '#7E7E7E');
   });
 
-  $('.tab-content').find('a').on('mouseout',e => {     
-    /* pour remettre la couleur originale quand on mouseout */            
+  $('.tab-content').find('a').on('mouseout', e => {
+    /* pour remettre la couleur originale quand on mouseout */
     $(e.target).css('color', 'black');
   });
 
@@ -46,19 +46,19 @@ $(document).ready(function () {
 
 });
 
-$("#unique-info").on('click',function(){
+$("#unique-info").on('click', function () {
   logger.info("Demande d'informations sur Unique");
-  $("#info-unique").css("display","block");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "block");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none");
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "none");
 });
 
 //test la connexion internet pour la vidéo explicative de Unique
-$("#buttonAffichageVideoUnique").on('click',function(){
+$("#buttonAffichageVideoUnique").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -70,19 +70,19 @@ $("#buttonAffichageVideoUnique").on('click',function(){
   }
 });
 
-$("#multiple-info").on('click',function(){
+$("#multiple-info").on('click', function () {
   logger.info("Demande d'informations sur Multiple");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","block");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "block");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none"); 
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "none");
 });
 
 //test la connexion internet pour la vidéo explicative de Multiple
-$("#buttonAffichageVideoMultiple").on('click',function(){
+$("#buttonAffichageVideoMultiple").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -95,19 +95,19 @@ $("#buttonAffichageVideoMultiple").on('click',function(){
 });
 
 
-$("#exo-qrcode-info").on('click',function(){
+$("#exo-qrcode-info").on('click', function () {
   logger.info("Demande d'informations sur Exercice - QR Code");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","block");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "block");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none");
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "none");
 });
 
 //test la connexion internet pour la vidéo explicative de Exercice - QR Code
-$("#buttonAffichageVideoExercice").on('click',function(){
+$("#buttonAffichageVideoExercice").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -119,19 +119,19 @@ $("#buttonAffichageVideoExercice").on('click',function(){
   }
 });
 
-$("#exo-reco-vocale-info").on('click',function(){
+$("#exo-reco-vocale-info").on('click', function () {
   logger.info("Demande d'informationssur Reconnaissance vocale");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "block");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none");
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "none");
 });
 
 //test la connexion internet pour la vidéo explicative de Question Ouverte
-$("#buttonAffichageVideoQuestionOuverte").on('click',function(){
+$("#buttonAffichageVideoQuestionOuverte").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -144,7 +144,7 @@ $("#buttonAffichageVideoQuestionOuverte").on('click',function(){
 });
 
 //test la connexion internet pour la vidéo explicative de QCM
-$("#buttonAffichageVideoQCM").on('click',function(){
+$("#buttonAffichageVideoQCM").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -156,19 +156,19 @@ $("#buttonAffichageVideoQCM").on('click',function(){
   }
 });
 
-$("#serious-game-info").on('click',function(){
+$("#serious-game-info").on('click', function () {
   logger.info("Demande d'informations sur Serious Game");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "block");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","none");
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "none");
 });
 
 //test la connexion internet pour la vidéo explicative de Serious Game
-$("#buttonAffichageVideoSeriousGame").on('click',function(){
+$("#buttonAffichageVideoSeriousGame").on('click', function () {
   /** Check internet connection */
   logger.info('Test de la connexion internet');
   if (!navigator.onLine) {
@@ -180,24 +180,24 @@ $("#buttonAffichageVideoSeriousGame").on('click',function(){
   }
 });
 
-$("#music-info").on('click',function(){
+$("#music-info").on('click', function () {
   logger.info("Demande d'information sur Musique");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","block");
-  $("#info-Import").css("display","none");
+  $("#info-MusicInput").css("display", "block");
+  $("#info-Import").css("display", "none");
 });
 
-$("#import-info").on('click',function(){
+$("#import-info").on('click', function () {
   logger.info("Demande d'informations sur Import");
-  $("#info-unique").css("display","none");
-  $("#info-multiple").css("display","none");
-  $("#info-exercice-qrcode").css("display","none");
+  $("#info-unique").css("display", "none");
+  $("#info-multiple").css("display", "none");
+  $("#info-exercice-qrcode").css("display", "none");
   $("#info-exercice-reco-vocale").css("display", "none");
   $("#info-serious-game").css("display", "none");
-  $("#info-MusicInput").css("display","none");
-  $("#info-Import").css("display","block");
+  $("#info-MusicInput").css("display", "none");
+  $("#info-Import").css("display", "block");
 });

@@ -69,7 +69,6 @@ function drawQRCodeImport(qrcode) {
     } else if (qrcode.getType() == 'question') {
       logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Exercice QR Code, basculement sur onglet QR Exercice QR Code');
       $("#charger-page").load(getNormalizePath(root + "/rendererProcess/view/exerciceQr/exerciceQrCode.html"), function () {
-        console.log(qrcode.qrcode);
         if (typeof qrcode.getName() === 'string') {
           $("#newQuestionText").val(qrcode.getName());
         } else {
@@ -146,6 +145,7 @@ function drawQRCodeImport(qrcode) {
     }
   } catch (e) {
     logger.error(`chargerqrcode.drawQRCodeImport | Problème lors de l'importation du QR code type : ${qrcode.getType()}\n${e}`);
+    alert('Un problème est survenu lors de l\'importation du QR code');
   }
 }
 
@@ -269,22 +269,37 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
     let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
     qrTextNode.name = textNode.name;
     qrTextNode.url = textNode.url;
-    qrTextNode.description = textNode.text;
+    qrTextNode.description = textNode.txt;
 
     textNodes.push(qrTextNode);
   }
 
-  // Création SGQuestionNode
+  // Création SGQuestionQCMNode
   for (let questionNode of qrcodeMetadata.questionNodes) {
-    let qrQuestionNode = new SGQuestionNode(questionNode.x, questionNode.y, 100, 80);
+    let qrQuestionNode;
+
+    switch (questionNode.type) {
+      case 'M':
+        qrQuestionNode = new SGQuestionQCMNode(questionNode.x, questionNode.y, 100, 80);
+        break;
+      case 'O':
+        qrQuestionNode = new SGQuestionQONode(questionNode.x, questionNode.y, 100, 80);
+        break;
+      case 'Q':
+        qrQuestionNode = new SGQuestionQRNode(questionNode.x, questionNode.y, 100, 80);
+        break;
+        default:
+          logger.error(`chargerqrcode.drawQRCodeSeriousGameEnigma | Le type : ${questionNode.type} n'est pas reconnu`);
+    }
+
     qrQuestionNode.name = questionNode.name;
     qrQuestionNode.url = questionNode.url;
-    qrQuestionNode.question = questionNode.textQuestion;
+    qrQuestionNode.question = questionNode.txt;
 
-    for (let i = 0; i < questionNode.reponses.length; i++) {
+    for (let i = 0; i < questionNode.rep.length; i++) {
       // Il y a de base une réponse vide (avec son Dot) dans le questionNode, on utilise la fonction addAnswer pour ajouter une réponse et SGDot
-      if (i !== 0) SGQuestionNode.addAnswer(qrQuestionNode);
-      qrQuestionNode.answers[i] = questionNode.reponses[i].text;
+      if (i !== 0) SGQuestionQCMNode.addAnswer(qrQuestionNode);
+      qrQuestionNode.answers[i] = questionNode.rep[i].txt;
     }
 
     questionNodes.push(qrQuestionNode);
@@ -292,7 +307,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
 
   // Création des liens des textNode
   for (let textNode of qrcodeMetadata.textNodes) {
-    let next_node = textNode.exitLink;
+    let next_node = textNode.ext;
     if (next_node) {
       // Recherche si lier à un textNode
       textNodes.forEach(n => {
@@ -322,8 +337,8 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   // Création des liens des questionNode
   for (let questionNode of qrcodeMetadata.questionNodes) {
     // On parcourt les réponses du questionNode
-    for (let i = 0; i < questionNode.reponses.length; i++) {
-      let next_node = questionNode.reponses[i].exitLink;
+    for (let i = 0; i < questionNode.rep.length; i++) {
+      let next_node = questionNode.rep[i].ext;
 
       if (next_node) {
         // Recherche si la réponse est liée à un textNode
@@ -332,7 +347,6 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
           if (n.name === next_node) {
             questionNodes.forEach(n2 => {
               if (n2.name === questionNode.name) {
-                console.log(`Dot${n2.exitDots[i]}`);
                 let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
                 linkArray.push(link);
               }
@@ -345,7 +359,6 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
           if (n.name === next_node) {
             questionNodes.forEach(n2 => {
               if (n2.name === questionNode.name) {
-                console.log(n2.exitDots[i]);
                 let link = new SGLink(n2, n2.exitDots[i], n, n.entryDot);
                 linkArray.push(link);
               }
@@ -379,7 +392,7 @@ function restoreSavedMusic(data) {
     try {
       xhr.open('GET', music.url, true);
     } catch (e) {
-      console.log(e);
+      logger.error(`chargerqrcode.restoreSavedMusic | Problème lors de la récupération de l'audio`);
     }
 
     xhr.responseType = 'blob';
@@ -397,7 +410,7 @@ function restoreSavedMusic(data) {
             // fs.writeFileSync(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)));
             fs.writeFile(`${temp}/Download/${music.name}`, Buffer(new Uint8Array(this.result)), (err) => {
               if (err) throw err;
-              console.log('The file has been saved!');
+              logger.info('chargerqrcode.restoreSavedMusic | The file has been saved!');
               nbMusic++;
               if (nbMusic == data.length) {
                 $(loader).remove();
@@ -407,16 +420,16 @@ function restoreSavedMusic(data) {
           };
           fileReader.readAsArrayBuffer(blob);
         } else {
-          console.log('restoreSavedMusic : error on download, le fichier n\'existe peut etre plus');
+          logger.error('chargerqrcode.restoreSavedMusic | error on download, le fichier n\'existe peut etre plus');
         }
       } else {
         // request failed
-        console.log('restoreSavedMusic : error on download, request fails');
+        logger.error('chargerqrcode.restoreSavedMusic | error on download, request fails');
       }
     };
 
     xhr.onerror = function (e) {
-      console.log('restoreSavedMusic : error ' + e);
+      logger.error('chargerqrcode.restoreSavedMusic | error ' + e);
     };
 
     xhr.send();

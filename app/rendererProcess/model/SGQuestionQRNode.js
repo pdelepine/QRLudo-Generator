@@ -1,5 +1,6 @@
 /** Cette classe représente un Noeud de question dans l'iterface du serious game fait avec p5.js */
-class SGQuestionNode extends SGNode {
+class SGQuestionQRNode extends SGNode {
+	static strokeColor = 'blue';
 	/**
 	 * @param {number} x coordinate
 	 * @param {number} y coordinate
@@ -55,7 +56,7 @@ class SGQuestionNode extends SGNode {
 		this.questionZone.parent("seriousGameZoneQuestions");
 
 		// Partie nom de la forme
-		let txt_Title = myP5.createElement('label', "Nom de la question :");
+		let txt_Title = myP5.createElement('label', "Nom de la question QR :");
 		txt_Title.class('titre-serious-label');
 		txt_Title.parent('displayQuestionZone');
 		let input_name = myP5.createInput(this.name);
@@ -93,14 +94,14 @@ class SGQuestionNode extends SGNode {
 		this.btn_add_audio.id('btn_add_audio_question');
 		this.btn_add_audio.attribute('data-target', '#listeMusic');
 		this.btn_add_audio.attribute('data-toggle', 'modal');
-		this.btn_add_audio.mousePressed(() => { SGQuestionNode.addAudio(self); });
+		this.btn_add_audio.mousePressed(() => { SGQuestionQRNode.addAudio(self); });
 		this.btn_add_audio.parent('div_question');
 		let icon_audio = myP5.createElement('i');
 		icon_audio.class('fa fa-music');
 		icon_audio.parent('btn_add_audio_question');
 
 		// Partie réponses
-		let txt_answers = myP5.createElement('label', "Réponses :");
+		let txt_answers = myP5.createElement('label', "Réponses QR code:");
 		txt_answers.class('titre-serious-label');
 		txt_answers.parent('displayQuestionZone');
 
@@ -113,19 +114,31 @@ class SGQuestionNode extends SGNode {
 			div_answer.style('margin-bottom:5px')
 			div_answer.parent('displayQuestionZone');
 
-			let input_answer = myP5.createInput(this.answers[i]);
+			let input_answer = myP5.createInput(this.answers[i].name);
 			input_answer.id('input_node_answer_' + (i + 1));
-			input_answer.class('text-titre-input input-lg')
-			input_answer.attribute('placeholder', 'Texte de la réponse')
+			input_answer.class('text-titre-input input-lg');
+			input_answer.attribute('placeholder', 'Nom du QR code réponse');
+			input_answer.attribute('name', this.answers[i].id);
+			input_answer.attribute('disabled', true);
 			input_answer.parent('div_answer_' + (i + 1));
 
-			if (this.containError && this.answers[i] == "")
+			if (this.containError && (this.answers[i].name == "" || this.answers[i].id == ""))
 				input_answer.style('border: 2px solid red');
+
+			let btn_get_qrunique = myP5.createButton('');
+			btn_get_qrunique.class('btn btn-outline-success btn-unique-xl btn-audio');
+			btn_get_qrunique.id('btn_get_qrunique_' + (i + 1));
+			btn_get_qrunique.mousePressed(() => SGQuestionQRNode.getFileQRUnique(self, i));
+			btn_get_qrunique.parent('div_answer_' + (i + 1));
+			btn_get_qrunique.attribute('title', 'Importer un QR Unique');
+			let icon_qrcode = myP5.createElement('i');
+			icon_qrcode.class('fa fa-qrcode');
+			icon_qrcode.parent('btn_get_qrunique_' + (i + 1));
 
 			let btn_delete_answer = myP5.createButton('');
 			btn_delete_answer.class('btn btn-outline-success btn-unique-xl btn-audio');
 			btn_delete_answer.id('btn_delete_answer_' + (i + 1));
-			btn_delete_answer.mousePressed(() => SGQuestionNode.deleteAnswer(self, i));
+			btn_delete_answer.mousePressed(() => SGQuestionQRNode.deleteAnswer(self, i));
 			btn_delete_answer.parent('div_answer_' + (i + 1));
 			let icon_trash = myP5.createElement('i');
 			icon_trash.class('fa fa-trash');
@@ -140,7 +153,7 @@ class SGQuestionNode extends SGNode {
 			this.btn_add_answer = myP5.createButton('Ajouter une réponse ')
 			this.btn_add_answer.id('btn_add_answer')
 			this.btn_add_answer.class('btn btn-outline-success align-self-center btn_add_answer');
-			this.btn_add_answer.mousePressed(() => { SGQuestionNode.addAnswer(self); });
+			this.btn_add_answer.mousePressed(() => { SGQuestionQRNode.addAnswer(self); });
 			this.btn_add_answer.parent('btn_add_answer_div');
 			let icon_plus = myP5.createElement('i');
 			icon_plus.class('fas fa-plus-square');
@@ -154,25 +167,25 @@ class SGQuestionNode extends SGNode {
 
 		this.btn_discard_modification = myP5.createButton("Annuler Modification");
 		this.btn_discard_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_discard_modification.mousePressed(() => { SGQuestionNode.discardModification(self); });
+		this.btn_discard_modification.mousePressed(() => { SGQuestionQRNode.discardModification(self); });
 		this.btn_discard_modification.parent('div_btn');
 
 		this.btn_save_modification = myP5.createButton("Appliquer Modification");
 		this.btn_save_modification.class('btn btn-outline-success btn-unique-xl');
-		this.btn_save_modification.mousePressed(() => { SGQuestionNode.saveModification(self); });
+		this.btn_save_modification.mousePressed(() => { SGQuestionQRNode.saveModification(self); });
 		this.btn_save_modification.parent('div_btn');
 
 	}
 
 	/**
 	 * Ajoute un champ réponse dans la zone d'affichage, une réponse vide dans la liste answers de self et replace les exitDot
-	 * @param {SGQuestionNode} self, l'instance SGQuestionNode qui s'affiche dans la zone
+	 * @param {SGQuestionQRNode} self, l'instance SGQuestionQRNode qui s'affiche dans la zone
 	 */
 	static addAnswer(self) {
-		SGQuestionNode.saveModification(self);
+		SGQuestionQRNode.saveModification(self);
 
 		if (self.answers.length < 5) {
-			self.answers.push("");
+			self.answers.push({ name: '', id: '' });
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
 			for (var id_answer = 0; id_answer < self.answers.length - 1; id_answer++) {
@@ -184,15 +197,18 @@ class SGQuestionNode extends SGNode {
 	}
 	/**
 	 * Supprime une réponse de la zone Question ainsi que les ExitDot
-	 * @param {SGQuestionNode} self , l'instance SGQuestionNode qui s'affiche dans la zone
+	 * @param {SGQuestionQRNode} self , l'instance SGQuestionQRNode qui s'affiche dans la zone
 	 * @param {integer} indice , l'indice de la réponse dans la liste answers de self
 	 */
 	static deleteAnswer(self, indice) {
 		// Sauvegarde des modifications en cours avant de supprimer la réponse
-		SGQuestionNode.saveModification(self);
+		SGQuestionQRNode.saveModification(self);
 
 		if (self.answers.length >= 1) {
 			self.answers.splice(indice, 1);
+			// Suppression du lien relié au SGDOt
+			myP5.linkArray = myP5.linkArray.filter(l => l.node1Dot !== self.exitDots[indice]);
+
 			self.exitDots.splice(indice, 1);
 			self.emptyQuestionZone();
 			self.displayQuestionZone();
@@ -212,12 +228,13 @@ class SGQuestionNode extends SGNode {
 		document.getElementById('input_node_name').value = self.name;
 		document.getElementById('input_node_question').value = self.question;
 		for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
-			document.getElementById('input_node_answer_' + (id_answer + 1)).value = self.answers[id_answer];
+			document.getElementById('input_node_answer_' + (id_answer + 1)).value = self.answers[id_answer].name;
+			document.getElementById('input_node_answer_' + (id_answer + 1)).name = self.answers[id_answer].id;
 		}
 	}
 
+	/** Add an audio file */
 	static addAudio(self) {
-		/** Add an audio file */
 		myP5.setLastNodeClickedType("question");
 	}
 
@@ -234,7 +251,10 @@ class SGQuestionNode extends SGNode {
 					self.url = document.getElementById('input_node_question').name;
 			}
 			for (var id_answer = 0; id_answer < self.answers.length; id_answer++) {
-				self.answers[id_answer] = document.getElementById('input_node_answer_' + (id_answer + 1)).value;
+				self.answers[id_answer] = {
+					name: document.getElementById('input_node_answer_' + (id_answer + 1)).value,
+					id: document.getElementById('input_node_answer_' + (id_answer + 1)).name
+				}
 			}
 		}
 		if (self.name != "" && self.question != "")
@@ -242,16 +262,93 @@ class SGQuestionNode extends SGNode {
 		SetProgressBar(myP5.generateJson());
 	}
 
+	static getFileQRUnique(self, answersIndice) {
+		let promise = dialog.showOpenDialog({
+			title: 'Sélectionner un QR Unique', properties: ['openFile'], filters: [
+				{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] },
+				{ name: 'All Files', extensions: ['*'] }
+			]
+		}).then(result => {
+			if (result === undefined) return;
+
+			if (result.filePaths.length < 1) return; 
+
+			fs.readFile(result.filePaths[0], { encoding: 'base64' }, (err, data) => {
+				if (err) {
+					alert("Une erreur s'est produit en voulant lire le fichier :" + err.message);
+					return;
+				}
+
+				// Récupération des métadonnées
+
+				let exifObj = piexif.load('data:image/jpeg;base64,' + data);
+				logger.info(`SGQuestionQRNode.getFileQRUnique | exifObj \n${JSON.stringify(exifObj)}`);
+
+				// On lit l'ancienne manière de sauvegarder les métadonnées, le champ `0th`
+				let old_dataUtf8 = exifObj["0th"][700];
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Métadonnées lues dans le champ 0th \n${old_dataUtf8}`);
+
+				// On lit la nouvelle manière de sauvegarder les métadonnées, le champ `UserComment`
+				let new_dataString = exifObj['Exif'][piexif.ExifIFD.UserComment];
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Métadonnées lues dans le champ UserComment \n${new_dataString}`);
+
+				let dataRead = '';
+				// Si l'ancienne manière de stocker les metadonnées est présente, on l'utilise
+				// Sinon on utilise la nouvelle
+				if (!old_dataUtf8) {
+					if (new_dataString) {
+						dataRead = new_dataString;
+					}
+				} else {
+					dataRead = QRCodeLoaderJson.UTF8ArraytoString(old_dataUtf8);
+				}
+
+				let qrcodeString = dataRead;
+				// Transformation du string contenant le qrcode en qrcode
+				logger.info(`SGQuestionQRNode.getFileQRUnique | Essaie tranformation des données`);
+				let qrcode;
+				let qr;
+
+				if (qrcodeString.charAt(0) === '{') {
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données non compressée, parsing du Json`);
+
+					qr = JSON.parse(qrcodeString);
+
+				} else {
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données compressée, décompression des données avant parsing du Json`);
+
+					let dezippedData;
+					JsonCompressor.decompress(filename, (data) => dezippedData = data);
+					logger.info(`SGQuestionQRNode.getFileQRUnique | Données décompressée ${dezippedData}`)
+					qr = JSON.parse(dezippedData);
+				}
+
+				if (qr.type === 'unique') {
+					SGQuestionQRNode.setAnswer(self, answersIndice, { name: qr.name, id: qr.id });
+				} else {
+					alert("Le qr code donné n'est pas un qr code unique");
+				}
+			});
+		});
+	}
+
+	static setAnswer(self, answerIndice, answer) {
+		//console.log(answerIndice, JSON.stringify(answer));
+		
+		document.getElementById('input_node_answer_' + (answerIndice + 1)).value = answer.name;
+		document.getElementById('input_node_answer_' + (answerIndice + 1)).name = answer.id;
+	}
+
 	saveAudioModification() {
 		/** Fonction appelée quand un fichier audio est ajouté */
 		const self = this;
-		SGQuestionNode.saveModification(self);
+		SGQuestionQRNode.saveModification(self);
 	}
 
 	/** Draw the node */
 	display() {
 		myP5.push();
-		myP5.stroke('#005700');
+		myP5.stroke(SGQuestionQRNode.strokeColor);
 		myP5.strokeWeight(4);
 		if (this.dragging || this.clicked)
 			myP5.fill(80);
@@ -291,7 +388,7 @@ class SGQuestionNode extends SGNode {
 
 	/** Return a copy of the Node */
 	clone() {
-		let nodecopy = new SGQuestionNode(this.x, this.y, this.w, this.h);
+		let nodecopy = new SGQuestionQRNode(this.x, this.y, this.w, this.h);
 
 		nodecopy.question = this.question;
 
@@ -308,5 +405,5 @@ class SGQuestionNode extends SGNode {
 }
 
 module.exports = {
-	SGQuestionNode
+	SGQuestionQRNode
 };

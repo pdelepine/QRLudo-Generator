@@ -33,7 +33,7 @@ class FacadeController {
         divImg.removeChild(divImg.firstChild);
       }
 
-      // Ajout de version du format du JSON représentatif du qr code
+      // Ajout de version du format du JSON représentatif du qr code, utilisé par l'application mobile
       switch (qrcode.qrcode.type) {
         case "unique":
           qrcode.qrcode.version = '3';
