@@ -346,6 +346,7 @@ var sketch = function (p) {
 		p.textAlign(p.RIGHT);
 		// Affiche le pourcentage de zoom auquel on est actuellement
 		p.text(p.sliderZoom.value() + "%", (p.width) - 8, (p.height) - 8);
+		p.sliderZoom.position(p.seriousGameCanvas.position().x + p.seriousGameCanvas.size().width - 170, p.seriousGameCanvas.position().y + p.seriousGameCanvas.size().height - 20);
 		p.pop();
 
 		// Ajustement de la couleur des boutons
@@ -598,7 +599,6 @@ var sketch = function (p) {
 	p.windowResized = function () {
 		p.parentDiv = document.getElementById("seriousGameDiagram").getBoundingClientRect();
 		p.resizeCanvas(p.parentDiv.width, p.parentDiv.height);
-		p.sliderZoom.position(p.seriousGameCanvas.position().x + p.seriousGameCanvas.size().width - 170, p.seriousGameCanvas.position().y + p.seriousGameCanvas.size().height - 20);
 	}
 
 	/** Transforme le curseur selon l'état activé */
@@ -885,10 +885,21 @@ var sketch = function (p) {
 					questionNodes.push(p.nodeArray[i]);
 					p.nodeArray[i].containError = false;
 				}
-				// On récupère les réponses qui sont vides
+				// Test si aucune réponse
+				if (p.nodeArray[i].answers.length === 0 && !p.nodeArray[i].containError) {
+					p.nodeArray[i].containError = true;
+					errorNodes.push(p.nodeArray[i]);
+
+				}
+				// Test si réponses vides
 				for (j = 0; j < p.nodeArray[i].answers.length; ++j) {
-					if (p.nodeArray[i].answers[j] == "") {
-						if (!p.nodeArray[i].containError) {
+					if (typeof p.nodeArray[i].answers[j] === "string") {
+						if (p.nodeArray[i].answers[j] == "" && !p.nodeArray[i].containError) {
+							p.nodeArray[i].containError = true;
+							errorNodes.push(p.nodeArray[i]);
+						}
+					} else {
+						if ((p.nodeArray[i].answers[j].name == "" || p.nodeArray[i].answers[j].id == "") && !p.nodeArray[i].containError) {
 							p.nodeArray[i].containError = true;
 							errorNodes.push(p.nodeArray[i]);
 						}
