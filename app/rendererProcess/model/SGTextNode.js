@@ -50,11 +50,12 @@ class SGTextNode extends SGNode {
 		div_description.class('d-flex align-items-start');
 		div_description.parent('displayQuestionZone');
 
-		let input_description = myP5.createInput(this.description);
+		let input_description = myP5.createElement('textarea');
 		input_description.id('input_node_description');
 		input_description.parent('div_description');
 		input_description.class('description-serious-input input-lg');
-		input_description.attribute('placeholder', 'Texte du champ à lire')
+		input_description.attribute('placeholder', 'Texte du champ à lire');
+		input_description.value(this.description);
 		// Si champ vide on met le champ en rouge
 		if (this.containError && this.description == "")
 			input_description.style('border: 2px solid red');
