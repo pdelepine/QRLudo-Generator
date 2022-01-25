@@ -58,8 +58,10 @@ class SGTextNode extends SGNode {
 		input_description.attribute('placeholder', 'Texte du champ à lire');
 		input_description.style('resize:none;');
 		input_description.value(this.description);
-		if(this.url != "")
-			input_description.attribute('name', this.url)
+		if(this.url != "") {
+			input_description.attribute('name', this.url);
+			input_description.attribute('disabled', 'true');
+		}
 		// Si champ vide on met le champ en rouge
 		if (this.containError && this.description == "")
 			input_description.style('border: 2px solid red');
@@ -120,6 +122,7 @@ class SGTextNode extends SGNode {
 		/** Delete an audio file */
 	static deleteAudio(self) {
 		myP5.setLastNodeClickedType("text");
+		self.url = ""
 		supprimerChampSon()
 	}
 

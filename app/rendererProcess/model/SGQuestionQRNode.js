@@ -84,8 +84,10 @@ class SGQuestionQRNode extends SGNode {
 		input_question.class('text-titre-input input-lg')
 		input_question.attribute('placeholder', 'Texte de la question')
 		input_question.parent('div_question');
-		if(this.url != "")
+		if(this.url != ""){
 			input_question.attribute('name', this.url)
+			input_question.attribute('disabled', true)
+		}
 		// Si le champ question est vide on l'affiche en rouge
 		if (this.containError && this.question == "")
 			input_question.style('border: 2px solid red');
@@ -255,6 +257,7 @@ class SGQuestionQRNode extends SGNode {
 	/** Delete an audio file */
 	static deleteAudio(self) {
 		myP5.setLastNodeClickedType("question");
+		self.url = ""
 		supprimerChampSon()
 	}
 
