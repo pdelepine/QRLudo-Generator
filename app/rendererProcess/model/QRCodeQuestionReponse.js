@@ -161,7 +161,7 @@ class Question {
   constructor(title, bonneReponse, mauvaiseReponse, reponsesUIDs = [], nombreMinReponse, color = '#000000') {
     this.qrcode = {
       id: new Date().getTime(),
-      text_question: title,
+      name: title,
       data: reponsesUIDs,
       nb_min_reponses: nombreMinReponse,
       type: "question",
@@ -180,11 +180,11 @@ class Question {
   }
 
   getName() {
-    return this.qrcode.text_question;
+    return this.qrcode.name;
   }
 
   setName(name) {
-    this.qrcode.text_question = name;
+    this.qrcode.name = name;
   }
 
   getGoodAnswer() {
