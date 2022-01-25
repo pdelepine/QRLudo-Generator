@@ -602,7 +602,6 @@ function getMusicFromUrl() {
               fs.writeFileSync(`${temp}/Download/${filename}`, Buffer(new Uint8Array(this.result)));
 
               $(loader, errorMsg).remove();
-              $('#closeModalListeMusic').on('click',); // close modal add music
             };
             fileReader.readAsArrayBuffer(blob);
 
