@@ -18,6 +18,7 @@ class SGQuestionQRNode extends SGNode {
 		this.btn_add_answer = null;
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
+		this.btn_delete_audio = null;
 		this.btn_discard_modification = null;
 		this.containError = false;
 	}
@@ -91,16 +92,27 @@ class SGQuestionQRNode extends SGNode {
 
 		// Ajout de l'audio
 		this.btn_add_audio = myP5.createButton('Audio');
+		this.btn_add_audio.mousePressed(() => { SGQuestionQRNode.addAudio(self); });
+		this.btn_add_audio.attribute('data-target', '#listeMusic');
+		this.btn_add_audio.attribute('data-toggle', 'modal');
 		this.btn_add_audio.class('btn btn-outline-success btn-unique-xl btn-audio');
 		this.btn_add_audio.style('margin-right:5px;')
 		this.btn_add_audio.id('btn_add_audio_question');
-		this.btn_add_audio.attribute('data-target', '#listeMusic');
-		this.btn_add_audio.attribute('data-toggle', 'modal');
-		this.btn_add_audio.mousePressed(() => { SGQuestionQRNode.addAudio(self); });
 		this.btn_add_audio.parent('div_question');
 		let icon_audio = myP5.createElement('i');
 		icon_audio.class('fa fa-music');
 		icon_audio.parent('btn_add_audio_question');
+
+		/** Create the button to remove an audio file */
+		this.btn_delete_audio = myP5.createButton('');
+		this.btn_delete_audio.mousePressed(() => { SGQuestionQRNode.deleteAudio(self); });
+		this.btn_delete_audio.attribute('data-toggle', 'modal');
+		this.btn_delete_audio.class('btn btn-outline-success align-self-center');
+		this.btn_delete_audio.id('btn_delete_audio');
+		this.btn_delete_audio.parent('div_question');
+		let icon_supp = myP5.createElement('i');
+		icon_supp.class('fa fa-times');
+		icon_supp.parent('btn_delete_audio');
 
 		// Partie réponses
 		let txt_answers = myP5.createElement('label', "Réponses QR code:");
@@ -238,6 +250,12 @@ class SGQuestionQRNode extends SGNode {
 	/** Add an audio file */
 	static addAudio(self) {
 		myP5.setLastNodeClickedType("question");
+	}
+
+	/** Delete an audio file */
+	static deleteAudio(self) {
+		myP5.setLastNodeClickedType("question");
+		supprimerChampSon()
 	}
 
 	static saveModification(self) {

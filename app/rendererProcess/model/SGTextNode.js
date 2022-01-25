@@ -15,6 +15,7 @@ class SGTextNode extends SGNode {
 		this.description = "";
 		this.btn_save_modification = null;
 		this.btn_add_audio = null;
+		this.btn_delete_audio = null;
 		this.btn_discard_modification = null;
 		this.containError = false;
 	}
@@ -74,6 +75,17 @@ class SGTextNode extends SGNode {
 		icon_audio.parent('btn_add_audio');
 		this.btn_add_audio.parent('div_description');
 
+		/** Create the button to remove an audio file */
+		this.btn_delete_audio = myP5.createButton('');
+		this.btn_delete_audio.mousePressed(() => { SGTextNode.deleteAudio(self); });
+		this.btn_delete_audio.attribute('data-toggle', 'modal');
+		this.btn_delete_audio.class('btn btn-outline-success align-self-center');
+		this.btn_delete_audio.id('btn_delete_audio');
+		let icon_supp = myP5.createElement('i');
+		icon_supp.class('fa fa-times');
+		icon_supp.parent('btn_delete_audio');
+		this.btn_delete_audio.parent('div_description');
+
 		let div_btn = myP5.createDiv();
 		div_btn.id('div_btn');
 		div_btn.class('div-serious-btn align-items-start d-flex');
@@ -102,6 +114,12 @@ class SGTextNode extends SGNode {
 	/** Add an audio file */
 	static addAudio(self) {
 		myP5.setLastNodeClickedType("text");
+	}
+
+		/** Delete an audio file */
+	static deleteAudio(self) {
+		myP5.setLastNodeClickedType("text");
+		supprimerChampSon()
 	}
 
 	/** Save all modifications into the class attributes */

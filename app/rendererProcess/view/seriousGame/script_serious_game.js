@@ -1258,6 +1258,21 @@ function getMusicFromUrl() {
 	}
 }
 
+function supprimerChampSon() {
+	let id_input = "";
+	if (myP5.lastNodeClickedType == "question") {
+		id_input = "input_node_question";
+	}
+	else {
+		if (myP5.lastNodeClickedType == "text") {
+			id_input = "input_node_description";
+		}
+	}
+	document.getElementById(id_input).value = "";
+	document.getElementById(id_input).name = "";
+	$("#"+id_input).removeAttr("disabled")
+}
+
 /** Fonction pour ajouter au bon endroit le fichier audio */
 function ajouterChampSon(nom, url) {
 	let id_input = "";
@@ -1276,6 +1291,7 @@ function ajouterChampSon(nom, url) {
 			myP5.nodeArray[i].saveAudioModification();
 		}
 	}
+	$("#"+id_input).attr("disabled", "true");
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {
