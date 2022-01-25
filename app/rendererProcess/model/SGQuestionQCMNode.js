@@ -83,6 +83,8 @@ class SGQuestionQCMNode extends SGNode {
 		input_question.class('text-titre-input input-lg')
 		input_question.attribute('placeholder', 'Texte de la question')
 		input_question.parent('div_question');
+		if(this.url != "")
+			input_question.attribute('name', this.url)
 		// Si le champ question est vide on l'affiche en rouge
 		if (this.containError && this.question == "")
 			input_question.style('border: 2px solid red');
@@ -230,7 +232,6 @@ class SGQuestionQCMNode extends SGNode {
 			/** Save all modifications into the class attributes */
 			self.name = document.getElementById('input_node_name').value;
 			self.question = document.getElementById('input_node_question').value;
-
 			// Gere la sauvegarde des modifications si jamais un fichier audio est ajouté
 			if (document.getElementById('input_node_question').name != null) {
 				if (self.question.substring(self.question.length - 3, self.question.length) == "mp3")
@@ -242,6 +243,7 @@ class SGQuestionQCMNode extends SGNode {
 		}
 		if (self.name != "" && self.question != "")
 			self.containError = false;
+		console.log(myP5.generateJson() );
 		SetProgressBar(myP5.generateJson());
 	}
 

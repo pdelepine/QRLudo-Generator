@@ -83,6 +83,8 @@ class SGQuestionQONode extends SGNode {
 		input_question.class('text-titre-input input-lg')
 		input_question.attribute('placeholder', 'Texte de la question')
 		input_question.parent('div_question');
+		if(this.url != "")
+			input_question.attribute('name', this.url)
 		// Si le champ question est vide on l'affiche en rouge
 		if (this.containError && this.question == "")
 			input_question.style('border: 2px solid red');

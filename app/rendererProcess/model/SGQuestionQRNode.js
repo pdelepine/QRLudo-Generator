@@ -83,6 +83,8 @@ class SGQuestionQRNode extends SGNode {
 		input_question.class('text-titre-input input-lg')
 		input_question.attribute('placeholder', 'Texte de la question')
 		input_question.parent('div_question');
+		if(this.url != "")
+			input_question.attribute('name', this.url)
 		// Si le champ question est vide on l'affiche en rouge
 		if (this.containError && this.question == "")
 			input_question.style('border: 2px solid red');
@@ -271,7 +273,7 @@ class SGQuestionQRNode extends SGNode {
 		}).then(result => {
 			if (result === undefined) return;
 
-			if (result.filePaths.length < 1) return; 
+			if (result.filePaths.length < 1) return;
 
 			fs.readFile(result.filePaths[0], { encoding: 'base64' }, (err, data) => {
 				if (err) {
@@ -334,7 +336,7 @@ class SGQuestionQRNode extends SGNode {
 
 	static setAnswer(self, answerIndice, answer) {
 		//console.log(answerIndice, JSON.stringify(answer));
-		
+
 		document.getElementById('input_node_answer_' + (answerIndice + 1)).value = answer.name;
 		document.getElementById('input_node_answer_' + (answerIndice + 1)).name = answer.id;
 	}

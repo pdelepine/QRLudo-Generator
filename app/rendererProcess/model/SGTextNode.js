@@ -56,6 +56,8 @@ class SGTextNode extends SGNode {
 		input_description.class('description-serious-input input-lg');
 		input_description.attribute('placeholder', 'Texte du champ à lire');
 		input_description.value(this.description);
+		if(this.url != "")
+			input_description.attribute('name', this.url)
 		// Si champ vide on met le champ en rouge
 		if (this.containError && this.description == "")
 			input_description.style('border: 2px solid red');
