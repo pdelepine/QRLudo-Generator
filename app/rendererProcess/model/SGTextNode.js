@@ -55,6 +55,7 @@ class SGTextNode extends SGNode {
 		input_description.parent('div_description');
 		input_description.class('description-serious-input input-lg');
 		input_description.attribute('placeholder', 'Texte du champ à lire');
+		input_description.style('resize:none;');
 		input_description.value(this.description);
 		if(this.url != "")
 			input_description.attribute('name', this.url)
