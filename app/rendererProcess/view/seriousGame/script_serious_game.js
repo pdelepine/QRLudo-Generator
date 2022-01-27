@@ -1146,8 +1146,8 @@ var sketch = function (p) {
 
 		let qrMetadata = {
 			type: 'SeriousGame',
-			textNodes: textNodesJSON,
-			questionNodes: questionNodesJSON
+			text_nodes: textNodesJSON,
+			question_nodes: questionNodesJSON
 		};
 
 		logger.info(`SeriousGame | Metadonnée générées : ${JSON.stringify(qrMetadata)}`);

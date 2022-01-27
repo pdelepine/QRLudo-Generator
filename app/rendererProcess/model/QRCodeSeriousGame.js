@@ -16,8 +16,8 @@ class ProjetSeriousGame {
     /**
      * Constructeur d'un projet Serious Game
      * @param  type = "SeriousGame" - QR Code Type
-     * @param  {} textNodes=[] liste des questions avec qrcode
-     * @param  {} questionNodes=[] liste des questions à reconnaissance vocale
+     * @param  {} text_nodes=[] liste des questions avec qrcode
+     * @param  {} question_nodes=[] liste des questions à reconnaissance vocale
      */
     constructor(textNodes = [], questionNodes = []) {
         var dataString = "";
