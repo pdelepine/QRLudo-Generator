@@ -118,11 +118,11 @@ class ProjetQCM {
   }
 
   getTextBonneReponse() {
-    return this.qrcode.textBonneReponse;
+    return this.qrcode.text_bonne_reponse;
   }
 
   getTextMauvaiseReponse() {
-    return this.qrcode.textMauvaiseReponse;
+    return this.qrcode.text_mauvaise_reponse;
   }
 
   getDataString() {

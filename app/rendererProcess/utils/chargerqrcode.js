@@ -265,7 +265,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   let linkArray = [];
 
   // Création SGTextNode
-  for (let textNode of qrcodeMetadata.textNodes) {
+  for (let textNode of qrcodeMetadata.text_nodes) {
     let qrTextNode = new SGTextNode(textNode.x, textNode.y, 100, 80);
     qrTextNode.name = textNode.name;
     qrTextNode.url = textNode.url;
@@ -275,7 +275,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   }
 
   // Création SGQuestionQCMNode
-  for (let questionNode of qrcodeMetadata.questionNodes) {
+  for (let questionNode of qrcodeMetadata.question_nodes) {
     let qrQuestionNode;
 
     switch (questionNode.type) {
@@ -306,7 +306,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   }
 
   // Création des liens des textNode
-  for (let textNode of qrcodeMetadata.textNodes) {
+  for (let textNode of qrcodeMetadata.text_nodes) {
     let next_node = textNode.ext;
     if (next_node) {
       // Recherche si lier à un textNode
@@ -335,7 +335,7 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
   }
 
   // Création des liens des questionNode
-  for (let questionNode of qrcodeMetadata.questionNodes) {
+  for (let questionNode of qrcodeMetadata.question_nodes) {
     // On parcourt les réponses du questionNode
     for (let i = 0; i < questionNode.rep.length; i++) {
       let next_node = questionNode.rep[i].ext;

@@ -47,11 +47,11 @@ class ProjetSeriousGame {
     }
 
     setTextNodes(textNodes) {
-        this.qrcode.textNodes = textNodes;
+        this.qrcode.text_nodes = textNodes;
     }
 
     setQuestionNodes(questionNodes) {
-        this.qrcode.questionNodes = questionNodes;
+        this.qrcode.question_nodes = questionNodes;
     }
 
     getType() {
@@ -59,11 +59,11 @@ class ProjetSeriousGame {
     }
 
     getTextNodes() {
-        return this.qrcode.textNodes;
+        return this.qrcode.text_nodes;
     }
 
     getQuestionNodes() {
-        return this.qrcode.questionNodes;
+        return this.qrcode.question_nodes;
     }
 
     getDataString() {
