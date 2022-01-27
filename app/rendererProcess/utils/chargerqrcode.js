@@ -237,6 +237,7 @@ function drawQRCodeDataRecVocale(qrcode) {
   }
 
   // Message de bonne réponse, test s'il s'agit d'un texte ou d'un audio
+  console.log(qrcode.getTextBonneReponse())
   if (qrcode.getTextBonneReponse().type === 'text') {
     $("#MessageBonnereponseQCM").val(qrcode.getTextBonneReponse().text);
   } else {

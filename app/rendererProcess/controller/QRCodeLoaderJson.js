@@ -114,7 +114,7 @@ class QRCodeLoaderJson {
           questions.push(new QuestionQCM(question['question'].id, question['question'].textQuestion, answers));
         }
 
-        qrcode = new ProjetQCM(questions, qr.textBonneReponse, qr.textMauvaiseReponse);
+        qrcode = new ProjetQCM(questions, qr.text_bonne_reponse, qr.text_mauvaise_reponse);
         break;
 
       case "ExerciceReconnaissanceVocaleQuestionOuverte":
