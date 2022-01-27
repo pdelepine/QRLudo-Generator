@@ -1055,6 +1055,56 @@ var sketch = function (p) {
 			}
 		}
 
+		//---- Gestion des noeuds avec des noms identiques ----//
+
+		for(i = 0; i < textNodes.length; ++i){
+			let name = textNodes[i].name;
+
+			for(j = 0; j < textNodes.length; ++j){
+				if(j != i){
+					if(name == textNodes[j].name){
+						messageInfos("Attention des noeuds possèdent le même nom", "danger");
+						logger.error("Attention des noeuds possèdent le même nom");
+						return false;
+					}
+				}
+			}
+
+			for(j = 0; j < questionNodes.length; ++j){
+				if(j != i){
+					if(name == questionNodes[j].name){
+						messageInfos("Attention des noeuds possèdent le même nom", "danger");
+						logger.error("Attention des noeuds possèdent le même nom");
+						return false;
+					}
+				}
+			}
+		}
+
+		for(i = 0; i < questionNodes.length; ++i){
+			let name = questionNodes[i].name;
+
+			for(j = 0; j < textNodes.length; ++j){
+				if(j != i){
+					if(name == textNodes[j].name){
+						messageInfos("Attention des noeuds possèdent le même nom", "danger");
+						logger.error("Attention des noeuds possèdent le même nom");
+						return false;
+					}
+				}
+			}
+
+			for(j = 0; j < questionNodes.length; ++j){
+				if(j != i){
+					if(name == questionNodes[j].name){
+						messageInfos("Attention des noeuds possèdent le même nom", "danger");
+						logger.error("Attention des noeuds possèdent le même nom");
+						return false;
+					}
+				}
+			}
+		}
+
 		return true;
 	}
 
