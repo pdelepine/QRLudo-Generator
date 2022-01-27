@@ -91,8 +91,8 @@ class ProjetQCM {
       id: md5Value,
       type: "ExerciceReconnaissanceVocaleQCM",
       questions: questions,
-      textBonneReponse: textBonneReponse,
-      textMauvaiseReponse: textMauvaiseReponse
+      text_bonne_reponse: textBonneReponse,
+      text_mauvaise_reponse: textMauvaiseReponse
     };
   }
 

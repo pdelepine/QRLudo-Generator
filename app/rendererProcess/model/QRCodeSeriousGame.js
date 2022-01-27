@@ -35,8 +35,8 @@ class ProjetSeriousGame {
         this.qrcode = {
             id: md5Value,
             type: type,
-            textNodes: textNodes,
-            questionNodes: questionNodes
+            text_nodes: textNodes,
+            question_nodes: questionNodes
         };
 
         this.qrcodeMetaData = {};
