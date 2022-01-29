@@ -470,7 +470,7 @@ function deleteReponse(button) {
   }
 
   logger.info('Suppression d\'une réponse');
-  // deleteStore("reponse"+id_reponse);    // delete la reponse du store 
+  // deleteStore("reponse"+id_reponse);    // delete la reponse du store
 
 }
 
@@ -545,7 +545,7 @@ function enregistrement() {
     document.getElementById("ajoutNewReponse").disabled = false;
     document.getElementById("genererQestion").click();
   }
-  //ajouter des reponses dans l'objet projet de la question 
+  //ajouter des reponses dans l'objet projet de la question
   for (i = 0; i < numReponse + 1; ++i) {
     if (store.get('reponse' + i))
       projet.getQuestion().addReponse(store.get('reponseId' + i), store.get('data' + i)[0]);
@@ -567,7 +567,7 @@ function saveQRCodeImages(div, qrcode, directoryName) {
   } else {
     file_name = qrcode.getName().name.replace(/[^a-zA-Z0-9]+/g, "") + '.jpeg';
   }
-  
+
   fs.writeFile(path.join(directoryName, file_name), data, (err) => {
     if (err) {
       $("#questionsDivLabelsId").append("<div>" + err + "</div>");
@@ -824,7 +824,36 @@ $(document).ready(function () {
   $("#play-sound-div").hide();
 });
 
+function supprimerAudio(type){
 
+  switch (type) {
+    case 'QST':
+      $('#newQuestionText').val('')
+      $('#newQuestionText').attr('name','nomQuest')
+      $('#newQuestionText').removeAttr("disabled")
+      deleteStore('QuestionUrl');
+      deleteStore('newQuestionText');
+      break;
+      case 'MBR':
+        $('#newBonneReponseText').val('')
+        $('#newBonneReponseText').attr('name','nomQuest')
+      $('#newBonneReponseText').removeAttr("disabled")
+      deleteStore("BonneReponseUrl");
+      deleteStore('newBonneReponseText');
+      break;
+      case 'MMR':
+      $('#newMauvaiseReponseText').val('')
+      $('#newMauvaiseReponseText').attr('name','nomQuest')
+      $('#newMauvaiseReponseText').removeAttr("disabled")
+      deleteStore("MauvaiseReponseUrl");
+      deleteStore('newMauvaiseReponseText');
+      break;
+
+    default:
+      break;
+  }
+
+}
 
 /**  une fonction pour calculer le nombre de car de QRcode + les id des qrcodes */
 function calculNombreCaractereQRCode() {
@@ -842,13 +871,13 @@ function calculNombreCaractereQRCode() {
     char += qrQuestion.getColor().length
     char += qrQuestion.getId().toString().length;
     char += qrQuestion.getType().length;
-    char++;        // pour la version 
+    char++;        // pour la version
   }
   char += document.getElementById("newQuestionText").value.length;
   char += document.getElementById("newBonneReponseText").value.length;
   char += document.getElementById("newMauvaiseReponseText").value.length;
   char += document.getElementById("newNbMinimalBonneReponse").value.length;
-  char += 133;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""} 
+  char += 133;   // nombre de caractères dans {"id":,"name":"","data":[],"nb_min_reponses":"","type":"","color":"","text_bonne_reponse":"","text_mauvaise_reponse":"","version":""}
   return char;
 }
 

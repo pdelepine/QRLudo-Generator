@@ -197,18 +197,18 @@ $('#preview').on('click', e => {
 
 
 function generQRInter() {
-  /** 
+  /**
   cette fonction va être appeler quand on va remplir le champ de "qrName" et elle va générer un qrcode intermédiaire
   et on prends son ID et on va stocker ce ID dans l'objet store "newQrID" et on va également stocker le nombre de char Max
   qu'on peut avoir dans un qrcode dans l'objet store "charMax"
-  charMax = 1240 - qrcolor - qrID - qrtype et  puis dans la fonction verifNombreCaractere on va prendre en 
+  charMax = 1240 - qrcolor - qrID - qrtype et  puis dans la fonction verifNombreCaractere on va prendre en
   compte qrName et qrData "compter les mots qui se trouvent dans les champs qname et data".
-  
-  et puis on va appeler verifNombreCaractere pour verifier le nombre de caractere total ou j'ai ajouté le comptage de char  
-  du champ qrName et la fonction verifNombreCaractere va appeler la fonction SetProgressBar qui va faire la mise à jour
-  du progressBar 
 
-  sachant que comme j'ai implémenté cette solution de manière dynamique, on perd l'assosiation data -> ID comme l'ID 
+  et puis on va appeler verifNombreCaractere pour verifier le nombre de caractere total ou j'ai ajouté le comptage de char
+  du champ qrName et la fonction verifNombreCaractere va appeler la fonction SetProgressBar qui va faire la mise à jour
+  du progressBar
+
+  sachant que comme j'ai implémenté cette solution de manière dynamique, on perd l'assosiation data -> ID comme l'ID
   est calculé en fonction de data.
   */
 
@@ -222,7 +222,7 @@ function generQRInter() {
   charMax -= qrColor.length;
   charMax -= newQrUnique.getType().length;
   charMax -= newQrUnique.getId().length;
-  // a nested function to generate a random string in order to get QRcode data and use it to generate our QRcode 
+  // a nested function to generate a random string in order to get QRcode data and use it to generate our QRcode
   function random_string(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -448,9 +448,9 @@ function showError(modal, errorMsg, message = "Veuillez coller un lien de fichie
   $(modal).prepend(errorMsg); // add error message
 }
 
-/** 
+/**
  * verifier le champ qrName du formulaire myFormActive puis activer le button generer
- * 
+ *
  * Le nom du QR Code doit contenir au moins un caractère, sinon le bouton generer n'est pas accessible
  */
 function activer_button() {
@@ -467,7 +467,7 @@ function activer_button() {
 }
 
 
-/** ajouter une nvlle legende (textarea) a chaque click sur button Texte 
+/** ajouter une nvlle legende (textarea) a chaque click sur button Texte
  * (pour chaque textarea il faut rajouter à l'attribut class la valeur qrData class="... qrData")
  */
 function ajouterChampLegende(valeur = "") {
@@ -479,6 +479,9 @@ function ajouterChampLegende(valeur = "") {
     <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1100 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();">${valeur}</textarea>
     <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
       <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+    </button>
+    <button class="btn btn-outline-success align-self-center " type="button" id="deleteAudio${numZoneCourante}" onclick="supprimerAudio(this, ${numZoneCourante});verifNombreCaractere(${numZoneCourante});">
+      <i class="fa fa-times" aria-hidden="true"></i>
     </button>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success align-self-center legendeQR-close-btn' onclick='supprimerChampLegende(this, ${numZoneCourante});'>
     <div class="inline-block">
@@ -573,7 +576,15 @@ function verifNombreCaractere(num) {
   }
 }
 
-
+function supprimerAudio(e,numText) {
+    //store.delete(`text` + numText);
+    //store.delete(`zone` + numText);
+    $('#textarea'+numText).val('')
+    $('#textarea'+numText).attr('name', 'legendeQR')
+    $('#textarea'+numText).removeAttr("disabled")
+  //calcul et mise a jour de la bar de progression
+  SetProgressBar();
+}
 
 /** supprime un le textarea correspondant au numText */
 function supprimerChampLegende(e, numText) {
@@ -605,16 +616,12 @@ function changementChampLegendeEnChampSon(nom, url) {
   textArea.value = nom;
   textArea.name = url;
   textArea.setAttribute("disabled", "true");
-  //cache le bouton audio
-  let boutonAudio = document.getElementById("showAudio" + audioSource);
-  boutonAudio.style.visibility = "hidden";
-
   //calcul et mise a jour de la bar de progression
   SetProgressBar();
 }
 
-/** generer un input 'pour un fichier audio' -> nom de fichier + url 
- * (pour chaque input il faut rajouter à l'attribut class la valeur qrData class=".. qrData") 
+/** generer un input 'pour un fichier audio' -> nom de fichier + url
+ * (pour chaque input il faut rajouter à l'attribut class la valeur qrData class=".. qrData")
  */
 function ajouterChampSon(nom, url) {
   incrementerNbZoneDonne();

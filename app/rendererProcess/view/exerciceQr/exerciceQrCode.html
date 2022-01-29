@@ -35,8 +35,14 @@
                 </div>
               </td>
               <td>
-                <button type="button" id="newQuestionAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                <button type="button" id="newQuestionAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;">
                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-outline-success align-self-center " type="button" id="deleteNewQuestionAudio"
+                  onclick="supprimerAudio('QST');verifNombreCaractere();">
+                  <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
               </td>
             </tr>
@@ -50,10 +56,16 @@
                 </div>
               </td>
               <td>
-                <button type="button" id="newBonneReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                <button type="button" id="newBonneReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;">
                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
                 </button>
               </td>
+                <td>
+                  <button class="btn btn-outline-success align-self-center " type="button" id="deleteAudioNewBonneReponseAudio"
+                    onclick="supprimerAudio('MBR');verifNombreCaractere();">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                  </button>
+                </td>
             </tr>
             <tr>
               <td>
@@ -65,9 +77,15 @@
                 </div>
               </td>
               <td>
-                <button type="button" id="newMauvaiseReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;"> 
+                <button type="button" id="newMauvaiseReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" style="margin-left:10px;">
                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
                 </button>
+                <td>
+                  <button class="btn btn-outline-success align-self-center " type="button" id="deleteNewMauvaiseReponseAudio"
+                    onclick="supprimerAudio('MMR');verifNombreCaractere();">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                  </button>
+                </td>
               </td>
             </tr>
             <tr>

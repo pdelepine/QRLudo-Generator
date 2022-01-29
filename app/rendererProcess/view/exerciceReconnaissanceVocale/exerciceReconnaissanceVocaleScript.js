@@ -78,7 +78,7 @@ function genererJsonQCM() {
       }
     }
     if (questionText !== "" && reponsesComplete && minimumUneBonneReponse) {
-      //création d'une questionQCM et on l'ajoute dans le tableau des questions 
+      //création d'une questionQCM et on l'ajoute dans le tableau des questions
       id = "question" + i.toString();
       question = new QuestionQCM(id, questionText, reponses);
       questions.push(question);
@@ -211,7 +211,7 @@ function ajouterNouvelleReponse(contenu = "", isBonneRep = false, question_id = 
                             </span>
                           </div>
                           <div class="form-group col-md-2">
-                            <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id + `Reponse` + compteurReponse[question_id] + `" style="width:70px;" 
+                            <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + question_id + `Reponse` + compteurReponse[question_id] + `" style="width:70px;"
                                   value="option" onclick="activerSaveCheckbox('gridCheckQuestion` + question_id + `Reponse` + compteurReponse[question_id] + `')" >
                             <label class="form-check-label" for="gridCheckQuestion`+ question_id + `Reponse` + compteurReponse[question_id] + `">
                           </div>
@@ -242,15 +242,18 @@ function ajouterNouvelleQuestion(incrementerDansStore = true) {
   logger.info('Ajout d\'une nouvelle question au QR Code QCM de l\'exercice à reconnaissance vocale');
   let question = document.createElement('div');
   question.innerHTML = `  <div class="question-intro">
-                            <div class="row"> 
+                            <div class="row">
                               <div class="col">
                                 <label class="question-intro-label" data-toggle="collapse" data-target="#collapseQuestion`+ compteurQuestion + `" aria-expanded="false" aria-controls="collapseQuestion` + compteurQuestion + `" style="color:#28a745;padding-right:25px;">Question ` + compteurQuestion + ` : </label>
                                 <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+ compteurQuestion + `" cols="10" name="nomprojet"
                                   placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+ compteurQuestion + `');verifNombreCaractere('QCM');" />
                               </div>
-                              <div class="btn-question col-4">
-                                <button type="button" id="audioQuestion`+ compteurQuestion + `" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion` + compteurQuestion + `')"> 
+                              <div class="btn-question col-md-6">
+                                <button type="button" id="audioQuestion`+ compteurQuestion + `" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion` + compteurQuestion + `')">
                                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                                </button>
+                                <button class="btn btn-outline-success align-self-center " type="button" id="deleteAudioQuestion`+ compteurQuestion + `" onclick="supprimerAudio('textQuestion`+ compteurQuestion + `');verifNombreCaractere('QCM');">
+                                  <i class="fa fa-times" aria-hidden="true"></i>
                                 </button>
                                 <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button" data-toggle="collapse" data-target="#collapseQuestion`+ compteurQuestion + `" aria-expanded="false" aria-controls="#collapseQuestion` + compteurQuestion + `" id="btnCollapseQuestion` + compteurQuestion + `">
                                   <i class="fa fa-chevron-up pull-right"></i>
@@ -281,7 +284,7 @@ function ajouterNouvelleQuestion(incrementerDansStore = true) {
                                 </span>
                               </div>
                               <div class="form-group col-md-2">
-                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + compteurQuestion + `Reponse` + compteurReponse[compteurQuestion] + `" style="width:70px;" 
+                                <input class="form-check-input" type="checkbox" name="gridRadios" id="gridCheckQuestion` + compteurQuestion + `Reponse` + compteurReponse[compteurQuestion] + `" style="width:70px;"
                                       value="option" onclick="activerSaveCheckbox('gridCheckQuestion` + compteurQuestion + `Reponse` + compteurReponse[compteurQuestion] + `')" >
                                 <label class="form-check-label" for="gridCheckQuestion` + compteurQuestion + `Reponse` + compteurReponse[compteurQuestion] + `">
                               </div>
@@ -310,7 +313,7 @@ function ajouterNouvelleQuestion(incrementerDansStore = true) {
 
 
 
-//Pour supprimer une énigme ou bien une réponse 
+//Pour supprimer une énigme ou bien une réponse
 function supprLigne(question_id, idLigne, element) {
   if (element == "Reponse") {
     if (compteurReponse[question_id] > 1) {
@@ -350,11 +353,11 @@ function supprLigne(question_id, idLigne, element) {
 
 /** une fonction pour mettre a jour les reponses d'une question dans le store*/
 function updateReponses(question_id) {
-  for (i = 1; i < 30; ++i) {                       // supprimer toutes les reponses et les grids de la question dans le store 
+  for (i = 1; i < 30; ++i) {                       // supprimer toutes les reponses et les grids de la question dans le store
     deleteStore("question" + question_id.toString() + "Reponse" + i.toString());
     deleteStore("gridCheckQuestion" + question_id.toString() + "Reponse" + i.toString());
   }
-  for (i = 1; i < 30; ++i) {                      // mettre a jour les reponses et les grids de la question 
+  for (i = 1; i < 30; ++i) {                      // mettre a jour les reponses et les grids de la question
     if (document.getElementById("question" + question_id.toString() + "Reponse" + i.toString()) != null) {
       store.set("question" + question_id.toString() + "Reponse" + i.toString(), document.getElementById("question" + question_id.toString() + "Reponse" + i.toString()).value);
       if (document.getElementById("gridCheckQuestion" + question_id.toString() + "Reponse" + i.toString()).checked) {
@@ -373,7 +376,7 @@ function reinitialisationQuestions() {
   }
 }
 
-//Pour supprimer une énigme ou bien une réponse 
+//Pour supprimer une énigme ou bien une réponse
 function supprimerQuestion(question_id, element) {
   if (element == "Question") {
     if (compteurQuestion > 1) {
@@ -456,7 +459,7 @@ function updateStore(question_id) {
 
   deleteStore("question" + question_id + "Url");   // supprimer le url de l'audio de la question dans le store
 
-  for (i = question_id; i <= compteurQuestion + 1; ++i) { // mettre a jour les URL 
+  for (i = question_id; i <= compteurQuestion + 1; ++i) { // mettre a jour les URL
     if (store.get("question" + i.toString() + "Url")) {
       store.set("question" + (i - 1).toString() + "Url", store.get("question" + i.toString() + "Url"));
       deleteStore("question" + i.toString() + "Url");
@@ -494,7 +497,7 @@ $(document).ready(function () {
   });
 });
 
-//script 
+//script
 $("#emptyFields").on('click', function () {
   viderChamps();
 });
@@ -658,7 +661,7 @@ function chargementOngletQcm() {
       }
     }
   }
-  // le chargement des reponses 
+  // le chargement des reponses
   for (i = 1; i <= store.get("compteurQuestion"); ++i) {
     for (j = 1; j < 30; ++j) {
       if (store.get("question" + i + "Reponse" + j)) {
@@ -672,7 +675,7 @@ function chargementOngletQcm() {
       }
     }
   }
-  //le chargement de message de bonne reponse 
+  //le chargement de message de bonne reponse
   if (store.get('MessageBonnereponseQCM')) {
     let bonReponse = store.get('MessageBonnereponseQCM');
     document.getElementById("MessageBonnereponseQCM").value = bonReponse;
@@ -728,6 +731,15 @@ $("#questionQCMOnglet").on('click', function () {
 //Partie audio
 
 var audioSource = "";
+
+function supprimerAudio(source) {
+      $('#'+source).val('')
+      $('#'+source).attr('name','')
+      $('#'+source).removeAttr("disabled")
+      deleteStore(source)
+}
+
+
 
 /**
  * Fonction qui change la valeur de audioSource
@@ -888,7 +900,7 @@ $(document).ready(function () {
 function calculNombreCaractereQRCode(type) {
   let char = 0;
   if (type == "QO") {
-    char += 190; // nombre de caractère dans {"qrcode":{"id":xxxxxxxxxxxxx,"name":"","type":"ExerciceReconnaissanceVocaleQuestionOuverte","data":[""],"color":"#xxxxxx","text_bonne_reponse":"","text_mauvaise_reponse":"","version":"x"}} 
+    char += 190; // nombre de caractère dans {"qrcode":{"id":xxxxxxxxxxxxx,"name":"","type":"ExerciceReconnaissanceVocaleQuestionOuverte","data":[""],"color":"#xxxxxx","text_bonne_reponse":"","text_mauvaise_reponse":"","version":"x"}}
     char += document.getElementById("Question").value.length;
     char += document.getElementById("Bonnereponse").value.length;
     char += document.getElementById("MessageBonnereponse").value.length;
@@ -903,7 +915,7 @@ function calculNombreCaractereQRCode(type) {
       char += document.getElementById("textQuestion" + i).value.length;
       let numberOfReopnses = document.getElementById("reponseContainerQuestion" + i).childElementCount;
       for (j = 1; j <= numberOfReopnses; ++j) {
-        char += 7; // pour les "" + []  
+        char += 7; // pour les "" + []
         char += ("réponse numéro " + j.toString()).length;
         char += document.getElementById("question" + i + "Reponse" + j).value.length;
         char += 5;     // pour true || false
@@ -920,7 +932,7 @@ function GererChampsDeReponses(nombreCaractere) {
   for (i = 1; i <= compteurQuestion; ++i) {
     numberOfReopnses = document.getElementById("reponseContainerQuestion" + i).childElementCount;
     for (j = 1; j <= numberOfReopnses; ++j) {
-      if (nombreCaractere == 0) { // on ferme le champs avec son length courant quand le nombreCaractere est 0 
+      if (nombreCaractere == 0) { // on ferme le champs avec son length courant quand le nombreCaractere est 0
         currentLength = document.getElementById("question" + i + "Reponse" + j).value.length;
         document.getElementById("question" + i + "Reponse" + j).setAttribute("maxLength", currentLength);
       } else {
@@ -930,7 +942,7 @@ function GererChampsDeReponses(nombreCaractere) {
   }
 }
 
-/**une fonction pour gerer les button d'ajout de questions et d'ajout de reponses 
+/**une fonction pour gerer les button d'ajout de questions et d'ajout de reponses
  *@param {boolean} mode  */
 function GererButonsDajout(mode) {
   document.getElementById("ajouterQuestion").disabled = mode;  //  activer/disactiver le buton d'ajouter question dans le QCM
@@ -969,14 +981,14 @@ function SetProgressBar(type) {
 }
 
 /**
- * une fonction pour verifier le nombre de caractere 
+ * une fonction pour verifier le nombre de caractere
  * @param {string} type */
 function verifNombreCaractere(type) {
   let nombreCaratereMAX = 1240;
   $('#messages').empty();
   let total = SetProgressBar(type);
   if (type == "QO") {
-    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs  
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs
       messageInfos("La limite de caractère est atteinte ", "warning");
       document.getElementById("Question").setAttribute("maxLength", document.getElementById("Question").value.length);
       document.getElementById("Bonnereponse").setAttribute("maxLength", document.getElementById("Bonnereponse").value.length);
@@ -995,7 +1007,7 @@ function verifNombreCaractere(type) {
     }
   }
   if (type == "QCM") {
-    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs 
+    if (total >= nombreCaratereMAX) { // si le nombre de caractere max est atteint, on ferme les champs
       messageInfos("La limite de caractère est atteinte ", "warning");
       GererChampsQuestions("closeFields");
       document.getElementById("MessageBonnereponseQCM").setAttribute("maxLength", document.getElementById("MessageBonnereponseQCM").value.length);

@@ -44,14 +44,19 @@
                           style="color:#28a745;padding-right:25px;">Question 1 : </label>
                         <input type="text" class="input-lg question-intro-input" style="width:380px;" id="textQuestion1"
                           cols="10" name="nomprojet" placeholder="Quelle est votre question"
-                          onkeyup="verifNombreCaractere('QCM');activerSave('textQuestion1');" />
+                          onkeyup="activerSave('textQuestion1');verifNombreCaractere('QCM');" onchange="verifNombreCaractere('QCM');" />
                       </div>
                       <!--div pour le bouton de collapse et suppression-->
-                      <div class="btn-question col-4">
+                      <div class="btn-question col-md-6">
                         <button type="button" id="audioQuestion1" class="btn btn-outline-success btn-unique-xl"
                           name="ajouterSon" data-toggle="modal" data-target="#listeMusic"
-                          onclick="chamgementAudioSource('textQuestion1')">
-                          <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+                          onclick="chamgementAudioSource('textQuestion1');verifNombreCaractere('QCM');">
+                          <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                        </button>
+                        <button class="btn btn-outline-success align-self-center " type="button" id="deleteAudioQuestion1"
+                          onclick="supprimerAudio('textQuestion1');verifNombreCaractere('QCM');">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
                         <button class="btn btn-outline-success align-self-center btn-question-collapse" type="button"
                           data-toggle="collapse" data-target="#collapseQuestion1" aria-expanded="false"
                           aria-controls="#collapseQuestion1" id="btnCollapseQuestion1">
@@ -137,7 +142,12 @@
                 <button type="button" id="bonneReponseAudioQCM" class="btn btn-outline-success btn-unique-xl"
                   name="ajouterSon" data-toggle="modal" data-target="#listeMusic"
                   onclick="chamgementAudioSource('MessageBonnereponseQCM')">
-                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+                  <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
+                </button>
+                <button class="btn btn-outline-success align-self-center " type="button" id="deleteBonneReponseAudioQCM"
+                  onclick="supprimerAudio('MessageBonnereponseQCM');verifNombreCaractere('QCM');">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
               </div>
               <div class="form-group row">
                 <label for="inputEmail3" class="col-sm-4 col-form-label"
@@ -150,6 +160,10 @@
                   name="ajouterSon" data-toggle="modal" data-target="#listeMusic"
                   onclick="chamgementAudioSource('MessageMauvaisereponseQCM')">
                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+                <button class="btn btn-outline-success align-self-center " type="button" id="deleteMauvaiseReponseAudioQCM"
+                  onclick="supprimerAudio('MessageMauvaisereponseQCM');verifNombreCaractere('QCM');">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -169,6 +183,10 @@
             <button type="button" id="QuestionAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon"
               data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('Question')">
               <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+            <button class="btn btn-outline-success align-self-center " type="button" id="deleteQuestionAudio"
+              onclick="supprimerAudio('Question');verifNombreCaractere('QO');">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
           </div>
           <br>
           <div class="form-group row">
@@ -195,6 +213,10 @@
             <button type="button" id="bonneReponseAudio" class="btn btn-outline-success btn-unique-xl" name="ajouterSon"
               data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('MessageBonnereponse')">
               <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+            <button class="btn btn-outline-success align-self-center " type="button" id="deleteBonnereponseAudio"
+              onclick="supprimerAudio('MessageBonnereponse');verifNombreCaractere('QO');">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
           </div>
           <div class="form-group row">
             <label for="inputEmail3" class="col-sm-4 col-form-label" style="color:#28a745;padding-right:32px;">Message
@@ -207,6 +229,10 @@
               name="ajouterSon" data-toggle="modal" data-target="#listeMusic"
               onclick="chamgementAudioSource('MessageMauvaisereponse')">
               <i class="fa fa-music"></i>&nbsp;&nbsp;Audio</button>
+            <button class="btn btn-outline-success align-self-center " type="button" id="deleteMessageMauvaisereponseAudio"
+              onclick="supprimerAudio('MessageMauvaisereponse');verifNombreCaractere('QO');">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
         <!--fin onglet Question-->
@@ -231,7 +257,7 @@
       <button type="button" class="btn btn-outline-success btn-unique-xl mr-auto" id="saveQRCode" disabled>
         <i class="fa fa-download"></i>&nbsp;&nbsp; Exporter
       </button>
-      
+
     </div>
   </form>
 </div>
