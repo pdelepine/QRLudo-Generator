@@ -618,17 +618,29 @@ function enregistrement() {
     $("#questionQCMOnglet").attr('class', 'nav-link active');
   }
 
-  if (store.get(`Question`))
+  if (store.get(`Question`)) {
+    if (store.get("Question").substring(store.get("Question").length - 3, store.get("Question").length) == "mp3") { // changement de name si c'est un mp3
+      document.getElementById("Question").disabled = true;
+    }
     $("#Question").val(store.get(`Question`));
+  }
 
   if (store.get(`Bonnereponse`))
     $("#Bonnereponse").val(store.get(`Bonnereponse`));
 
-  if (store.get(`MessageBonnereponse`))
+  if (store.get(`MessageBonnereponse`)) {
+    if (store.get("MessageBonnereponse").substring(store.get("MessageBonnereponse").length - 3, store.get("MessageBonnereponse").length) == "mp3") { // changement de name si c'est un mp3
+      document.getElementById("MessageBonnereponse").disabled = true;
+    }
     $("#MessageBonnereponse").val(store.get(`MessageBonnereponse`));
+  }
 
-  if (store.get('MessageMauvaisereponse'))
+  if (store.get('MessageMauvaisereponse')) {
+    if (store.get("MessageMauvaisereponse").substring(store.get("MessageMauvaisereponse").length - 3, store.get("MessageMauvaisereponse").length) == "mp3") { // changement de name si c'est un mp3
+      document.getElementById("MessageMauvaisereponse").disabled = true;
+    }
     $("#MessageMauvaisereponse").val(store.get('MessageMauvaisereponse'));
+  }
 
   if (store.get('reponseParIdentifiant'))
     $("#reponseParIdentifiant").prop('checked', store.get('reponseParIdentifiant'));
@@ -684,7 +696,7 @@ function chargementOngletQcm() {
       document.getElementById("MessageBonnereponseQCM").name = store.get('MessageBonnereponseQCMUrl');
     }
   }
-  //le chargement de message de mauvais reponse 
+  //le chargement de message de mauvais reponse
   if (store.get('MessageMauvaisereponseQCM')) {
     let mauvaisReponse = store.get('MessageMauvaisereponseQCM');
     document.getElementById("MessageMauvaisereponseQCM").value = mauvaisReponse;
