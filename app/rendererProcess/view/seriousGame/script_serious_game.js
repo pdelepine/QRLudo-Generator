@@ -1057,12 +1057,12 @@ var sketch = function (p) {
 
 		//---- Gestion des noeuds avec des noms identiques ----//
 
-		for(i = 0; i < textNodes.length; ++i){
+		for (i = 0; i < textNodes.length; ++i) {
 			let name = textNodes[i].name;
 
-			for(j = 0; j < textNodes.length; ++j){
-				if(j != i){
-					if(name == textNodes[j].name){
+			for (j = 0; j < textNodes.length; ++j) {
+				if (j != i) {
+					if (name == textNodes[j].name) {
 						messageInfos("Attention des noeuds possèdent le même nom", "danger");
 						logger.error("Attention des noeuds possèdent le même nom");
 						return false;
@@ -1070,9 +1070,9 @@ var sketch = function (p) {
 				}
 			}
 
-			for(j = 0; j < questionNodes.length; ++j){
-				if(j != i){
-					if(name == questionNodes[j].name){
+			for (j = 0; j < questionNodes.length; ++j) {
+				if (j != i) {
+					if (name == questionNodes[j].name) {
 						messageInfos("Attention des noeuds possèdent le même nom", "danger");
 						logger.error("Attention des noeuds possèdent le même nom");
 						return false;
@@ -1081,12 +1081,12 @@ var sketch = function (p) {
 			}
 		}
 
-		for(i = 0; i < questionNodes.length; ++i){
+		for (i = 0; i < questionNodes.length; ++i) {
 			let name = questionNodes[i].name;
 
-			for(j = 0; j < textNodes.length; ++j){
-				if(j != i){
-					if(name == textNodes[j].name){
+			for (j = 0; j < textNodes.length; ++j) {
+				if (j != i) {
+					if (name == textNodes[j].name) {
 						messageInfos("Attention des noeuds possèdent le même nom", "danger");
 						logger.error("Attention des noeuds possèdent le même nom");
 						return false;
@@ -1094,9 +1094,9 @@ var sketch = function (p) {
 				}
 			}
 
-			for(j = 0; j < questionNodes.length; ++j){
-				if(j != i){
-					if(name == questionNodes[j].name){
+			for (j = 0; j < questionNodes.length; ++j) {
+				if (j != i) {
+					if (name == questionNodes[j].name) {
 						messageInfos("Attention des noeuds possèdent le même nom", "danger");
 						logger.error("Attention des noeuds possèdent le même nom");
 						return false;
@@ -1323,7 +1323,7 @@ function supprimerChampSon() {
 	}
 	document.getElementById(id_input).value = "";
 	document.getElementById(id_input).name = "";
-	$("#"+id_input).removeAttr("disabled")
+	$("#" + id_input).removeAttr("disabled")
 }
 
 /** Fonction pour ajouter au bon endroit le fichier audio */
@@ -1344,7 +1344,7 @@ function ajouterChampSon(nom, url) {
 			myP5.nodeArray[i].saveAudioModification();
 		}
 	}
-	$("#"+id_input).attr("disabled", "true");
+	$("#" + id_input).attr("disabled", "true");
 }
 
 function showError(modal, errorMsg, message = "Veuillez coller un lien de fichier téléchargeable. Reportez vous à la rubrique Info pour plus d'informations.") {

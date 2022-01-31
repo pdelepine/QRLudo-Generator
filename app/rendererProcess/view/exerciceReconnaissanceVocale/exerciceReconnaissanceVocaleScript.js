@@ -248,7 +248,7 @@ function ajouterNouvelleQuestion(incrementerDansStore = true) {
                                 <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+ compteurQuestion + `" cols="10" name="nomprojet"
                                   placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+ compteurQuestion + `');verifNombreCaractere('QCM');" />
                               </div>
-                              <div class="btn-question col-md-6">
+                              <div class="btn-question col-md-5">
                                 <button type="button" id="audioQuestion`+ compteurQuestion + `" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion` + compteurQuestion + `')">
                                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
                                 </button>
@@ -398,11 +398,13 @@ function supprimerQuestion(question_id, element) {
           div[2].getElementsByTagName("input")[0].setAttribute("onkeyup", "activerSave('textQuestion" + cpt + "');verifNombreCaractere('QCM');");
           div[3].getElementsByTagName("button")[0].setAttribute("onclick", "chamgementAudioSource('textQuestion" + cpt + "');");
           div[3].getElementsByTagName("button")[0].id = "audioQuestion" + cpt;
-          div[3].getElementsByTagName("button")[1].setAttribute("data-target", "#collapseQuestion" + cpt);
-          div[3].getElementsByTagName("button")[1].setAttribute("aria-controls", "#collapseQuestion" + cpt);
-          div[3].getElementsByTagName("button")[1].id = "btnCollapseQuestion" + cpt;
-          div[3].getElementsByTagName("button")[2].setAttribute("onclick", "supprimerQuestion(" + cpt + ",'Question');verifNombreCaractere('QCM')");
-          div[3].getElementsByTagName("button")[2].id = "deleteQuestion" + cpt;
+          div[3].getElementsByTagName("button")[1].setAttribute("onclick", `supprimerAudio('textQuestion${cpt}');verifNombreCaractere('QCM');`);
+          div[3].getElementsByTagName("button")[1].id = "deleteAudioQuestion" + cpt;
+          div[3].getElementsByTagName("button")[2].setAttribute("data-target", "#collapseQuestion" + cpt);
+          div[3].getElementsByTagName("button")[2].setAttribute("aria-controls", "#collapseQuestion" + cpt);
+          div[3].getElementsByTagName("button")[2].id = "btnCollapseQuestion" + cpt;
+          div[3].getElementsByTagName("button")[3].setAttribute("onclick", "supprimerQuestion(" + cpt + ",'Question');verifNombreCaractere('QCM')");
+          div[3].getElementsByTagName("button")[3].id = "deleteQuestion" + cpt;
           div[4].id = "collapseQuestion" + cpt;
           div[7].id = "reponseContainerQuestion" + cpt;
           let last_div = 7;
