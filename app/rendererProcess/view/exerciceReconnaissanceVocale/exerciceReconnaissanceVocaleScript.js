@@ -248,7 +248,7 @@ function ajouterNouvelleQuestion(incrementerDansStore = true) {
                                 <input type="text" class="input-lg question-intro-input" style="width:380px;"  id="textQuestion`+ compteurQuestion + `" cols="10" name="nomprojet"
                                   placeholder="Quelle est votre question" onkeyup="activerSave('textQuestion`+ compteurQuestion + `');verifNombreCaractere('QCM');" />
                               </div>
-                              <div class="btn-question col-md-6">
+                              <div class="btn-question col-md-5">
                                 <button type="button" id="audioQuestion`+ compteurQuestion + `" class="btn btn-outline-success btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick="chamgementAudioSource('textQuestion` + compteurQuestion + `')">
                                   <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
                                 </button>
