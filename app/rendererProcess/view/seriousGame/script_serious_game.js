@@ -1059,49 +1059,73 @@ var sketch = function (p) {
 
 		for (i = 0; i < textNodes.length; ++i) {
 			let name = textNodes[i].name;
+			let found = false;
 
 			for (j = 0; j < textNodes.length; ++j) {
 				if (j != i) {
 					if (name == textNodes[j].name) {
-						messageInfos("Attention des noeuds possèdent le même nom", "danger");
-						logger.error("Attention des noeuds possèdent le même nom");
-						return false;
+						if(!found)
+							found = true;
+						textNodes[j].containError = true;
 					}
+					else
+						textNodes[j].containError = false;
 				}
 			}
 
 			for (j = 0; j < questionNodes.length; ++j) {
 				if (j != i) {
 					if (name == questionNodes[j].name) {
-						messageInfos("Attention des noeuds possèdent le même nom", "danger");
-						logger.error("Attention des noeuds possèdent le même nom");
-						return false;
+						if(!found)
+							found = true;
+						questionNodes[j].containError = true;
 					}
+					else
+						questionNodes[j].containError = false;
 				}
+			}
+
+			if(found) {
+				textNodes[i].containError = true;
+				messageInfos("Attention des noeuds possèdent le même nom", "danger");
+				logger.error("Attention des noeuds possèdent le même nom");
+				return false;
 			}
 		}
 
 		for (i = 0; i < questionNodes.length; ++i) {
 			let name = questionNodes[i].name;
+			let found = false;
 
 			for (j = 0; j < textNodes.length; ++j) {
 				if (j != i) {
 					if (name == textNodes[j].name) {
-						messageInfos("Attention des noeuds possèdent le même nom", "danger");
-						logger.error("Attention des noeuds possèdent le même nom");
-						return false;
+						if(!found)
+							found = true;
+						textNodes[j].containError = true;
 					}
+					else
+						textNodes[j].containError = false;
 				}
 			}
 
 			for (j = 0; j < questionNodes.length; ++j) {
 				if (j != i) {
 					if (name == questionNodes[j].name) {
-						messageInfos("Attention des noeuds possèdent le même nom", "danger");
-						logger.error("Attention des noeuds possèdent le même nom");
-						return false;
+						if(!found)
+							found = true;
+						questionNodes[j].containError = true;
 					}
+					else
+						questionNodes[j].containError = false;
 				}
+			}
+
+			if(found) {
+				questionNodes[i].containError = true;
+				messageInfos("Attention des noeuds possèdent le même nom", "danger");
+				logger.error("Attention des noeuds possèdent le même nom");
+				return false;
 			}
 		}
 
