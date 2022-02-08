@@ -476,7 +476,7 @@ function ajouterChampLegende(valeur = "") {
 
   var textareaLegende = document.createElement('div');
   textareaLegende.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class="fa fa-pause align-self-center icon-player"></i>
-    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1100 caractères maximum)' maxlength='1240'  onkeydown="verifNombreCaractere(${numZoneCourante});" onchange="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();">${valeur}</textarea>
+    <textarea id='textarea${numZoneCourante}' class='form-control qrData test' rows='3' name='legendeQR' placeholder='Tapez votre texte (environ 1100 caractères maximum)' maxlength='1240' onkeyup="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();">${valeur}</textarea>
     <button type="button" id="showAudio${numZoneCourante}" class="btn btn-outline-success align-self-center btn-unique-xl" name="ajouterSon" data-toggle="modal" data-target="#listeMusic" onclick='changementAudioSource(${numZoneCourante});' style="margin-left:15px;">
       <i class="fa fa-music"></i>&nbsp;&nbsp;Audio
     </button>
@@ -630,7 +630,7 @@ function ajouterChampSon(nom, url) {
   var inputSon = document.createElement('div');
   inputSon.innerHTML = `<i class='fa fa-play align-self-center icon-player'></i><i class='fa fa-pause align-self-center icon-player'></i>
       <!-- <input type='text' id='${url}' name='AudioName' class='form-control qrData' value='${nom}' readonly>  -->
-    <textarea id='textarea${numZoneCourante}' class='form-control qrData'  name='${url}'  maxlength='1240'  readonly>${nom}</textarea>
+    <textarea id='textarea${numZoneCourante}' class='form-control qrData' onkeyup="verifNombreCaractere(${numZoneCourante});" onchange="generQRInter();" name='${url}'  maxlength='1240'  readonly>${nom}</textarea>
     <button id='delete${numZoneCourante}' type='button' class='btn btn-outline-success legendeQR-close-btn align-self-center' onclick='supprimerChampLegende(this,${numZoneCourante});'>
     <div class="inline-block">
       <i class='fa fa-trash-alt'></i></button>

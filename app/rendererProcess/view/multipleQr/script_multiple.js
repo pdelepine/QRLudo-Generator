@@ -4,7 +4,6 @@
  * @Last modified time: 2019-01-16T23:37:53+01:00
  */
 
-
 $().ready(function () {
   enregistrement();
   store.delete(`numFich`);
@@ -408,7 +407,7 @@ function caractDansQRMult() {
 
   char += qrColor.length;
   char += newQrMult.getType().length;
-  char++;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson 
+  char++;  // ++1 pour la version 'pas de getter dans la class QRCodeMultipleJson
   char += 63;  // la taille de  {"name":"","type":"ensemble","data":[],"color":"","version":""}
 
   return char;
@@ -421,6 +420,7 @@ function caractDeQRCodesUniques() {
   let qrcodes = controllerMultiple.getQRCodeAtomiqueArray();
 
   for (const element of qrcodes) {
+    console.log(element);
     char += element.getData().toString().length;
     char += element.getColor().toString().length;
     char += element.getId().toString().length;
@@ -434,7 +434,6 @@ function caractDeQRCodesUniques() {
 }
 
 function verifNombreCaractere() {
-
   var nombreCaratereMAX = 1240;
   //progress bar gestion
   var total = SetProgressBar();
@@ -452,7 +451,7 @@ function verifNombreCaractere() {
     document.getElementById("qrName").setAttribute("maxlength", nombreCaratereMAX);
   }
 
-  // si le nombre de caractére max n'est pas attein mais le progress bar est > 85%, on disable le button d'ajoute 
+  // si le nombre de caractére max n'est pas attein mais le progress bar est > 85%, on disable le button d'ajoute
   if (Math.round((total * 100) / nombreCaratereMAX) >= 85) {
     document.getElementById("addNewQR").disabled = true;
   }
@@ -468,7 +467,7 @@ function verifNombreCaractere() {
 
   }
 
-  if (document.getElementById("qrName").value.length == 0 && controllerMultiple.getQRCodeAtomiqueArray() == 0) {
+  if (document.getElementById("qrName").value.length == 0 && controllerMultiple.getQRCodeAtomiqueArray() == 0 && total <= 0) {
     document.getElementById("progressbarId").style.width = 0;
   }
 
@@ -493,6 +492,7 @@ function SetProgressBar() {
   $("#progressbarId").attr('aria-valuenow', totalSeted);
   $("#progressbarId").attr("style", "width:" + totalSeted + "%");
   $("#progressbarId").text(totalSeted + "%");
+  console.log(totalSeted);
   //FIN progress bar gestion
   return total;
 }

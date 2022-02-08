@@ -183,6 +183,10 @@ $(document).ready(function () {
 
   // Aucun champs audio à lire dans cet onglet
   $("#play-sound-div").hide();
+  if(store.get("sousOnglet") == "question_ouverte")
+    verifNombreCaractere("QO");
+  else
+    verifNombreCaractere("QCM");
 });
 
 // Ajouter une nouvelle Reponse une fois qu'on va clicker sur le button AjouterReponse
@@ -1016,7 +1020,7 @@ function verifNombreCaractere(type) {
       document.getElementById("MessageBonnereponse").setAttribute("maxLength", nombreCaratereMAX);
     }
     if (document.getElementById("Question").value.length == 0 && document.getElementById("Bonnereponse").value.length == 0 &&
-      document.getElementById("MessageMauvaisereponse").value.length == 0 && document.getElementById("MessageBonnereponse").value.length == 0) {   // si les champs sont vides on met la progess bar a 0
+      document.getElementById("MessageMauvaisereponse").value.length == 0 && document.getElementById("MessageBonnereponse").value.length == 0 && total <= 0) {   // si les champs sont vides on met la progess bar a 0
       document.getElementById("progressbarId").style.width = 0;
     }
   }
@@ -1036,7 +1040,7 @@ function verifNombreCaractere(type) {
       GererButonsDajout(false);
       GererChampsQuestions("openFields");
     }
-    if (document.getElementById("MessageBonnereponseQCM").value.length == 0 && document.getElementById("MessageMauvaisereponseQCM").value.length == 0 && document.getElementById("textQuestion1").value.length == 0) {
+    if (document.getElementById("MessageBonnereponseQCM").value.length == 0 && document.getElementById("MessageMauvaisereponseQCM").value.length == 0 && document.getElementById("textQuestion1").value.length == 0 && total <= 0 ) {
       document.getElementById("progressbarId").style.width = 0; // si les champs sont vides on met la progess bar a 0
     }
   }
