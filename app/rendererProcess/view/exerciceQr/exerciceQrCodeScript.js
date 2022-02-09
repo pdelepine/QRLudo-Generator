@@ -151,6 +151,9 @@ $(document).ready(function () {
     $("#newMauvaiseReponseText").attr('disabled', false);
     $('#newMauvaiseReponseAudio').attr('disabled', false);
     $('#newNbMinimalBonneReponse').attr('disabled', false);
+    $('#deleteNewQuestionAudio').attr('disabled', false);
+    $('#deleteAudioNewBonneReponseAudio').attr('disabled', false);
+    $('#deleteNewMauvaiseReponseAudio').attr('disabled', false);
 
     deleteStore(`newQuestionText`);
 
