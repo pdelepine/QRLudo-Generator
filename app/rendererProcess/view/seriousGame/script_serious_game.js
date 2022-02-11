@@ -1064,7 +1064,7 @@ var sketch = function (p) {
 			for (j = 0; j < textNodes.length; ++j) {
 				if (j != i) {
 					if (name == textNodes[j].name) {
-						if(!found)
+						if (!found)
 							found = true;
 						textNodes[j].containError = true;
 					}
@@ -1076,7 +1076,7 @@ var sketch = function (p) {
 			for (j = 0; j < questionNodes.length; ++j) {
 				if (j != i) {
 					if (name == questionNodes[j].name) {
-						if(!found)
+						if (!found)
 							found = true;
 						questionNodes[j].containError = true;
 					}
@@ -1085,7 +1085,7 @@ var sketch = function (p) {
 				}
 			}
 
-			if(found) {
+			if (found) {
 				textNodes[i].containError = true;
 				messageInfos("Attention des noeuds possèdent le même nom", "danger");
 				logger.error("Attention des noeuds possèdent le même nom");
@@ -1100,7 +1100,7 @@ var sketch = function (p) {
 			for (j = 0; j < textNodes.length; ++j) {
 				if (j != i) {
 					if (name == textNodes[j].name) {
-						if(!found)
+						if (!found)
 							found = true;
 						textNodes[j].containError = true;
 					}
@@ -1112,7 +1112,7 @@ var sketch = function (p) {
 			for (j = 0; j < questionNodes.length; ++j) {
 				if (j != i) {
 					if (name == questionNodes[j].name) {
-						if(!found)
+						if (!found)
 							found = true;
 						questionNodes[j].containError = true;
 					}
@@ -1121,7 +1121,7 @@ var sketch = function (p) {
 				}
 			}
 
-			if(found) {
+			if (found) {
 				questionNodes[i].containError = true;
 				messageInfos("Attention des noeuds possèdent le même nom", "danger");
 				logger.error("Attention des noeuds possèdent le même nom");
@@ -1458,8 +1458,12 @@ function SetProgressBar(projetSeriousGame) {
 	let nombreCaratereMAX = 2500;
 
 	let gzippedQR;
-	JsonCompressor.compress(projetSeriousGame.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
-	total += gzippedQR.length;
+	if (projetSeriousGame.getDataString().length.length > 120) {
+		JsonCompressor.compress(projetSeriousGame.getDataString(), (e) => gzippedQR = e[0].toString('base64'), []);
+		total += gzippedQR.length
+	} else {
+		total += projetSeriousGame.getDataString().length
+	}
 
 	let totalSeted = Math.trunc((total / nombreCaratereMAX) * 10000) / 100;
 	//mise ajour des données sur le progress bar
