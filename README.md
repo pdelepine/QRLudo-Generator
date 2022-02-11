@@ -10,7 +10,7 @@ Pour obtenir QR Ludo Generateur, il faut télécharger son installeur à l'adres
 
 ## Manuel d'utilisation
 
-Un manuel d'utilisation est disponible à l'adresse : https://github.com/univ-angers/QRLudo-Generator/blob/master/docs/qrludo_manuel_utilisateur.pdf
+Un manuel d'utilisation est disponible à l'adresse : https://github.com/univ-angers/QRLudo-Generator/blob/develop/docs/Manuel%20utilisateur%20QR%20Ludo.pdf
 
 ## Contexte de développement
 
