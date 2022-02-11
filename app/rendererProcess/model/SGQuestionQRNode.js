@@ -64,7 +64,7 @@ class SGQuestionQRNode extends SGNode {
 		input_name.id('input_node_name');
 		input_name.class('text-titre-input input-lg')
 		input_name.parent('displayQuestionZone');
-		input_name.attribute('placeholder', 'Nom de la question')
+		input_name.attribute('placeholder', 'Nom de la forme')
 		// Si le champ name est vide on l'affiche en rouge
 		if (this.containError && this.name == "")
 			input_name.style('border: 2px solid red');
