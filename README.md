@@ -14,14 +14,14 @@ Un manuel d'utilisation est disponible à l'adresse : https://github.com/univ-an
 
 ## Contexte de développement
 
-Ce projet a eu lieu dans le cadre des modules d'enseignement Management de Projet et Concrétisation Disciplinaire suivis par les étudiants de Master 2 Informatique ACDI (Analyse, Conception et Développement Informatique) et de Master 1 Informatique de l'Université d'Angers de l'année universitaire 2018/2019.
+Ce projet a eu lieu dans le cadre des modules d'enseignement Management de Projet et Concrétisation Disciplinaire suivis par les étudiants de Master 2 Informatique ACDI (Analyse, Conception et Développement Informatique) et de Master 1 Informatique de l'Université d'Angers de l'année universitaire 2018/2019. Son développement itératif à continuer jusqu'en 2022.
 
 # Pour les développeurs
 
 
 ## Langages
 
-QR Ludo Generateur a été développée à l'aide du framework Electron basé sur du Javascript. Il utilise les langages du web HTML, Javascript et CSS. Il utilise NodeJS pour l'ajout et la gestion des dépendances.
+QR Ludo Generateur a été développée à l'aide du framework Electron basé sur du Javascript. Il utilise les langages du web HTML, Javascript et CSS. Il utilise NodeJS pour l'ajout et la gestion des dépendances. Il utilise la librairie P5.js pour réaliser le Serious Game.
 
 ## Mise en place
 
@@ -36,7 +36,7 @@ npm install --unsafe-perm=true
 
 ### Lancement du projet
 ```bash
-npm start
+npm run start
 ```
 
 ## Déploiement
@@ -44,12 +44,12 @@ npm start
 ### Executable et installeur Linux
 Depuis un ordinateur sous linux. Dans le dossier du projet, lancé un terminal et executé la commande:
 ```bash
-npm run build-installer
+npm run dist-linux
 ```
 ###  Executable et installeur Windows
 Depuis un ordinateur sous windows. Dans le dossier du projet, lancé un terminal et executé la commande:
 ```bash
-npm run build-installer
+npm run dist-win64
 ```
 
 > NOTE: Au premier déploiement, Wine demandera d'installer des éléments supplémentaires. Après installation de ces éléments, le déploiement peut crash. Relancer le déploiement corrige le problème.
