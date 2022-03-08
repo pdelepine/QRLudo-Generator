@@ -10,10 +10,10 @@ const { MDFiveConverter } = require(`${root}/rendererProcess/controller/MDFiveCo
 /** This class is a representation of QRCode unique in JSON format */
 class QRCodeUnique {
 
-  constructor(name = "", data = [], color = "") {
+  constructor(name = "", type = "", data = [], color = "") {
 
     /** Génération de l'id unique */
-    var dataString = name + "unique" + color;
+    var dataString = name + type + color;
     for (var i = 0; i < data.length; i++) {
       dataString += data[i];
     }
@@ -24,7 +24,7 @@ class QRCodeUnique {
       /** ajout de id pour les QR unique &&*/
       id: md5Value,
       name: name,
-      type: "unique",
+      type: type,
       data: data,
       color: color
     };

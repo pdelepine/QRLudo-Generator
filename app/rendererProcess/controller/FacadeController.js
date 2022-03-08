@@ -36,6 +36,7 @@ class FacadeController {
       // Ajout de version du format du JSON représentatif du qr code, utilisé par l'application mobile
       switch (qrcode.qrcode.type) {
         case "unique":
+          case "xl" :
           qrcode.qrcode.version = '3';
           break;
         case "ensemble":

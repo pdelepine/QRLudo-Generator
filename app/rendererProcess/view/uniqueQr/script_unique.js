@@ -323,7 +323,11 @@ function validateForm(inputArray) {
 function previewQRCode(name, data, color, div) {
 
   // instanciate a qrcode unique object
-  qrcode = new QRCodeUnique(name, data, color);
+  if(document.getElementById("check-ios").checked == true)
+    type = "xl"
+  else
+    type = "unique"
+  qrcode = new QRCodeUnique(name, type, data, color);
   let facade = new FacadeController();
   logger.info(`Génération du QR Code Unique : ${JSON.stringify(qrcode)}`);
   facade.genererQRCode(div, qrcode);
