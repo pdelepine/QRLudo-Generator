@@ -26,7 +26,7 @@ QR Ludo Generateur a été développée à l'aide du framework Electron basé su
 
 ### Installation des outils
 
-Pour installer tous les outils nécessaires pour la programmation de QRLudo-Generator, lancez le script `InstallationOutilQRG.sh`.
+Pour installer tous les outils nécessaires pour la programmation de QRLudo-Generator, il faut exécuter le script `InstallationOutilQRG.sh`.
 
 ### Compilation du projet
 
@@ -48,7 +48,7 @@ npm run start
 
 ### Executable et installeur Linux
 
-Depuis un ordinateur sous linux. Dans le dossier du projet, lancé un terminal et executé la commande :
+Depuis un ordinateur sous linux. Dans le dossier du projet, lancer un terminal et executé la commande :
 
 ```bash
 npm run dist-linux
@@ -56,7 +56,7 @@ npm run dist-linux
 
 ### Executable et installeur Windows
 
-Depuis un ordinateur sous windows. Dans le dossier du projet, lancé un terminal et executé la commande :
+Depuis un ordinateur sous windows. Dans le dossier du projet, lancer un terminal et executé la commande :
 
 ```bash
 npm run dist-win64
