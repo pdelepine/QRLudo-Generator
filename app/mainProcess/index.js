@@ -28,7 +28,7 @@ const log4js = require('log4js');
 log4js.configure({
   appenders: {
     console: { type: 'console' },
-    toFile: { type: 'file', filename: 'qrludogenerator.log', flags: 'w' }
+    toFile: { type: 'file', filename: `${app.getPath("userData")}/qrludogenerator.log`, flags: 'w' }
   },
   categories: {
     default: { appenders: ['console', 'toFile'], level: 'info' }
@@ -91,6 +91,7 @@ app.whenReady().then(() => {
 log4js.getLogger().info(`Le dossier courant de l'application est : ${app.getAppPath()}`);
 log4js.getLogger().info(`Le fichier exécutable courant est : ${app.getPath("exe")}`);
 log4js.getLogger().info(`Le Crash dumps est : ${app.getPath("crashDumps")}`);
+log4js.getLogger().info(`Le fichier de log est : ${app.getPath("userData")}/qrludogenerator.log`);
 /**
  * Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
  * pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte
