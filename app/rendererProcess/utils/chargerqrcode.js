@@ -32,6 +32,7 @@ function importQRCodeImport(filename) {
 
 /** fonction permettant de recréer visuellement un qr code */
 function drawQRCodeImport(qrcode) {
+  console.log(qrcode);
   try {
     if (qrcode.getType() == 'unique' || qrcode.getType() == 'xl') {
       logger.info('chargerqrcode.drawQRCodeImport | Import d\'un QR Unique, basculement sur onglet QR Unique');
@@ -178,8 +179,8 @@ function drawQRCodeMultipleUnique(qrcode) {
     let qrJson = qrcode.getData()[i].qrcode;
     let qr = null;
 
-    if (qrJson.type == "unique") {
-      qr = new QRCodeUnique(qrJson.name, qrJson.data, qrJson.color);
+    if (qrJson.type == "unique" || qrJson.type == "xl") {
+      qr = new QRCodeUnique(qrJson.name, qr.type, qrJson.data, qrJson.color);
     }
     else if (qrJson.type == "ensemble") {
       qr = new QRCodeMultipleJson(qrJson.name, qrJson.data, qrJson.color);
@@ -237,7 +238,6 @@ function drawQRCodeDataRecVocale(qrcode) {
   }
 
   // Message de bonne réponse, test s'il s'agit d'un texte ou d'un audio
-  console.log(qrcode.getTextBonneReponse())
   if (qrcode.getTextBonneReponse().type === 'text') {
     $("#MessageBonnereponseQCM").val(qrcode.getTextBonneReponse().text);
   } else {

@@ -133,6 +133,9 @@ $(document).ready(function () {
 
     document.getElementById("check-ios").checked = false;
 
+    if(store.get(`typeUnique`)) {
+      store.delete(`typeUnique`);
+    }
 
     $('#qrView').hide();
     $('#saveQRCode').attr('disabled', true);
@@ -162,6 +165,10 @@ $('#preview').on('click', e => {
   // get all required attributes for qrcode
   let qrColor = $('#qrColor').val();
   let qrName = $('#qrName').val();
+  if(document.getElementById("check-ios").checked == true)
+    qrType = "xl"
+  else
+    qrType = "unique"
   let qrData = [];
 
   for (let data of document.getElementsByClassName("form-control qrData")) {
@@ -187,7 +194,7 @@ $('#preview').on('click', e => {
   // Generate in a div, the qrcode image for qrcode object
   let div = $('#qrView')[0];
 
-  newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
+  newQrUnique = new QRCodeUnique(qrName, qrType, qrData, qrColor);
 
   newQrUnique.setId(store.get("newQrID"));
 
@@ -218,7 +225,11 @@ function generQRInter() {
   let qrColor = $('#qrColor').val();
   let qrName = $('#qrName').val();
   let qrData = random_string(50);
-  let newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
+  if(document.getElementById("check-ios").checked == true)
+    qrType = "xl"
+  else
+    qrType = "unique"
+  let newQrUnique = new QRCodeUnique(qrName, qrType, qrData, qrColor);
   //  le QRcode intermédiaire
   //  console.log(`test : ${ JSON.stringify(newQrUnique) }`);
   charMax -= qrColor.length;
@@ -241,9 +252,6 @@ function generQRInter() {
 
 }
 
-
-
-
 /** Fonction permettant la continuité entre les onglet avec la gestion de l'objet store */
 function chargement() {
 
@@ -261,6 +269,10 @@ function chargement() {
 
   if (store.get(`titreUnique`)) {
     $('#qrName').val(store.get(`titreUnique`));
+  }
+
+  if(store.get(`typeUnique`)){
+    document.getElementById("check-ios").checked = store.get(`typeUnique`);
   }
 
   if (!isImportationQRUnique) {
@@ -472,6 +484,15 @@ function activer_button() {
   }
 }
 
+/**
+ * Ajoute la valeur de la checkbox check-ios dans le store
+ */
+function saveType() {
+  store.delete('typeUnique');
+  let type = document.getElementById("check-ios").checked;
+  store.set('typeUnique', type);
+}
+
 
 /** ajouter une nvlle legende (textarea) a chaque click sur button Texte
  * (pour chaque textarea il faut rajouter à l'attribut class la valeur qrData class="... qrData")
@@ -583,8 +604,6 @@ function verifNombreCaractere(num) {
 }
 
 function supprimerAudio(e,numText) {
-    //store.delete(`text` + numText);
-    //store.delete(`zone` + numText);
     $('#textarea'+numText).val('')
     $('#textarea'+numText).attr('name', 'legendeQR')
     $('#textarea'+numText).removeAttr("disabled")

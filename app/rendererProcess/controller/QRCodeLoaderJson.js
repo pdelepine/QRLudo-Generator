@@ -83,7 +83,7 @@ class QRCodeLoaderJson {
 
     switch (qr.type) {
       case "unique":
-        qrcode = new QRCodeUnique(qr.name, qr.data, qr.color);
+        qrcode = new QRCodeUnique(qr.name, qr.type, qr.data, qr.color);
         qrcode.setId(qr.id);
         break;
 
@@ -92,7 +92,7 @@ class QRCodeLoaderJson {
         break;
 
       case "question":
-        qrcode = new Question(qr.text_question, qr.data, qr.color);
+        qrcode = new Question(qr.name, qr.data, qr.color);
         qrcode.setId(qr.id);
         qrcode.setMinAnswer(qr.nb_min_reponses);
         qrcode.setGoodAnswer(qr.text_bonne_reponse);
