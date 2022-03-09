@@ -131,6 +131,8 @@ $(document).ready(function () {
     divChamps.children($('.legendeQR')).remove();
     ajouterChampLegende();
 
+    document.getElementById("check-ios").checked = false;
+
 
     $('#qrView').hide();
     $('#saveQRCode').attr('disabled', true);

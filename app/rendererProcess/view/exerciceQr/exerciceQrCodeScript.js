@@ -44,8 +44,12 @@ $(document).ready(function () {
     }
 
     let reponse = reponseVocale
+    if(document.getElementById("check-ios").checked == true)
+      type = "xl"
+    else
+      type = "unique"
     qrData.push(reponse);
-    var new_rep = new QRCodeUnique(identifiant, qrData, qrColor);
+    var new_rep = new QRCodeUnique(identifiant, type, qrData, qrColor);
     var new_rep_vocal = reponseVocale;
 
     //sortir de la fonction si la reponse existe déjà pour la question
@@ -154,6 +158,7 @@ $(document).ready(function () {
     $('#deleteNewQuestionAudio').attr('disabled', false);
     $('#deleteAudioNewBonneReponseAudio').attr('disabled', false);
     $('#deleteNewMauvaiseReponseAudio').attr('disabled', false);
+    $('#check-ios').attr('disabled', false);
 
     deleteStore(`newQuestionText`);
 
@@ -162,6 +167,8 @@ $(document).ready(function () {
     deleteStore('newMauvaiseReponseText');
 
     deleteStore('newNbMinimalBonneReponse');
+
+    document.getElementById("check-ios").checked = false;
 
     for (var i = 1; i < numReponse + 1; i++) {
       deleteStore('reponse' + i);
@@ -236,6 +243,7 @@ $("#genererQestion").on('click', function () {
     document.getElementById("deleteNewQuestionAudio").disabled = true;
     document.getElementById("deleteAudioNewBonneReponseAudio").disabled = true;
     document.getElementById("deleteNewMauvaiseReponseAudio").disabled = true;
+    document.getElementById("check-ios").disabled = true;
     $("#ajoutNewReponse").attr('disabled', false);
     projet.setQuestion(nouvQuestion);
     logger.info('Création du QR Code Exercice');
@@ -597,7 +605,7 @@ function saveQRCodeImage() {
 
     //Idem pour les réponses
     $.each(projet.getReponses(), function (id, reponse) {
-      let div = document.getElementById("qrView")
+      let div = document.getElementById("qrView");
       facade.genererQRCode(div, reponse);
       saveQRCodeImages(div, reponse, dir_path);
     });
