@@ -6,53 +6,61 @@ Les QR codes générés doivent être détectés avec l'application mobile [QRLu
 
 ## Installation
 
-Pour obtenir QR Ludo Generateur, il faut télécharger son installeur à l'adresse : TBD
+Pour obtenir QR Ludo Generateur, il faut télécharger son installeur à l'adresse : [Releases](https://github.com/univ-angers/QRLudo-Generator/releases/tag/1.2)
 
 ## Manuel d'utilisation
 
-Un manuel d'utilisation est disponible à l'adresse : https://github.com/univ-angers/QRLudo-Generator/blob/master/docs/qrludo_manuel_utilisateur.pdf
+Un manuel d'utilisation est disponible à l'adresse : <https://github.com/univ-angers/QRLudo-Generator/blob/develop/docs/Manuel%20utilisateur%20QR%20Ludo.pdf>
 
 ## Contexte de développement
 
-Ce projet a eu lieu dans le cadre des modules d'enseignement Management de Projet et Concrétisation Disciplinaire suivis par les étudiants de Master 2 Informatique ACDI (Analyse, Conception et Développement Informatique) et de Master 1 Informatique de l'Université d'Angers de l'année universitaire 2018/2019.
+Ce projet a eu lieu dans le cadre des modules d'enseignement Management de Projet et Concrétisation Disciplinaire suivis par les étudiants de Master 2 Informatique ACDI (Analyse, Conception et Développement Informatique) et de Master 1 Informatique de l'Université d'Angers de l'année universitaire 2018/2019. Son développement itératif à continuer jusqu'en 2022.
 
 # Pour les développeurs
 
-
 ## Langages
 
-QR Ludo Generateur a été développée à l'aide du framework Electron basé sur du Javascript. Il utilise les langages du web HTML, Javascript et CSS. Il utilise NodeJS pour l'ajout et la gestion des dépendances.
+QR Ludo Generateur a été développée à l'aide du framework Electron basé sur du Javascript. Il utilise les langages du web HTML, Javascript et CSS. Il utilise NodeJS pour l'ajout et la gestion des dépendances. Il utilise la librairie [P5.js](https://p5js.org/) pour réaliser le Serious Game.
 
 ## Mise en place
 
-### Installation des outils
-Pour installer tous les outils nécessaires pour la programmation de QRLudo-Generator, lancez le script InstallationOutilQRG<span>.sh.
+### Installation des outils
+
+Pour installer tous les outils nécessaires pour la programmation de QRLudo-Generator, il faut exécuter le script `InstallationOutilQRG.sh`.
 
 ### Compilation du projet
-Dans un terminal dans le projet, lancer:
+
+Dans un terminal à la racine du projet, pour initialiser les dépendances npm veuillez lancer la commande suivante :
+
 ```bash
-npm install --unsafe-perm=true
+make install
 ```
 
 ### Lancement du projet
+
+Dans un terminal à la racine du projet, lancer la commande :
+
 ```bash
-npm start
+npm run start
 ```
 
 ## Déploiement
 
 ### Executable et installeur Linux
-Depuis un ordinateur sous linux. Dans le dossier du projet, lancé un terminal et executé la commande:
+
+Depuis un ordinateur sous linux. Dans le dossier du projet, lancer un terminal et executé la commande :
+
 ```bash
-npm run build-installer
-```
-###  Executable et installeur Windows
-Depuis un ordinateur sous windows. Dans le dossier du projet, lancé un terminal et executé la commande:
-```bash
-npm run build-installer
+npm run dist-linux
 ```
 
-> NOTE: Au premier déploiement, Wine demandera d'installer des éléments supplémentaires. Après installation de ces éléments, le déploiement peut crash. Relancer le déploiement corrige le problème.
+### Executable et installeur Windows
+
+Depuis un ordinateur sous windows. Dans le dossier du projet, lancer un terminal et executé la commande :
+
+```bash
+npm run dist-win64
+```
 
 ## Information et liens utiles
 
@@ -62,7 +70,9 @@ npm run build-installer
 
 [QRLudo version 2](https://github.com/juleguy/QRLudo)
 
-# Licence
+## Licence
+
+Copyright (C) 2021 2022 Pierre-Yves DELÉPINE, Simon MITATY, Oussama ICHOUA, ACHARD César, PASQUIER Nicolas, HUNAULT Antonin, ZEREZ Taimane
 
 Copyright (C) 2020 2021 ATTAOUI Zakaria, BENDAOUD Youness, CUEGNIET Louis, DELÉPINE Pierre-Yves, MITATY Simon, MOHR Anaïs, PIGACHE Bastien, DESNOES Mathis, RANDRIAMAMONJISOA Andry, CHOVEAU Etienne, BALAVOINE Kevin, BAH Marouwane
 
@@ -80,4 +90,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
