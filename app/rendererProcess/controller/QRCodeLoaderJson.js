@@ -83,6 +83,7 @@ class QRCodeLoaderJson {
 
     switch (qr.type) {
       case "unique":
+        case "xl" :
         qrcode = new QRCodeUnique(qr.name, qr.type, qr.data, qr.color);
         qrcode.setId(qr.id);
         break;
