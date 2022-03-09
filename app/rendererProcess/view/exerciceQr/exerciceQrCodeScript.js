@@ -363,10 +363,11 @@ dropZone.ondrop = function (e) {
         let qrId = qrCode.getId();
         let qrDatad = qrCode.getData();
         let qrName = qrCode.getName();
+        let qrType = qrCode.getType();
         let qrData = [];
 
         qrData.push(qrDatad);
-        var new_rep = new QRCodeUnique(qrName, qrData, $("#qrColor").val()); // cretation d'une nouvelle reponse
+        var new_rep = new QRCodeUnique(qrName, qrType, qrData, $("#qrColor").val()); // cretation d'une nouvelle reponse
         new_rep.setId(qrId);        // changemnt de l'id de la nouvelle reponse avec l'id du qr imprté
         new_rep.setData(qrData);
         var new_rep_vocal = qrData;
@@ -517,6 +518,10 @@ function enregistrement() {
   if (store.get('newNbMinimalBonneReponse'))
     $('#newNbMinimalBonneReponse').val(store.get('newNbMinimalBonneReponse'));
 
+  if(store.get(`typeUnique`)){
+    document.getElementById("check-ios").checked = store.get(`typeUnique`);
+  }
+
 
   //créé une nouvelles question si le nombre de réponse est superieur à 0
   if (numReponse > 0) {
@@ -532,10 +537,15 @@ function enregistrement() {
     $("#play-sound-div").hide();
   }
 
+  if(document.getElementById("check-ios").checked == true)
+    type = "xl"
+  else
+    type = "unique"
+
   //recréation des question
   for (var i = 1; i < numReponse + 1; i++) {
     if (store.get('reponse' + i)) {
-      var new_rep = new QRCodeUnique(store.get('reponse' + i), store.get('data' + i), store.get('reponseColor' + i)); // creation d'une nouvelle reponse
+      var new_rep = new QRCodeUnique(store.get('reponse' + i), type, store.get('data' + i), store.get('reponseColor' + i)); // creation d'une nouvelle reponse
       new_rep.setId(store.get('reponseId' + i));
       projet.addReponse(new_rep);
       addReponseLine(new_rep);
@@ -646,6 +656,15 @@ function activerSave(text) {
 
   var newText = $("#" + text).val();
   store.set(text, newText);
+}
+
+/**
+ * Ajoute la valeur de la checkbox check-ios dans le store
+ */
+ function saveType() {
+  store.delete('typeUnique');
+  let type = document.getElementById("check-ios").checked;
+  store.set('typeUnique', type);
 }
 
 //methode de suppression dans le store

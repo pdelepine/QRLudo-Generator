@@ -130,6 +130,10 @@ function ajoutQrCcode() {
 
   let qrColor = $('#qrColor').val();
   var qrName = $("#nomQR").val();
+  if(document.getElementById("check-ios").checked == true)
+    qrType = "xl";
+  else
+    qrType = "unique";
   var donnee = document.getElementById("ContenuQR");
   var qrData = [];
   if (donnee.value.substring(donnee.value.length - 3, donnee.value.length) == "mp3") {
@@ -157,7 +161,7 @@ function ajoutQrCcode() {
   document.getElementById("ContenuQR").value = "";
   document.getElementById("ContenuQR").disabled = false;
 
-  let newQrUnique = new QRCodeUnique(qrName, qrData, qrColor);
+  let newQrUnique = new QRCodeUnique(qrName, qrType, qrData, qrColor);
   genererLigne(qrName, numFich);
 
   store.set(`fichierDrop${numFich}`, qrName);
@@ -183,6 +187,10 @@ function enregistrement() {
   /** vérifier si un enregistrement du titre existe */
   if (store.get(`titremultiple`)) {
     $('#qrName').val(store.get(`titremultiple`));
+  }
+
+  if(store.get(`typeUnique`)) {
+    document.getElementById("check-ios").checked = store.get(`typeUnique`);
   }
 
   for (var i = 0; i < numFich; i++) {
@@ -332,6 +340,8 @@ function viderZone() {
   txtZone.appendChild(txtDragAndDrop);
   $('#txtDragAndDrop').show();
 
+  document.getElementById("check-ios").checked = false;
+
   /** Permet la suppression des elements du store créé dans le script_multiple */
   if (store.get(`numFich`)) {
     store.delete(`numFich`);
@@ -340,6 +350,10 @@ function viderZone() {
   /** vérifier si un enregistrement du titre existe */
   if (store.get(`titremultiple`)) {
     store.delete(`titremultiple`);
+  }
+
+  if(store.get(`typeUnique`)) {
+    store.delete(`typeUnique`);
   }
 
   for (var i = 0; i < numFich; i++) {
@@ -367,6 +381,15 @@ function activer_button() {
   //if (document.getElementById('qrName').value.length > 0) {
   $('#preview ,#empty').attr('disabled', false);
   //}
+}
+
+/**
+ * Ajoute la valeur de la checkbox check-ios dans le store
+ */
+function saveType() {
+  store.delete('typeUnique');
+  let type = document.getElementById("check-ios").checked;
+  store.set('typeUnique', type);
 }
 
 /** save image qr code */
@@ -492,7 +515,6 @@ function SetProgressBar() {
   $("#progressbarId").attr('aria-valuenow', totalSeted);
   $("#progressbarId").attr("style", "width:" + totalSeted + "%");
   $("#progressbarId").text(totalSeted + "%");
-  console.log(totalSeted);
   //FIN progress bar gestion
   return total;
 }
