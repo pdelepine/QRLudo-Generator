@@ -1425,7 +1425,7 @@ $("#saveQRCode").on('click', function () {
 			imgData = img.src.replace(/^data:image\/\w+;base64,/, "");
 			let buf = Buffer.from(imgData, 'base64');
 
-			fs.writeFile(dir_path + '.jpeg', buf, 'base64', function (err) {
+			fs.writeFile(dir_path, buf, 'base64', function (err) {
 				if (err) {
 					logger.error(`Serious Game | Problème sauvegarde de l'image du QR code : ${err}`);
 				} else {

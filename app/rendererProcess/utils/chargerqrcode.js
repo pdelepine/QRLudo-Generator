@@ -303,6 +303,9 @@ function drawQRCodeSeriousGameEnigma(qrcode) {
       qrQuestionNode.answers[i] = questionNode.rep[i].txt;
     }
 
+    // Display de la dernière réponse de la dernière question
+    qrQuestionNode.emptyQuestionZone();
+
     questionNodes.push(qrQuestionNode);
   }
 

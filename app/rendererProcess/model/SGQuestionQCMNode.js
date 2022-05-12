@@ -264,7 +264,6 @@ class SGQuestionQCMNode extends SGNode {
 		}
 		if (self.name != "" && self.question != "")
 			self.containError = false;
-		console.log(myP5.generateJson() );
 		SetProgressBar(myP5.generateJson());
 	}
 
