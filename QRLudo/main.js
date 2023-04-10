@@ -1,6 +1,6 @@
 /* Fichier main.js nécessaire d'electron */
 const { app,BrowserWindow } = require("electron");
-const { join } = require("path");
+const path = require("path");
 
 function createWindow ()
 {
@@ -8,11 +8,11 @@ function createWindow ()
         width: 800,
         height: 600,
         webPreferences: {
-            preload: join(__dirname,"preload.js"),
+            preload: path.join(__dirname,"preload.js"),
         },
     });
 
-    win.loadFile("dist/index.html");
+    win.loadFile(path.normalize(__dirname + '/dist/index.html'));
 }
 
 app.whenReady().then(() =>
