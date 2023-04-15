@@ -1,23 +1,27 @@
-import { itemQRUnique } from "@/interfaces/itemQRUnique";
+import { qrUnique, itemQRUnique } from "@/interfaces/qrUnique";
 import { defineStore } from "pinia";
 
 const useQrUniqueStore = defineStore("qrUnique", {
-  state: () => ({ name: "", items: [] as itemQRUnique[] }),
+  state: () => ({
+    qrUnique: { name: "", items: [] as itemQRUnique[] } as qrUnique,
+  }),
   getters: {
-    sortList: (state) => state.items.sort((a, b) => a.id - b.id),
+    sortList: (state) => state.qrUnique.items.sort((a, b) => a.id - b.id),
+    name: (state) => state.qrUnique.name,
   },
   actions: {
     addItem(item: itemQRUnique) {
-      item.id = this.items.length + 1;
-      this.items.push(item);
+      item.id = this.qrUnique.items.length + 1;
+      this.qrUnique.items.push(item);
     },
     defineName(name: string) {
-      this.name = name;
+      this.qrUnique.name = name;
     },
+
     upItem(item: itemQRUnique) {
       if (item.id <= 1) return;
       const id = item.id;
-      this.items = this.items.map((mapItem) => {
+      this.qrUnique.items = this.qrUnique.items.map((mapItem) => {
         if (mapItem.id === id) {
           mapItem.id = mapItem.id - 1;
         } else if (mapItem.id === id - 1) {
@@ -26,10 +30,11 @@ const useQrUniqueStore = defineStore("qrUnique", {
         return mapItem;
       });
     },
+
     downItem(item: itemQRUnique) {
-      if (item.id >= this.items.length) return;
+      if (item.id >= this.qrUnique.items.length) return;
       const id = item.id;
-      this.items = this.items.map((mapItem) => {
+      this.qrUnique.items = this.qrUnique.items.map((mapItem) => {
         if (mapItem.id === id) {
           mapItem.id = mapItem.id + 1;
         } else if (mapItem.id === id + 1) {
@@ -38,9 +43,10 @@ const useQrUniqueStore = defineStore("qrUnique", {
         return mapItem;
       });
     },
+
     deleteItem(item: itemQRUnique) {
       const id = item.id;
-      this.items = this.items
+      this.qrUnique.items = this.qrUnique.items
         .filter((mapItem) => mapItem.id != id)
         .map((mapItem) => {
           if (mapItem.id > id) {
@@ -48,6 +54,11 @@ const useQrUniqueStore = defineStore("qrUnique", {
           }
           return mapItem;
         });
+    },
+
+    deleteAll() {
+      this.qrUnique.name = "";
+      this.qrUnique.items = [];
     },
   },
 });

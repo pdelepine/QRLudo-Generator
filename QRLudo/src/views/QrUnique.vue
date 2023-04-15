@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { itemQRUnique } from "@/interfaces/itemQRUnique";
-import { ref } from "vue";
+import { itemQRUnique } from "@/interfaces/qrUnique";
 import useQrUniqueStore from "@/stores/qruniqueStore";
-import { computed } from "vue";
+import eventBus from "@/eventBus";
 
 const qruniqueStore = useQrUniqueStore();
 
@@ -21,17 +20,29 @@ const downItemAction = (item: itemQRUnique) => {
 const deleteItemAction = (item: itemQRUnique) => {
   qruniqueStore.deleteItem(item);
 };
+
+const openQrCodeDialogAction = () => {
+  eventBus.emit("open-qrcode-dialog");
+};
+
+const resetQRUniqueAction = () => {
+  qruniqueStore.deleteAll();
+};
 </script>
 
 <template>
   <v-card>
-    <v-card-title prepend-icon="mdi-qrcode">QR Unique</v-card-title>
+    <v-card-title>QR Unique</v-card-title>
     <v-card-subtitle
       >Création de QR unique. Vous pouvez utiliser du contenu textuel ou
       vocal.</v-card-subtitle
     >
     <v-card-text>
-      <v-text-field label="Nom du QR code" clearable></v-text-field>
+      <v-text-field
+        v-model="qruniqueStore.name"
+        label="Nom du QR code"
+        clearable
+      ></v-text-field>
 
       <v-textarea
         v-for="item in qruniqueStore.sortList"
@@ -66,14 +77,28 @@ const deleteItemAction = (item: itemQRUnique) => {
         color="primary"
         variant="outlined"
         prepend-icon="mdi-file-document-plus-outline"
-        >Ajouter du nouveau contenu</v-btn
+        block
+        >Ajouter un nouveau contenu</v-btn
       >
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="warning" variant="outlined">Réinitialiser</v-btn>
-      <v-btn color="primary" variant="flat">Générer</v-btn>
-      <v-btn color="success" variant="outlined">Exporter</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn
+        @click="() => resetQRUniqueAction()"
+        prepend-icon="mdi-refresh"
+        color="warning"
+        variant="outlined"
+        >Réinitialiser</v-btn
+      >
+      <v-btn
+        @click="() => openQrCodeDialogAction()"
+        prepend-icon="mdi-cog-play"
+        color="primary"
+        variant="flat"
+        >Générer</v-btn
+      >
+      <v-spacer></v-spacer>
     </v-card-actions>
   </v-card>
 </template>

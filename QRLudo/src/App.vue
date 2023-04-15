@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue";
 import Home from "@/views/Home.vue";
+import QRCodeDialog from "./components/QRCodeDialog.vue";
 </script>
 
 <template>
@@ -38,6 +39,7 @@ import Home from "@/views/Home.vue";
       </v-list>
     </v-navigation-drawer>
     <v-main>
+      <QRCodeDialog />
       <v-container>
         <RouterView v-slot="{ Component }">
           <v-scroll-x-transition>
