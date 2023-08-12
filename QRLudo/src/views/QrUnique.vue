@@ -2,6 +2,8 @@
 import { itemQRUnique } from "@/interfaces/qrUnique";
 import useQrUniqueStore from "@/stores/qruniqueStore";
 import eventBus from "@/eventBus";
+import { ref } from "vue";
+import QRCodeDialog from "@/components/QRCodeDialog.vue";
 
 const qruniqueStore = useQrUniqueStore();
 
@@ -22,6 +24,7 @@ const deleteItemAction = (item: itemQRUnique) => {
 };
 
 const openQrCodeDialogAction = () => {
+  qruniqueStore.defineName(name.value);
   eventBus.emit("open-qrcode-dialog");
 };
 
@@ -32,6 +35,7 @@ const resetQRUniqueAction = () => {
 
 <template>
   <v-card>
+    <QRCodeDialog qrcodeType="unique" />
     <v-card-title>QR Unique</v-card-title>
     <v-card-subtitle
       >Création de QR unique. Vous pouvez utiliser du contenu textuel ou
@@ -39,7 +43,7 @@ const resetQRUniqueAction = () => {
     >
     <v-card-text>
       <v-text-field
-        v-model="qruniqueStore.name"
+        v-model="qruniqueStore.qrUnique.name"
         label="Nom du QR code"
         clearable
       ></v-text-field>
@@ -50,6 +54,8 @@ const resetQRUniqueAction = () => {
         label="Texte du QR code"
         v-model="item.texte"
         clearable
+        no-resize
+        counter
       >
         <template v-slot:append>
           <v-btn icon variant="plain">

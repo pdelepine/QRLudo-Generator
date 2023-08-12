@@ -1,5 +1,6 @@
 import { qrUnique, itemQRUnique } from "@/interfaces/qrUnique";
 import { defineStore } from "pinia";
+//import cryptojs from "crypto-js";
 
 const useQrUniqueStore = defineStore("qrUnique", {
   state: () => ({
@@ -8,6 +9,18 @@ const useQrUniqueStore = defineStore("qrUnique", {
   getters: {
     sortList: (state) => state.qrUnique.items.sort((a, b) => a.id - b.id),
     name: (state) => state.qrUnique.name,
+    qrcode: (state) => {
+      let qrcodeObject = {
+        id: "",
+        name: state.qrUnique.name,
+        type: "unique",
+        data: state.qrUnique.items.map((item) => item.texte),
+        version: 0,
+      };
+      qrcodeObject.id = "isfifsdifhsdhfksdf";
+
+      return qrcodeObject;
+    },
   },
   actions: {
     addItem(item: itemQRUnique) {

@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import eventBus from "@/eventBus";
 import { ref } from "vue";
 
 const tab = ref();
+
+const openQrCodeDialogAction = () => {
+  eventBus.emit("open-qrcode-dialog");
+};
+
+const resetQrExerciceAction = () => {
+  //qrQcmStore.deleteAllQuestions();
+};
 </script>
 
 <template>
@@ -71,7 +80,7 @@ const tab = ref();
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
-        @click="() => resetQRMultipleAction()"
+        @click="() => resetQrExerciceAction()"
         prepend-icon="mdi-refresh"
         color="warning"
         variant="outlined"

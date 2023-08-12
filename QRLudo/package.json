@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "crypto-js": "^4.1.1",
+    "log4js": "^6.9.1",
     "mitt": "^3.0.0",
+    "piexifjs": "^1.0.6",
     "pinia": "^2.0.34",
+    "qrious": "^4.0.2",
     "roboto-fontface": "*",
     "vue": "^3.2.38",
     "vue-router": "^4.1.6",

@@ -27,9 +27,9 @@ import QRCodeDialog from "./components/QRCodeDialog.vue";
           >QR Exercices</v-list-item
         >
         <v-list-item
-          :to="{ name: 'ExerciceVocaux' }"
+          :to="{ name: 'QuestionOuverte' }"
           prepend-icon="mdi-microphone"
-          >Exercices oraux</v-list-item
+          >Exercices vocaux</v-list-item
         >
         <v-list-item
           :to="{ name: 'SeriousGame' }"
@@ -39,13 +39,12 @@ import QRCodeDialog from "./components/QRCodeDialog.vue";
       </v-list>
     </v-navigation-drawer>
     <v-main>
-      <QRCodeDialog />
       <v-container>
-        <RouterView v-slot="{ Component }">
-          <v-scroll-x-transition>
+        <router-view v-slot="{ Component }">
+          <v-expand-transition>
             <component :is="Component" />
-          </v-scroll-x-transition>
-        </RouterView>
+          </v-expand-transition>
+        </router-view>
       </v-container>
     </v-main>
   </v-app>

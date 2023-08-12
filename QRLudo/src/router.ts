@@ -36,12 +36,12 @@ const routes: RouteRecordRaw[] = [
     name: "ExerciceVocaux",
     children: [
       {
-        path: "/questionouverte",
+        path: "questionouverte",
         component: QuestionOuverte,
         name: "QuestionOuverte",
       },
       {
-        path: "/qcm",
+        path: "qcm",
         component: QCM,
         name: "QCM",
       },

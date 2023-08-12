@@ -14,7 +14,7 @@ const addItemAction = () => {
   isOpenAddDialog.value = true;
   qrMultipleStore.addItem({
     id: 0,
-    item: { name: "test", items: [{ id: 1, texte: "" }] },
+    item: { qrtype: "unique", name: "test", items: [{ id: 1, texte: "" }] },
   });
 };
 
