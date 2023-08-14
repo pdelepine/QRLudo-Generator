@@ -117,6 +117,14 @@ const useQrQCMStore = defineStore("qrQCM", {
         });
     },
 
+    deleteMessageBonneReponse() {
+      this.qrQCM.textBonneReponse = "";
+    },
+
+    deleteMessageMauvaiseReponse() {
+      this.qrQCM.textMauvaiseReponse = "";
+    },
+
     /**
      * Supprime toutes les questions
      */

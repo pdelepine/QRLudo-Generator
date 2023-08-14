@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import QRCodeDialog from "@/components/QRCodeDialog.vue";
 import eventBus from "@/eventBus";
 import { questionQCM, reponseQCM } from "@/interfaces/qcm";
 import useQrQCMStore from "@/stores/qrQcmStore";
+import { computed } from "vue";
 import { ref } from "vue";
 
-const show = ref();
+const questionsShow = ref([]);
 
 // Récupération du store
 const qrQcmStore = useQrQCMStore();
@@ -14,6 +16,7 @@ const addQuestionAction = () => {
   qrQcmStore.addQuestion({
     id: 0,
     textQuestion: "",
+    isShowed: false,
     reponses: [{ id: 1, text: "", isGoodAnswer: false }],
   });
 };
@@ -30,6 +33,14 @@ const deleteReponseAction = (question: questionQCM, reponse: reponseQCM) => {
   qrQcmStore.deleteReponse(question, reponse);
 };
 
+const deleteBonneReponseAction = () => {
+  qrQcmStore.deleteMessageBonneReponse();
+};
+
+const deleteMauvaiseReponseAction = () => {
+  qrQcmStore.deleteMessageMauvaiseReponse();
+};
+
 const openQrCodeDialogAction = () => {
   eventBus.emit("open-qrcode-dialog");
 };
@@ -41,6 +52,7 @@ const resetQrQCMAction = () => {
 
 <template>
   <v-card>
+    <QRCodeDialog :qrcode-type="qrQcmStore.qrQCM.qrtype" />
     <v-card-text>
       <v-sheet
         v-for="question in qrQcmStore.sortList"
@@ -59,17 +71,25 @@ const resetQrQCMAction = () => {
                 Ajouter de l'audio
               </v-tooltip>
             </v-btn>
+            <v-btn
+              @click="() => deleteQuestionAction(question)"
+              icon
+              variant="plain"
+            >
+              <v-icon>mdi-delete</v-icon>
+              <v-tooltip activator="parent" location="top">Supprimer</v-tooltip>
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn
               variant="plain"
               class="h-auto"
-              :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-              @click="show = !show"
+              :icon="question.isShowed ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              @click="question.isShowed = !question.isShowed"
             ></v-btn>
           </template>
         </v-text-field>
         <v-expand-transition>
-          <div v-show="show">
+          <div v-show="question.isShowed">
             <v-divider></v-divider>
             <v-card-text>
               <v-row v-for="reponse in question.reponses">
@@ -127,6 +147,10 @@ const resetQrQCMAction = () => {
               >Ajouter de l'audio</v-tooltip
             >
           </v-btn>
+          <v-btn @click="() => deleteBonneReponseAction()" icon variant="plain">
+            <v-icon>mdi-delete</v-icon>
+            <v-tooltip activator="parent" location="top">Supprimer</v-tooltip>
+          </v-btn>
         </template>
       </v-text-field>
       <v-text-field
@@ -141,6 +165,14 @@ const resetQrQCMAction = () => {
             <v-tooltip activator="parent" location="top"
               >Ajouter de l'audio</v-tooltip
             >
+          </v-btn>
+          <v-btn
+            @click="() => deleteMauvaiseReponseAction()"
+            icon
+            variant="plain"
+          >
+            <v-icon>mdi-delete</v-icon>
+            <v-tooltip activator="parent" location="top">Supprimer</v-tooltip>
           </v-btn>
         </template>
       </v-text-field>

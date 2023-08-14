@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import QRCodeDialog from "@/components/QRCodeDialog.vue";
 import { ref } from "vue";
 
 const tab = ref();

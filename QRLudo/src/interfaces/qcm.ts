@@ -22,6 +22,7 @@ interface reponseQCM {
 interface questionQCM {
   id: number;
   textQuestion: string;
+  isShowed: boolean;
   reponses: reponseQCM[];
 }
 

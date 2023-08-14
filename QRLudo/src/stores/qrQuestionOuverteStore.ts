@@ -31,6 +31,18 @@ const useQrQuestionOuverteStore = defineStore("qrQuestionOuverte", {
       this.qrQuestionOuverte.question = "";
     },
 
+    deleteReponse() {
+      this.qrQuestionOuverte.reponse = "";
+    },
+
+    deleteMessageBonneReponse() {
+      this.qrQuestionOuverte.textBonneReponse = "";
+    },
+
+    deleteMessageMauvaiseReponse() {
+      this.qrQuestionOuverte.textMauvaiseReponse = "";
+    },
+
     /**
      * Supprime toutes les infos
      */

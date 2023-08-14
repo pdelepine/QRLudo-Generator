@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import QRCodeDialog from "@/components/QRCodeDialog.vue";
 import eventBus from "@/eventBus";
 import { itemQrMultiple } from "@/interfaces/qrMultiple";
 import useQrMultipleStore from "@/stores/qrmultipleStore";
@@ -70,6 +71,7 @@ const resetQRMultipleAction = () => {
 
   <!-- Page QR Multiple -->
   <v-card>
+    <QRCodeDialog :qrcode-type="qrMultipleStore.qrMultiple.qrtype" />
     <v-card-title>QR Multiple</v-card-title>
     <v-card-subtitle
       >Création de QR Multiple. Les QR Multiples contiennent plusieurs QR

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import QRCodeDialog from "@/components/QRCodeDialog.vue";
 import eventBus from "@/eventBus";
 import { ref } from "vue";
 
@@ -15,6 +16,7 @@ const resetQrExerciceAction = () => {
 
 <template>
   <v-card>
+    <QRCodeDialog />
     <v-card-title>QR Exercice</v-card-title>
     <v-card-subtitle
       >Création de QR Exercice. Les exercices permettent de prendre connaissance
